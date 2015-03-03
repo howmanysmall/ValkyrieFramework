@@ -1,0 +1,5 @@
+logs
+mime.types
+nginx.conf
+nginx.conf.compiled
+*~
