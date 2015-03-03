@@ -11,3 +11,4 @@
 2015/03/02 18:49:03 [alert] 9660#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
 2015/03/03 10:35:08 [alert] 17657#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
 2015/03/03 10:36:44 [alert] 17865#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
+2015/03/03 16:55:23 [alert] 1806#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15

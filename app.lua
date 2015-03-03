@@ -1,8 +1,11 @@
 local lapis       = require("lapis");
 local app         = lapis.Application();
+local json        = require"cjson";
 -- Reminded: luasocket for time
 
 local intmodules  = dofile("interface/modules.lua");
+local parser      = dofile("lib/parse.lua");
+local encoder     = dofile("lib/encode.lua");
 local app_helpers = require"lapis.application";
 
 local capture_errors  = app_helpers.capture_errors;
@@ -26,7 +29,5 @@ app:match("/:module/:funct/:gid/:cokey", capture_errors({
     return  {render = "empty"; layout = false; content_type = "text/valkyrie-return"; intmodules[self.params.module][self.params.funct](self)};
   end
 }));
-
-
 
 return app;
