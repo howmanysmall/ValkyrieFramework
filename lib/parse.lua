@@ -1,7 +1,4 @@
-local module      = {};
-local app_helpers = require"lapis.application";
-
-local yield_error = app_helpers.yield_error;
+local module  = {};
 
 local parseArray;
 
@@ -20,13 +17,30 @@ end
 
 -- Sorry, don't know who this was made by
 local function split(str, delim)
-  -- Eliminate bad cases...
-  if string.find(str, delim) == nil then return { str } end
+  local isEscape  = false;
+  local isInString= false;
+  local ret       = {};
+  local buf       = "";
+  for i = 1, #str do
+    if str:sub(i, i) == "\\" then
+      isEscape = not isEscape;
+    elseif str:sub(i, i) == "\"" and not isEscape then
+      isInString = not isInString;
+    elseif str:sub(i, i) == delim and not isInString then
+      table.insert(ret, buf);
+      buf = "";
+    end
+    if str:sub(i, i) ~= delim or isInString then
+      isEscape = false;
+      buf = buf .. str:sub(i, i);
+    end
+  end
 
-  local result,pat,lastpos = {},"(.-)" .. delim .. "()",nil
-  for part, pos in string.gfind(str, pat) do table.insert(result, part); lastPos = pos; end
-  table.insert(result, string.sub(str, lastPos))
-  return result
+  if buf ~= "" then
+    table.insert(ret, buf);
+  end
+
+  return ret;
 end
 
 local function keyval(str)
@@ -97,6 +111,9 @@ parseArray = function(str)
 end
 
 function module.parse(str)
+  if not str or str == "" then
+    return {};
+  end
   local ret       = {};
   local values    = split(unescape(str), ";");
 

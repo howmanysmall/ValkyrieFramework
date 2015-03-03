@@ -30,5 +30,6 @@ end
 
 -- columns, from, where
 module.select_base = "SELECT %s FROM %s WHERE %s";
+module.insert_base = "INSERT INTO %s SET %s";
 
 return module;
