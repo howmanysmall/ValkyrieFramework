@@ -23,7 +23,13 @@ app:match("/:module/:funct/:gid/:cokey", capture_errors({
     if not intmodules[self.params.module] or not intmodules[self.params.module][self.params.funct] then
       yield_error("Invalid module or function!");
     end
-    return  {render = "empty"; layout = false; content_type = "text/valkyrie-return"; intmodules[self.params.module][self.params.funct](self)};
+
+    local result       = nil;
+    local success, message = pcall(function() result = intmodules[self.params.module][self.params.funct](self); end);
+    if not success then
+      yield_error(message);
+    end
+    return  {render = "empty"; layout = false; content_type = "text/valkyrie-return"; result};
   end
 }));
 
