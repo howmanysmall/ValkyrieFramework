@@ -23,7 +23,6 @@ function module.query(querybase, ...)
   if not result then
     yield_error("Invalid query: " .. query);
   end
-  print("SUCCESS: ", query);
 
   return result;
 end
@@ -31,5 +30,6 @@ end
 -- columns, from, where
 module.select_base = "SELECT %s FROM %s WHERE %s";
 module.insert_base = "INSERT INTO %s SET %s";
+module.create_base = "CREATE TABLE %s %s";
 
 return module;
