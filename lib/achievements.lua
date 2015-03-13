@@ -1,6 +1,7 @@
 local module              = {};
 local mysql               = dofile("lib/mysql.lua");
 local encoder             = dofile("lib/encode.lua");
+local metamanager         = dofile("lib/meta.lua");
 local app_helpers         = require"lapis.application";
 
 local yield_error         = app_helpers.yield_error;
@@ -11,6 +12,14 @@ function module.create(gid, id, desc, name, reward)
   if uniq_result:numrows() ~= 0 then
     yield_error("An achievement with that ID already exists!");
   end
+
+  local usedreward        = metamanager.getMeta("usedreward", gid);
+  local maxreward         = 1000 - usedreward;
+
+  if maxreward < reward then
+    yield_error("The reward exceeds the maximum available reward (" .. maxreward .. ")!");
+  end
+  metamanager.setMeta("usedreward", usedreward + reward, gid);
 
   local add_result        = mysql.query(mysql.insert_base, mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s', description='%s', name='%s', reward='%d'"):format(mysql.safe(id), mysql.safe(desc), mysql.safe(name), reward));
 
