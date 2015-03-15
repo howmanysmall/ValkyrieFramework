@@ -11,7 +11,7 @@ function module.check(gid, cokey, pid)
     yield_error("Invalid GID-CoKey pair!");
   end
 
-  local place_id_result = mysql.query(mysql.select_base, "id", ("trusted_places_%s"):format(mysql.safe(gid)), ("pid='%d' AND connection_key='%s'"):format(mysql.safe(pid, cokey)));
+  local place_id_result = mysql.query(mysql.select_base, "id", ("`trusted_places_%s`"):format(mysql.safe(gid)), ("pid='%d' AND connection_key='%s'"):format(mysql.safe(pid, cokey)));
   if place_id_result:numrows() == 0 then
     yield_error("Invalid PID-CoKey-GID combination!");
   end

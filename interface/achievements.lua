@@ -52,7 +52,30 @@ function module.award(self)
   end
 
   check.check_nopid(gid, cokey);
-  return lib.award(gid, playerid, achvid)
+  return lib.award(gid, playerid, achvid);
+end
+
+function module.list(self)
+  ngx.req.read_body();
+  local parsedbody  = parser.parse(ngx.req.get_body_data());
+
+  local par         = self.params;
+  local gid         = par.gid;
+  local cokey       = par.cokey;
+
+  if not gid or not cokey then
+    yield_error("GID or CoKey not set!");
+  end
+
+  local gameid      = parsedbody.gid;
+  local filter      = parsedbody.filter;
+
+  if not gameid or not filter then
+    yield_error("GID[2] or filter not set!");
+  end
+
+  check.check_nopid(gid, cokey);
+  return lib.list(gid, gameid, filter);
 end
 
 return module;

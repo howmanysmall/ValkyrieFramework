@@ -85,7 +85,7 @@ local function parseValues(values, useKeyVal)
       i = i + 1;
     end
     local _type = getType(value);
-    print(_type, " ", key, " ", value);
+    --print(_type, " ", key, " ", value);
     if      _type == "number"   then
       ret[key]    = tonumber(value);
     elseif  _type == "string"   then -- string

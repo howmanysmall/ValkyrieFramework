@@ -16,15 +16,20 @@ function module.safe(...)
   return unpack(ret);
 end
 
--- Example: module.query("SELECT %s FROM %s", id, game_ids);
-function module.query(querybase, ...)
-  local query   = querybase:format(...);
+function module.literalQuery(query)
   local result  = connection:execute(query);
   if not result then
     yield_error("Invalid query: " .. query);
   end
 
   return result;
+end
+
+-- Example: module.query("SELECT %s FROM %s", id, game_ids);
+function module.query(querybase, ...)
+  local query   = querybase:format(...);
+
+  return module.literalQuery(query);
 end
 
 -- columns, from, where

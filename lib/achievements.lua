@@ -7,7 +7,7 @@ local app_helpers         = require"lapis.application";
 local yield_error         = app_helpers.yield_error;
 
 function module.create(gid, id, desc, name, reward)
-  local uniq_result       = mysql.query(mysql.select_base, "id", mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s'"):format(mysql.safe(id)));
+  local uniq_result       = mysql.query(mysql.select_base, "id", mysql.safe(("`achievements_%s`"):format(mysql.safe(gid))), ("achv_id='%s'"):format(mysql.safe(id)));
 
   if uniq_result:numrows() ~= 0 then
     yield_error("An achievement with that ID already exists!");
@@ -47,6 +47,45 @@ function module.award(gid, pid, aid)
   mysql.query(mysql.insert_base, ("player_achv_%d"):format(pid), ("achvid='%s', gid='%s'"):format(mysql.safe(aid), mysql.safe(gid)));
 
   return encoder.encode({success = true, error = ""});
+end
+
+function module.list(gid, othgid, filter)
+  local exists_result   = mysql.query(mysql.select_base, "table_name", "information_schema.tables", ("table_name='achievements_%s'"):format(mysql.safe(othgid)));
+  if exists_result:numrows() == 0 then
+    yield_error("That game doesn't exist");
+  end
+
+  local query = mysql.select_base:format("*", ("achievements_%s"):format(mysql.safe(othgid)), "1=1 "); -- hax
+  if filter[1] ~= "" and filter[1] and filter[2] then
+    if filter[1] == ">" then
+      query = query .. ("AND %s>=%d "):format("reward", filter[2]);
+    else
+      query = query .. ("AND %s<=%d "):format("reward", filter[2]);
+    end
+  end
+  if filter[3] ~= "" and filter[3] then
+    query = query .. ("AND %s LIKE '%%%s%%' "):format("achv_id", mysql.safe(filter[3]));
+  end
+  if filter[4] ~= "" and filter[4] then
+    query = query .. ("AND %s LIKE '%%%s%%' "):format("name", mysql.safe(filter[4]));
+  end
+  if filter[5] ~= "" and filter[5] then
+    query = query .. ("AND %s LIKE '%%%s%%' "):format("name", mysql.safe(filter[5]));
+  end
+
+  local result  = mysql.literalQuery(query);
+  local ret     = {};
+  local row     = result:fetch({}, "a");
+  while row do
+    table.insert(ret, {tonumber(row.reward), row.achv_id, row.name, row.description});
+    row         = result:fetch({}, "a");
+  end
+
+  return encoder.encode({
+    success = true,
+    error   = "",
+    result  = ret
+  });
 end
 
 return module;
