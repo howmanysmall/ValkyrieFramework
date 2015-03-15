@@ -5,21 +5,21 @@ local app_helpers = require"lapis.application";
 
 local yield_error = app_helpers.yield_error;
 
-function module.check(gid, cokey, pid)
+function module.check(gid, cokey, uid)
   local game_id_result  = mysql.query(mysql.select_base, "id", "game_ids", ("gid='%s' AND cokey='%s'"):format(mysql.safe(gid, cokey)));
   if game_id_result:numrows() == 0 then
-    yield_error("Invalid GID-CoKey pair!");
+    yield_error("Invalid UID-GID-CoKey combination!");
   end
 
-  local place_id_result = mysql.query(mysql.select_base, "id", ("`trusted_places_%s`"):format(mysql.safe(gid)), ("pid='%d' AND connection_key='%s'"):format(mysql.safe(pid, cokey)));
-  if place_id_result:numrows() == 0 then
-    yield_error("Invalid PID-CoKey-GID combination!");
+  local user_id_result = mysql.query(mysql.select_base, "id", ("`trusted_users_%s`"):format(mysql.safe(gid)), ("uid='%d' AND connection_key='%s'"):format(mysql.safe(uid, cokey)));
+  if user_id_result:numrows() == 0 then
+    yield_error("Invalid UID-CoKey-GID combination!");
   end
 
   return encoder.encode({success = true, error = ""});
 end
 
-function module.check_nopid(gid, cokey)
+function module.check_nouid(gid, cokey)
   local game_id_result  = mysql.query(mysql.select_base, "id", "game_ids", ("gid='%s' AND cokey='%s'"):format(mysql.safe(gid, cokey)));
   if game_id_result:numrows() == 0 then
     yield_error("Invalid GID-CoKey pair!");

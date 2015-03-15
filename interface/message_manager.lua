@@ -49,7 +49,7 @@ function module.checkMessages(self)
     yield_error("Since not set!");
   end
 
-  check.check_nopid(gid, cokey);
+  check.check_nouid(gid, cokey);
 
   return lib.checkMessages(since, fresh);
 end

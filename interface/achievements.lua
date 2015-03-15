@@ -74,7 +74,7 @@ function module.list(self)
     yield_error("GID[2] or filter not set!");
   end
 
-  check.check_nopid(gid, cokey);
+  check.check_nouid(gid, cokey);
   return lib.list(gid, gameid, filter);
 end
 

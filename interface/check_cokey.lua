@@ -8,13 +8,13 @@ function module.check(request)
   local par   = request.params;
   local gid   = par.gid;
   local cokey = par.cokey;
-  local pid   = par.pid;
+  local uid   = par.uid;
 
-  if not pid or not gid or not cokey then
-    yield_error("PID, GID or CoKey not set!");
+  if not gid or not uid or not cokey then
+    yield_error("UID, GID or CoKey not set!");
   end
 
-  return lib.check(gid, cokey, pid);
+  return lib.check(gid, cokey, uid);
 end
 
 return module;
