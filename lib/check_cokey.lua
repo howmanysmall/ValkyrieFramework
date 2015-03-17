@@ -25,7 +25,7 @@ function module.check_nouid(gid, cokey)
     yield_error("Invalid GID-CoKey pair!");
   end
 
-  return encoder.encode({success = true, error = ""});
+  return "success=true;error=\"\"";
 end
 
 return module;

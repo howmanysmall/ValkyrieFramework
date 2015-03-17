@@ -3,3 +3,5 @@ mime.types
 nginx.conf
 nginx.conf.compiled
 *~
+studiosplash.lua
+lz4.lua

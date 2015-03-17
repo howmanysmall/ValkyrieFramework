@@ -27,7 +27,7 @@ function module.addMessage(self)
 
   check.check_nopid(gid, cokey); -- Will yield an error if those don't match, thus stopping the program
 
-  return lib.addMessage(user, message);
+  return lib.addMessage(user, message, gid);
 end
 
 function module.checkMessages(self)
@@ -42,16 +42,17 @@ function module.checkMessages(self)
     yield_error("GID or CoKey not set!");
   end
 
-  local since = parsedbody.since;
-  local fresh = parsedbody.fresh;
+  local since     = parsedbody.since;
+  local fresh     = parsedbody.fresh;
+  local gidfilter = parsedbody.gidfilter;
 
-  if not since then
-    yield_error("Since not set!");
+  if not since or not gidfilter then
+    yield_error("Since or GID filter not set!");
   end
 
   check.check_nouid(gid, cokey);
 
-  return lib.checkMessages(since, fresh);
+  return lib.checkMessages(since, fresh, gidfilter);
 end
 
 return module;
