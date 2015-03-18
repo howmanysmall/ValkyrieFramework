@@ -5,3 +5,4 @@ nginx.conf.compiled
 *~
 studiosplash.lua
 lz4.lua
+security.sec
