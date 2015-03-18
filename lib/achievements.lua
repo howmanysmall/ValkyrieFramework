@@ -7,6 +7,10 @@ local app_helpers         = require"lapis.application";
 local yield_error         = app_helpers.yield_error;
 
 function module.create(gid, id, desc, name, reward)
+  if reward < 1 then
+    yield_error("The reward can't be less than 1!");
+  end
+
   local uniq_result       = mysql.query(mysql.select_base, "id", mysql.safe(("`achievements_%s`"):format(mysql.safe(gid))), ("achv_id='%s'"):format(mysql.safe(id)));
 
   if uniq_result:numrows() ~= 0 then

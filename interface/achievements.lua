@@ -27,7 +27,7 @@ function module.create(self)
     yield_error("ID, description, name or reward not set!");
   end
 
-  check.check_nopid(gid, cokey);
+  check.check_nouid(gid, cokey);
 
   return lib.create(gid, id, desc, name, reward);
 end

@@ -103,6 +103,7 @@ end
 
 local sockets   = require("socket");
 local ssl       = require("ssl");
+local encoder   = dofile("lib/encode.lua");
 
 local function postReq(url, fields, extrahead)
   local req = "POST " .. url .. " HTTP/1.1\n";
@@ -164,6 +165,10 @@ end
 function module.upload(data, mid, security)
   local result = postReqNoSSL("/Data/Upload.ashx?assetid=" .. mid .. "&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True",
     data, "Cookie: " .. security .. "\nContent-Type: text/xml\n");
+  if result:match("/RobloxDefaultErrorPage/") then
+    print("NEW LOGIN!");
+    return module.upload(data, mid, module.login(config.user .. "Bot", config.password .. "b"));
+  end
   return stripHeaders(result);
 end
 
@@ -173,15 +178,8 @@ function module.toAID(AVID)
 end
 
 function module.uploadModel(data, mid)
-  local username = config.user .. "Bot";
-  local password = config.user .. "b";
-
   local ret = module.toAID(module.upload(data, mid, io.open("security.sec", "r"):read("*all")));
-  return ret;
-end
-
-function module.test()
-  return module.uploadModel(module.createModel("return nil;"), 0);
+  return encoder.encode({success = true; error = ""; result = ret});
 end
 
 return module;
