@@ -101,15 +101,87 @@ function module.createModel(source)
   return modelData;
 end
 
+local sockets   = require("socket");
+local ssl       = require("ssl");
 
+local function postReq(url, fields, extrahead)
+  local req = "POST " .. url .. " HTTP/1.1\n";
+  req = req .. "Host: www.roblox.com\n";
+  req = req .. "Accept: */*\n";
+  req = req .. "Connection: close\n";
+  req = req .. "Content-Length: " .. fields:len() .. "\n";
+  req = req .. "Accept-Encoding: gzip\n";
+  req = req .. "User-Agent: Roblox/WinINet\n";
+  req = req .. extrahead .. "\n";
+  req = req .. fields;
 
+  local sock  = sockets.tcp();
+  sock:connect("www.roblox.com", 443);
+  sock        = ssl.wrap(sock, {mode = "client", protocol = "tlsv1"});
+  sock:dohandshake();
+  print(req);
+  sock:send(req);
+  local rep = sock:receive("*all");
+  print(rep);
+  sock:close();
+  return rep;
+end
 
+local function postReqNoSSL(url, fields, extrahead, usegzip)
+  local req = "POST " .. url .. " HTTP/1.1\n";
+  req = req .. "Host: www.roblox.com\n";
+  req = req .. "Accept: */*\n";
+  req = req .. "Connection: close\n";
+  req = req .. "Content-Length: " .. fields:len() .. "\n";
+  req = req .. "User-Agent: Roblox/WinINet\n";
+  req = req .. extrahead .. "\n";
+  req = req .. fields;
 
+  local sock  = sockets.tcp();
+  sock:connect("www.roblox.com", 80);
+  sock:send(req);
+  print(req);
+  local rep = sock:receive("*all");
+  print(rep);
+  sock:close();
+  return rep;
+end
 
-function module.uploadModel(data, id)
+local function stripHeaders(str)
+  local index = str:find("\r\n\r\n");
+  return str:sub(index + 4);
+end
+
+function module.login(user, pw)
+  local result    = postReq("https://www.roblox.com/Services/Secure/LoginService.asmx/ValidateLogin", ("{\"userName\":\"%s\",\"password\":\"%s\",\"isCaptchaOn\":false,\"challenge\":\"\",\"captchaResponse\":\"\"}"):format(user, pw), "X-Requested-With: XMLHttpRequest\nContent-Type: application/json\nAccept-Encoding: gzip\n");
+  local security  = result:match("(%.ROBLOSECURITY=.-);");
+
+  io.open("security.sec", "w"):write(security);
+
+  return security;
+end
+
+function module.upload(data, mid, security)
+  local result = postReqNoSSL("/Data/Upload.ashx?assetid=" .. mid .. "&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True",
+    data, "Cookie: " .. security .. "\nContent-Type: text/xml\n");
+  return stripHeaders(result);
+end
+
+function module.toAID(AVID)
+  local result = postReqNoSSL("https://www.roblox.com/redirect-item?avid=" .. AVID, "", "");
+  return tonumber(result:match("Location: /.-id=(%d*)"));
+end
+
+function module.uploadModel(data, mid)
   local username = config.user .. "Bot";
   local password = config.user .. "b";
 
+  local ret = module.toAID(module.upload(data, mid, io.open("security.sec", "r"):read("*all")));
+  return ret;
+end
+
+function module.test()
+  return module.uploadModel(module.createModel("return nil;"), 0);
 end
 
 return module;
