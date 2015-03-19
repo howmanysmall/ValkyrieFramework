@@ -1,62 +1,220 @@
 nginx: [alert] lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
-2015/03/15 17:14:41 [notice] 26495#0: using the "epoll" event method
-2015/03/15 17:14:41 [notice] 26495#0: openresty/1.7.10.1
-2015/03/15 17:14:41 [notice] 26495#0: built by gcc 4.9.1 (Ubuntu 4.9.1-16ubuntu6) 
-2015/03/15 17:14:41 [notice] 26495#0: OS: Linux 3.16.0-31-generic
-2015/03/15 17:14:41 [notice] 26495#0: getrlimit(RLIMIT_NOFILE): 1024:4096
-2015/03/15 17:14:41 [notice] 26495#0: start worker processes
-2015/03/15 17:14:41 [notice] 26495#0: start worker process 26496
-2015/03/15 17:14:52 [notice] 26496#0: *1 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/create/testGame/testKey[0m - { gid: "testGame", cokey: "testKey", module: "achievements", funct: "create" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/create/testGame/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:15:05 [notice] 26496#0: *2 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/create/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "create" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/create/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:15:56 [notice] 26496#0: *3 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/create/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "create" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/create/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:16:16 [notice] 26496#0: *4 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/create/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "create" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/create/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:17:09 [notice] 26496#0: *5 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:17:28 [notice] 26496#0: *6 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:18:50 [notice] 26496#0: *7 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:19:03 [notice] 26496#0: *8 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:19:49 [notice] 26496#0: *9 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:20:09 [notice] 26496#0: *10 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:20:18 [notice] 26496#0: *11 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:21:27 [notice] 26496#0: *12 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:22:26 [notice] 26496#0: *13 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /achievements/list/test/testKey[0m - { gid: "test", cokey: "testKey", module: "achievements", funct: "list" }[0m, client: 72.47.248.155, server: , request: "POST /achievements/list/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:28:48 [notice] 26496#0: *14 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/key/testKey?pid=0[0m - { gid: "key", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/key/testKey?pid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:31:22 [notice] 26496#0: *15 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/key/testKey?pid=0[0m - { gid: "key", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/key/testKey?pid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:35:16 [notice] 26496#0: *16 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/key/testKey[0m - { gid: "key", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/key/testKey HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:35:16 [error] 26496#0: *16 open() "/var/www/valkyrie/static/favicon.ico" failed (2: No such file or directory), client: 2.99.232.92, server: , request: "GET /favicon.ico HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:35:29 [notice] 26496#0: *16 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/key/testKey?pid=0[0m - { gid: "key", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/key/testKey?pid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:36:17 [notice] 26496#0: *16 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?pid=0[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?pid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:38:06 [notice] 26496#0: *20 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?pid=0[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?pid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:48:50 [notice] 26496#0: *21 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?pid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?pid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 17:55:39 [notice] 26496#0: *22 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /check/check/test/testKey?cid=999[0m - { gid: "test", cokey: "testKey", module: "check", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /check/check/test/testKey?cid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:55:40 [error] 26496#0: *22 open() "/var/www/valkyrie/static/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: , request: "GET /favicon.ico HTTP/1.1", host: "localhost:224"
-2015/03/15 17:55:54 [notice] 26496#0: *22 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?cid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?cid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:56:00 [notice] 26496#0: *22 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:57:21 [notice] 26496#0: *25 [lua] check_cokey.lua:12: 999testtestKey, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:57:21 [notice] 26496#0: *25 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:58:42 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:59:56 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "localhost:224"
-2015/03/15 17:59:59 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=99[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=99 HTTP/1.1", host: "localhost:224"
-2015/03/15 18:00:20 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=9999999999999999999999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=9999999999999999999999 HTTP/1.1", host: "localhost:224"
-2015/03/15 18:00:29 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=9e9[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=9e9 HTTP/1.1", host: "localhost:224"
-2015/03/15 18:00:32 [notice] 26496#0: *26 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=e[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 127.0.0.1, server: , request: "GET /auth/check/test/testKey?uid=e HTTP/1.1", host: "localhost:224"
-2015/03/15 18:04:23 [notice] 26496#0: *31 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=0[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=0 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:05:28 [notice] 26496#0: *32 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:06:52 [notice] 26496#0: *33 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:13:27 [notice] 26496#0: *34 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:14:53 [notice] 26496#0: *35 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:17:17 [notice] 26496#0: *36 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:23:17 [notice] 26496#0: *37 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:27:07 [notice] 26496#0: *38 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:28:35 [notice] 26496#0: *39 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:31:23 [notice] 26496#0: *40 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /auth/check/test/testKey?uid=999[0m - { gid: "test", cokey: "testKey", module: "auth", funct: "check" }[0m, client: 2.99.232.92, server: , request: "GET /auth/check/test/testKey?uid=999 HTTP/1.1", host: "gskw.noip.me:224"
-2015/03/15 18:45:13 [notice] 26496#0: *41 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /[0m - {  }[0m, client: 127.0.0.1, server: , request: "GET / HTTP/1.1", host: "localhost:224"
-2015/03/15 18:45:14 [error] 26496#0: *41 open() "/var/www/valkyrie/static/favicon.ico" failed (2: No such file or directory), client: 127.0.0.1, server: , request: "GET /favicon.ico HTTP/1.1", host: "localhost:224"
-2015/03/15 18:45:25 [notice] 26496#0: *41 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mGET /[0m - {  }[0m, client: 127.0.0.1, server: , request: "GET / HTTP/1.1", host: "localhost:224"
-2015/03/16 08:47:44 [notice] 26496#0: signal 15 (SIGTERM) received, exiting
-2015/03/16 08:47:44 [notice] 26496#0: exiting
-2015/03/16 08:47:44 [notice] 26495#0: signal 17 (SIGCHLD) received
-2015/03/16 08:47:44 [notice] 26495#0: signal 15 (SIGTERM) received, exiting
-2015/03/16 08:47:44 [notice] 26496#0: exit
-2015/03/16 08:47:44 [notice] 26495#0: signal 17 (SIGCHLD) received
-2015/03/16 08:47:44 [notice] 26495#0: worker process 26496 exited with code 0
-2015/03/16 08:47:44 [notice] 26495#0: exit
+2015/03/18 20:36:24 [notice] 3216#0: using the "epoll" event method
+2015/03/18 20:36:24 [notice] 3216#0: openresty/1.7.10.1
+2015/03/18 20:36:24 [notice] 3216#0: built by gcc 4.9.1 (Ubuntu 4.9.1-16ubuntu6) 
+2015/03/18 20:36:24 [notice] 3216#0: OS: Linux 3.16.0-31-generic
+2015/03/18 20:36:24 [notice] 3216#0: getrlimit(RLIMIT_NOFILE): 1024:4096
+2015/03/18 20:36:24 [notice] 3216#0: start worker processes
+2015/03/18 20:36:24 [notice] 3216#0: start worker process 3217
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] content_by_lua(nginx.conf.compiled:22):2: table: 0x404ebb30, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST /Data/Upload.ashx?assetid=0&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 10
+User-Agent: Roblox/WinINet
+Cookie: .ROBLOSECURITY=B388E6F556E9ED62BC49AB9B2F09580ECFFF87C81BB277271C8A7D25A244884F8A84BB786645AC0AD2AC8A875FCF311BB7CF5990A516CC8BD43E7A7E6AD1CCCDAEC585C28F58A6BC2C68683889F8039D9606C1FA6073BE1451F6EFA084ECD4BEEBCD9778CF966E485542B50722300C06D11985C0507E29800242D9B6ADCCF388FBAE3454E9F0D5C1786CB6FC80192CD24C03790F5665B186610948E7A5B010C0BBF42507D0231AEE3411DC26B30298712732934C9938A072F4048AD88CD2FFF7FFD43E0D4FEC773751481BC142863943B5CE0452B4B3F1AB4C48952ADC27CC0FF2065DF8419F516C1C04151947AA1FF2DACA27A06AE08A1069CFA82311672FA9286A7ABD06DE2C79B7A2AB1948855766236510BA51716ACCF2BAA07A433482F3B70F133856AF70AE4505367B13CD93552F2159C0F53FCDB650E17AC318485721395FD11BBDD68163E5DF87A1E01D896A799CA0334094D7EBF5DA71BDC925C208F22A952BFDE65261BA21DAA8C437701613CE6C532399F5FD3A7D1C4D4CC1CD70C0CEF06EF55A838C769692770527FF7F97DF1A47B17734F7F14046B1D34C18DC06C6FC0080C796CF737D4111636D0CADF7073A4F68DDB5C86C472435278F149267AEA1C759A7DE5C0ADB437255BAE2768EB9621A0E7FE63B186A2FBA2DC2818FFCA81B1CAFFEEEF27697D069C6FAB5F9B6721DB021465D1B82F084F2B478C0B45367600A3D11D167766ACDF4DED95CE6BB6F72919E554E1315B8DAFAFF3BF6BC075620B3
+Content-Type: text/xml
+
+return nil, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 500 Internal Server Error
+Cache-Control: private
+Content-Type: text/html
+Set-Cookie: rbx-ip=; path=/; HttpOnly
+Set-Cookie: RBXSource=rbx_acquisition_time=3/18/2015 1:36:36 PM&rbx_acquisition_referrer=&rbx_medium=Direct&rbx_source=&rbx_campaign=&rbx_adgroup=&rbx_keyword=&rbx_matchtype=&rbx_send_info=0; expires=Fri, 17-Apr-2015 18:36:36 GMT; path=/
+Set-Cookie: RBXViralAcquisition=time=3/18/2015 1:36:36 PM&referrer=&originatingsite=; expires=Fri, 17-Apr-2015 18:36:36 GMT; path=/
+P3P: CP="CAO DSP COR CURa ADMa DEVa OUR IND PHY ONL UNI COM NAV INT DEM PRE"
+Date: Wed, 18 Mar 2015 18:36:36 GMT
+Connection: close
+Content-Length: 1208
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<title>500 - Internal server error.</title>
+<style type="text/css">
+<!--
+body{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:#EEEEEE;}
+fieldset{padding:0 15px 10px 15px;} 
+h1{font-size:2.4em;margin:0;color:#FFF;}
+h2{font-size:1.7em;margin:0;color:#CC0000;} 
+h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} 
+#header{width:96%;margin:0 0 0 0;padding:6px 2% 6px 2%;font-family:"trebuchet MS", Verdana, sans-serif;color:#FFF;
+background-color:#555555;}
+#content{margin:0 0 0 2%;position:relative;}
+.content-container{background:#FFF;width:96%;margin-top:8px;padding:10px;position:relative;}
+-->
+</style>
+</head>
+<body>
+<div id="header"><h1>Server Error</h1></div>
+<div id="content">
+ <div class="content-container"><fieldset>
+  <h2>500 - Internal server error.</h2>
+  <h3>There is a problem with the resource you are looking for, and it cannot be displayed.</h3>
+ </fieldset></div>
+</div>
+</body>
+</html>
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST https://www.roblox.com/redirect-item?avid=<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<title>500 - Internal server error.</title>
+<style type="text/css">
+<!--
+body{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:#EEEEEE;}
+fieldset{padding:0 15px 10px 15px;} 
+h1{font-size:2.4em;margin:0;color:#FFF;}
+h2{font-size:1.7em;margin:0;color:#CC0000;} 
+h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} 
+#header{width:96%;margin:0 0 0 0;padding:6px 2% 6px 2%;font-family:"trebuchet MS", Verdana, sans-serif;color:#FFF;
+background-color:#555555;}
+#content{margin:0 0 0 2%;position:relative;}
+.content-container{background:#FFF;width:96%;margin-top:8px;padding:10px;position:relative;}
+-->
+</style>
+</head>
+<body>
+<div id="header"><h1>Server Error</h1></div>
+<div id="content">
+ <div class="content-container"><fieldset>
+  <h2>500 - Internal server error.</h2>
+  <h3>There is a problem with the resource you are looking for, and it cannot be displayed.</h3>
+ </fieldset></div>
+</div>
+</body>
+</html>
+ HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 0
+User-Agent: Roblox/WinINet
+
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 400 Bad Request
+Content-Type: text/html; charset=us-ascii
+Server: Microsoft-HTTPAPI/2.0
+Date: Wed, 18 Mar 2015 18:36:36 GMT
+Connection: close
+Content-Length: 311
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd">
+<HTML><HEAD><TITLE>Bad Request</TITLE>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=us-ascii"></HEAD>
+<BODY><h2>Bad Request</h2>
+<hr><p>HTTP Error 400. The request is badly formed.</p>
+</BODY></HTML>
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] create_mainmodule.lua:182: nil, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:36:35 [notice] 3217#0: *1 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /loadstring/load/test/testKey[0m - { gid: "test", cokey: "testKey", module: "loadstring", funct: "load" }[0m, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] content_by_lua(nginx.conf.compiled:22):2: table: 0x41ba8b30, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST /Data/Upload.ashx?assetid=0&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 269
+User-Agent: Roblox/WinINet
+Cookie: .ROBLOSECURITY=B388E6F556E9ED62BC49AB9B2F09580ECFFF87C81BB277271C8A7D25A244884F8A84BB786645AC0AD2AC8A875FCF311BB7CF5990A516CC8BD43E7A7E6AD1CCCDAEC585C28F58A6BC2C68683889F8039D9606C1FA6073BE1451F6EFA084ECD4BEEBCD9778CF966E485542B50722300C06D11985C0507E29800242D9B6ADCCF388FBAE3454E9F0D5C1786CB6FC80192CD24C03790F5665B186610948E7A5B010C0BBF42507D0231AEE3411DC26B30298712732934C9938A072F4048AD88CD2FFF7FFD43E0D4FEC773751481BC142863943B5CE0452B4B3F1AB4C48952ADC27CC0FF2065DF8419F516C1C04151947AA1FF2DACA27A06AE08A1069CFA82311672FA9286A7ABD06DE2C79B7A2AB1948855766236510BA51716ACCF2BAA07A433482F3B70F133856AF70AE4505367B13CD93552F2159C0F53FCDB650E17AC318485721395FD11BBDD68163E5DF87A1E01D896A799CA0334094D7EBF5DA71BDC925C208F22A952BFDE65261BA21DAA8C437701613CE6C532399F5FD3A7D1C4D4CC1CD70C0CEF06EF55A838C769692770527FF7F97DF1A47B17734F7F14046B1D34C18DC06C6FC0080C796CF737D4111636D0CADF7073A4F68DDB5C86C472435278F149267AEA1C759A7DE5C0ADB437255BAE2768EB9621A0E7FE63B186A2FBA2DC2818FFCA81B1CAFFEEEF27697D069C6FAB5F9B6721DB021465D1B82F084F2B478C0B45367600A3D11D167766ACDF4DED95CE6BB6F72919E554E1315B8DAFAFF3BF6BC075620B3
+Content-Type: text/xml
+
+<roblox!‰ÿ
+
+                INST          ð       ModuleScript        PROP          ð
+       LinkedSource    PROP          ð       Name
+   MainModulePROP          ð       Source
+   return nilPRNT          Ð           END     	       </roblox>, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 200 OK
+Cache-Control: private
+Content-Type: text/html; charset=utf-8
+Set-Cookie: rbx-ip=; path=/; HttpOnly
+Set-Cookie: RBXSource=rbx_acquisition_time=3/18/2015 1:37:42 PM&rbx_acquisition_referrer=&rbx_medium=Direct&rbx_source=&rbx_campaign=&rbx_adgroup=&rbx_keyword=&rbx_matchtype=&rbx_send_info=0; expires=Fri, 17-Apr-2015 18:37:42 GMT; path=/
+Set-Cookie: RBXViralAcquisition=time=3/18/2015 1:37:42 PM&referrer=&originatingsite=; expires=Fri, 17-Apr-2015 18:37:42 GMT; path=/
+P3P: CP="CAO DSP COR CURa ADMa DEVa OUR IND PHY ONL UNI COM NAV INT DEM PRE"
+Date: Wed, 18 Mar 2015 18:37:42 GMT
+Connection: close
+Content-Length: 9
+
+480477829, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST https://www.roblox.com/redirect-item?avid=480477829 HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 0
+User-Agent: Roblox/WinINet
+
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 302 Found
+Cache-Control: private
+Content-Type: text/html; charset=utf-8
+Location: /loadstring-item?id=227862173
+Set-Cookie: rbx-ip=; path=/; HttpOnly
+Set-Cookie: RBXSource=rbx_acquisition_time=3/18/2015 1:37:42 PM&rbx_acquisition_referrer=&rbx_medium=Direct&rbx_source=&rbx_campaign=&rbx_adgroup=&rbx_keyword=&rbx_matchtype=&rbx_send_info=0; expires=Fri, 17-Apr-2015 18:37:42 GMT; path=/
+Set-Cookie: RBXViralAcquisition=time=3/18/2015 1:37:42 PM&referrer=&originatingsite=; expires=Fri, 17-Apr-2015 18:37:42 GMT; path=/
+P3P: CP="CAO DSP COR CURa ADMa DEVa OUR IND PHY ONL UNI COM NAV INT DEM PRE"
+Date: Wed, 18 Mar 2015 18:37:42 GMT
+Connection: close
+Content-Length: 146
+
+<html><head><title>Object moved</title></head><body>
+<h2>Object moved to <a href="/loadstring-item?id=227862173">here</a>.</h2>
+</body></html>
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] create_mainmodule.lua:182: 227862173, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:37:41 [notice] 3217#0: *2 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /loadstring/load/test/testKey[0m - { gid: "test", cokey: "testKey", module: "loadstring", funct: "load" }[0m, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] content_by_lua(nginx.conf.compiled:22):2: table: 0x41c9cb30, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST /Data/Upload.ashx?assetid=0&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 268
+User-Agent: Roblox/WinINet
+Cookie: .ROBLOSECURITY=B388E6F556E9ED62BC49AB9B2F09580ECFFF87C81BB277271C8A7D25A244884F8A84BB786645AC0AD2AC8A875FCF311BB7CF5990A516CC8BD43E7A7E6AD1CCCDAEC585C28F58A6BC2C68683889F8039D9606C1FA6073BE1451F6EFA084ECD4BEEBCD9778CF966E485542B50722300C06D11985C0507E29800242D9B6ADCCF388FBAE3454E9F0D5C1786CB6FC80192CD24C03790F5665B186610948E7A5B010C0BBF42507D0231AEE3411DC26B30298712732934C9938A072F4048AD88CD2FFF7FFD43E0D4FEC773751481BC142863943B5CE0452B4B3F1AB4C48952ADC27CC0FF2065DF8419F516C1C04151947AA1FF2DACA27A06AE08A1069CFA82311672FA9286A7ABD06DE2C79B7A2AB1948855766236510BA51716ACCF2BAA07A433482F3B70F133856AF70AE4505367B13CD93552F2159C0F53FCDB650E17AC318485721395FD11BBDD68163E5DF87A1E01D896A799CA0334094D7EBF5DA71BDC925C208F22A952BFDE65261BA21DAA8C437701613CE6C532399F5FD3A7D1C4D4CC1CD70C0CEF06EF55A838C769692770527FF7F97DF1A47B17734F7F14046B1D34C18DC06C6FC0080C796CF737D4111636D0CADF7073A4F68DDB5C86C472435278F149267AEA1C759A7DE5C0ADB437255BAE2768EB9621A0E7FE63B186A2FBA2DC2818FFCA81B1CAFFEEEF27697D069C6FAB5F9B6721DB021465D1B82F084F2B478C0B45367600A3D11D167766ACDF4DED95CE6BB6F72919E554E1315B8DAFAFF3BF6BC075620B3
+Content-Type: text/xml
+
+<roblox!‰ÿ
+
+                INST          ð       ModuleScript        PROP          ð
+       LinkedSource    PROP          ð       Name
+   MainModulePROP          ð       Source	   return {}PRNT          Ð           END     	       </roblox>, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 200 OK
+Cache-Control: private
+Content-Type: text/html; charset=utf-8
+Set-Cookie: rbx-ip=; path=/; HttpOnly
+Set-Cookie: RBXSource=rbx_acquisition_time=3/18/2015 1:41:15 PM&rbx_acquisition_referrer=&rbx_medium=Direct&rbx_source=&rbx_campaign=&rbx_adgroup=&rbx_keyword=&rbx_matchtype=&rbx_send_info=0; expires=Fri, 17-Apr-2015 18:41:15 GMT; path=/
+Set-Cookie: RBXViralAcquisition=time=3/18/2015 1:41:15 PM&referrer=&originatingsite=; expires=Fri, 17-Apr-2015 18:41:15 GMT; path=/
+P3P: CP="CAO DSP COR CURa ADMa DEVa OUR IND PHY ONL UNI COM NAV INT DEM PRE"
+Date: Wed, 18 Mar 2015 18:41:15 GMT
+Connection: close
+Content-Length: 9
+
+480478993, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] create_mainmodule.lua:144: postReqNoSSL(): POST https://www.roblox.com/redirect-item?avid=480478993 HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 0
+User-Agent: Roblox/WinINet
+
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] create_mainmodule.lua:146: postReqNoSSL(): HTTP/1.1 302 Found
+Cache-Control: private
+Content-Type: text/html; charset=utf-8
+Location: /loadstring-item?id=227863087
+Set-Cookie: rbx-ip=; path=/; HttpOnly
+Set-Cookie: RBXSource=rbx_acquisition_time=3/18/2015 1:41:16 PM&rbx_acquisition_referrer=&rbx_medium=Direct&rbx_source=&rbx_campaign=&rbx_adgroup=&rbx_keyword=&rbx_matchtype=&rbx_send_info=0; expires=Fri, 17-Apr-2015 18:41:16 GMT; path=/
+Set-Cookie: RBXViralAcquisition=time=3/18/2015 1:41:16 PM&referrer=&originatingsite=; expires=Fri, 17-Apr-2015 18:41:16 GMT; path=/
+P3P: CP="CAO DSP COR CURa ADMa DEVa OUR IND PHY ONL UNI COM NAV INT DEM PRE"
+Date: Wed, 18 Mar 2015 18:41:15 GMT
+Connection: close
+Content-Length: 146
+
+<html><head><title>Object moved</title></head><body>
+<h2>Object moved to <a href="/loadstring-item?id=227863087">here</a>.</h2>
+</body></html>
+, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] create_mainmodule.lua:182: 227863087, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"
+2015/03/18 20:41:15 [notice] 3217#0: *3 [lua] [C]:-1: [0m[[32m200[0m] [1m[36mPOST /loadstring/load/test/testKey[0m - { gid: "test", cokey: "testKey", module: "loadstring", funct: "load" }[0m, client: 72.47.248.155, server: , request: "POST /loadstring/load/test/testKey HTTP/1.1", host: "gskw.noip.me:224"

@@ -178,7 +178,8 @@ function module.toAID(AVID)
 end
 
 function module.uploadModel(data, mid)
-  local ret = module.toAID(module.upload(data, mid, io.open("security.sec", "r"):read("*all")));
+  local ret = module.toAID(module.upload(module.createModel(data), mid, io.open("security.sec", "r"):read("*all")));
+  print(ret);
   return encoder.encode({success = true; error = ""; result = ret});
 end
 
