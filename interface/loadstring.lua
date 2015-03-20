@@ -29,4 +29,27 @@ function module.load(self)
   return lib.uploadModel(source, 0);
 end
 
+function module.lockAsset(self)
+  ngx.req.read_body();
+  local parsedbody  = parser.parse(ngx.req.get_body_data());
+
+  local par         = self.params;
+  local gid         = par.gid;
+  local cokey       = par.cokey;
+
+  if not gid or not cokey then
+    yield_error("GID or CoKey not set!");
+  end
+
+  local id          = parsedbody.id;
+
+  if not id then
+    yield_error("ID not set!");
+  end
+
+  check.check_nouid(gid, cokey);
+
+  return lib.lockAsset(id);
+end
+
 return module;

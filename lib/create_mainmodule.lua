@@ -104,6 +104,7 @@ end
 local sockets   = require("socket");
 local ssl       = require("ssl");
 local encoder   = dofile("lib/encode.lua");
+local lapisutl  = require("lapis.util");
 
 local function postReq(url, fields, extrahead)
   local req = "POST " .. url .. " HTTP/1.1\n";
@@ -122,7 +123,7 @@ local function postReq(url, fields, extrahead)
   sock:dohandshake();
   print(req);
   sock:send(req);
-  local rep = sock:receive("*all");
+  local rep = sock:receive("*a");
   print(rep);
   sock:close();
   return rep;
@@ -141,11 +142,38 @@ local function postReqNoSSL(url, fields, extrahead, usegzip)
   local sock  = sockets.tcp();
   sock:connect("www.roblox.com", 80);
   sock:send(req);
-  print(req);
-  local rep = sock:receive("*all");
-  print(rep);
+  print("\27[33mRequest:\27[0m\n", req);
+  local rep = sock:receive("*a");
+  print("\27[33mReturn:\27[0m\n", rep);
+  print(rep, "LEN = ", rep:len());
   sock:close();
   return rep;
+end
+
+local function aspPostBack(url, currstate, evttarget, formvals, security, force)
+  local viewstate   = currstate:match("id=\"__VIEWSTATE\" value=\"(.-)\"");
+  local vsgenerator = currstate:match("id=\"__VIEWSTATEGENERATOR\" value=\"(.-)\"");
+  local prevpage    = currstate:match("id=\"__PREVIOUSPAGE\" value=\"(.-)\"");
+  local evtvalid    = currstate:match("id=\"__EVENTVALIDATION\" value=\"(.-)\"");
+  local evtarg      = currstate:match("id=\"__EVENTARGUMENT\" value=\"(.-)\"");
+
+  local urlargs     = {__VIEWSTATE = viewstate, __VIEWSTATEGENERATOR = vsgenerator, __PREVIOUSPAGE = prevpage, __EVENTVALIDATION = evtvalid, __EVENTARGUMENT = evtarg, __EVENTTARGET = evttarget};
+  for index, value in pairs(formvals) do
+    urlargs[index]  = value;
+  end
+
+  local encoded     = lapisutl.encode_query_string(urlargs);
+  print(encoded);
+
+  local ret         = postReqNoSSL(url, encoded, "Content-Type: application/x-www-form-urlencoded\nCookie: " .. security .. "\n");
+  if ret:match("/Login/Default.aspx") then
+    if force then
+      yield_error("ROBLOX LOGIN FAILED! Please contact gskw. Remember to include the time this happened at.");
+    end
+    return aspPostBack(url, currstate, evttarget, formvals, module.login("ValkyrieBot", "m224crb"), true);
+  end
+
+  return ret;
 end
 
 local function stripHeaders(str)
@@ -162,12 +190,39 @@ function module.login(user, pw)
   return security;
 end
 
-function module.upload(data, mid, security)
+local function getPostArgs(url, security)
+  local result    = postReqNoSSL(url, "", "Cookie: " .. (security or io.open("security.sec", "r"):read("*all")) .. "\n");
+  if result:match("/Login/Default.aspx") then
+    result        = getPostArgs(url, module.login("ValkyrieBot", "m224crb"));
+  end
+
+  return stripHeaders(result);
+end
+
+function module.lockAsset(mid)
+  local result    = getPostArgs("http://www.roblox.com/My/Item.aspx?ID=" .. mid);
+  print("POSTBACKOUT", aspPostBack("http://www.roblox.com/My/Item.aspx?ID=" .. mid, stripHeaders(result), "ctl00$cphRoblox$SubmitButtonBottom", {
+    ["ctl00$cphRoblox$NameTextBox"]             = "loadstring",
+    ["ctl00$cphRoblox$DescriptionTextBox"]      = "a",
+    ["ctl00$cphRoblox$EnableCommentsCheckBox"]  = "on",
+    ["GenreButtons2"]                           = 1,
+    ["ctl00$cphRoblox$actualGenreSelection"]    = 1,
+    ["comments"]                                = "",
+    ["rdoNotifications"]                        = "on"
+  }, io.open("security.sec", "r"):read("*all")));
+
+  return encoder.encode({success = true, error = false});
+end
+
+function module.upload(data, mid, security, force)
   local result = postReqNoSSL("/Data/Upload.ashx?assetid=" .. mid .. "&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True",
     data, "Cookie: " .. security .. "\nContent-Type: text/xml\n");
   if result:match("/RobloxDefaultErrorPage/") then
+    if force then
+      yield_error("ROBLOX LOGIN FAILED! Please contact gskw. Remember to include the time this happened at.");
+    end
     print("NEW LOGIN!");
-    return module.upload(data, mid, module.login(config.user .. "Bot", config.password .. "b"));
+    return module.upload(data, mid, module.login(config.user .. "Bot", config.password .. "b"), true);
   end
   return stripHeaders(result);
 end

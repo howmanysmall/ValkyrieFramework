@@ -6,3 +6,6 @@ nginx.conf.compiled
 studiosplash.lua
 lz4.lua
 security.sec
+pumakira.lua
+utils.lua
+lua-ext-master
