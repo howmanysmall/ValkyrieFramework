@@ -20,10 +20,6 @@ end
 app:match("/:module/:funct/:gid/:cokey", capture_errors({
   on_error = err_func;
   function(self)
-    if not intmodules[self.params.module] or not intmodules[self.params.module][self.params.funct] then
-      yield_error("Invalid module or function!");
-    end
-
     local result       = nil;
     local success, message = pcall(function() result = intmodules[self.params.module][self.params.funct](self); end);
     if not success then
