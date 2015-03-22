@@ -1,26 +1,9 @@
---[[local check_cokey = dofile("interface/check_cokey.lua");
-local messagemgr  = dofile("interface/message_manager.lua");
-local achvmgr     = dofile("interface/achievements.lua");
-local config      = require("lapis.config").get();
-local loadstring  = dofile("interface/loadstring.lua");
-
-local ret = {
-  auth            = check_cokey;
-  messages        = messagemgr;
-  achievements    = achvmgr;
-  loadstring      = loadstring;
-};
-if config._name == "local_dev" then
-  local userinfo  = dofile("interface/userinfo.lua");
-  ret["userinfo"] = userinfo;
-end
-
-return ret;]]
-
 local module                  = {};
 local modules                 = dofile("interface/modulespec.lua");
 local parser                  = dofile("lib/parse.lua");
 local auth                    = dofile("lib/check_cokey.lua");
+local inspect                 = require("inspect");
+
 
 module                        = setmetatable(module, {
   __index                     = function(self, module)
@@ -40,6 +23,7 @@ module                        = setmetatable(module, {
         return function(request)
           ngx.req.read_body();
           local parsedbody    = parser.parse(ngx.req.get_body_data());
+          --print(inspect(parsedbody));
 
           local passArgs      = {};
           local missingArgs   = {};

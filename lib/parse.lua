@@ -15,24 +15,33 @@ local unescape = function(url)
   return url:gsub("%%(%x%x)", hex_to_char)
 end
 
--- Sorry, don't know who this was made by
 local function split(str, delim)
-  local isEscape  = false;
-  local isInString= false;
-  local ret       = {};
-  local buf       = "";
+  local isEscape    = false;
+  local isInString  = false;
+  local isInArray   = false;
+  local arrayLevel  = 0;
+  local ret         = {};
+  local buf         = "";
   for i = 1, #str do
     if str:sub(i, i) == "\\" then
-      isEscape = not isEscape;
+      isEscape      = not isEscape;
     elseif str:sub(i, i) == "\"" and not isEscape then
-      isInString = not isInString;
-    elseif str:sub(i, i) == delim and not isInString then
+      isInString    = not isInString;
+    elseif str:sub(i, i) == "[" and not isInString then
+      isInArray     = true;
+      arrayLevel    = arrayLevel + 1;
+    elseif str:sub(i, i) == "]" and not isInString then
+      arrayLevel    = arrayLevel - 1;
+      if arrayLevel < 1 then
+        isInArray   = false;
+      end
+    elseif str:sub(i, i) == delim and not isInString and not isInArray then
       table.insert(ret, buf);
       buf = "";
     end
-    if str:sub(i, i) ~= delim or isInString then
-      isEscape = false;
-      buf = buf .. str:sub(i, i);
+    if str:sub(i, i) ~= delim or isInString or isInArray then
+      isEscape      = false;
+      buf           = buf .. str:sub(i, i);
     end
   end
 
@@ -85,7 +94,7 @@ local function parseValues(values, useKeyVal)
       i = i + 1;
     end
     local _type = getType(value);
-    --print(_type, " ", key, " ", value);
+
     if      _type == "number"   then
       ret[key]    = tonumber(value);
     elseif  _type == "string"   then -- string

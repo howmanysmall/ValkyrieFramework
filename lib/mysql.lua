@@ -27,9 +27,16 @@ end
 
 -- Example: module.query("SELECT %s FROM %s", id, game_ids);
 function module.query(querybase, ...)
-  local query   = querybase:format(...);
+  local result    = nil;
+  local succ, msg = pcall(function(querybase, ...)
+    local query   = querybase:format(...);
 
-  return module.literalQuery(query);
+    result        =  module.literalQuery(query);
+  end, querybase, ...);
+  if not succ then
+    error(msg, 2);
+  end
+  return result;
 end
 
 -- columns, from, where
