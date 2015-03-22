@@ -20,6 +20,7 @@ return ret;]]
 local module                  = {};
 local modules                 = dofile("interface/modulespec.lua");
 local parser                  = dofile("lib/parse.lua");
+local auth                    = dofile("lib/check_cokey.lua");
 
 module                        = setmetatable(module, {
   __index                     = function(self, module)
@@ -44,8 +45,6 @@ module                        = setmetatable(module, {
           local missingArgs   = {};
           local request       = request.params;
 
-          print(parsedbody.gidfilter);
-
           for i = 1, #functionMeta do
             local metaType    = type(functionMeta[i]);
             local requiredArg = metaType == "string" and functionMeta[i] or functionMeta[i].name;
@@ -65,6 +64,10 @@ module                        = setmetatable(module, {
 
           if #missingArgs ~= 0 then
             error("Missing arguments: " .. table.concat(missingArgs, ", "));
+          end
+
+          if not moduleMeta.skipAuth then
+            auth.check_nouid(request.gid, request.cokey);
           end
 
           return lib[funcName](unpack(passArgs));

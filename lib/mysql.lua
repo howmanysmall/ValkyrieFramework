@@ -37,5 +37,6 @@ module.select_base = "SELECT %s FROM %s WHERE %s";
 module.insert_base = "INSERT INTO %s SET %s";
 module.create_base = "CREATE TABLE %s %s";
 module.update_base = "UPDATE %s SET %s WHERE %s";
+module.delete_base = "DELETE FROM %s WHERE %s";
 
 return module;

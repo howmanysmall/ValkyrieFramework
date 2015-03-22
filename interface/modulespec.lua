@@ -1,20 +1,20 @@
-local modules     = {
-  achievements    = {
-    libName       = "achievements";
-    functions     = {
-      create      = {
+local modules       = {
+  achievements      = {
+    libName         = "achievements";
+    functions       = {
+      create        = {
         "gid";
         "id";
         "description";
         "name";
         "reward";
       };
-      award       = {
+      award         = {
         "gid";
         "playerid";
         "id";
       };
-      list        = {
+      list          = {
         "gid";
         "gameid";
         "filter";
@@ -22,10 +22,11 @@ local modules     = {
     };
   };
 
-  auth            = {
-    libName       = "check_cokey";
-    functions     = {
-      check       = {
+  auth              = {
+    skipAuth        = true;
+    libName         = "check_cokey";
+    functions       = {
+      check         = {
         "gid";
         "cokey";
         "uid";
@@ -33,23 +34,23 @@ local modules     = {
     };
   };
 
-  loadstring      = {
-    libName       = "create_mainmodule";
-    functions     = {
-      load        = {
+  loadstring        = {
+    libName         = "create_mainmodule";
+    functions       = {
+      load          = {
         "source";
         {norequire = true; name = "id"; default = 0};
       };
-      lockAsset   = {
+      lockAsset     = {
         "id";
       };
     };
   };
 
-  messages        = {
-    libName       = "message_manager";
-    functions     = {
-      addMessage  = {
+  messages          = {
+    libName         = "message_manager";
+    functions       = {
+      addMessage    = {
         "user";
         "message";
         "gid";
@@ -62,7 +63,30 @@ local modules     = {
     };
   };
 
+  playerinfo        = {
+    libName         = "userinfo";
+    functions       = {
+      getUserinfo   = {
+        "id";
+      };
+    };
+  };
 
+  friends           = {
+    libName         = "friends";
+    functions       = {
+      getFriends    = {
+        "id";
+      };
+      setOnlineGame = {
+        "id";
+        "game";
+      };
+      goOffline     = {
+        "id";
+      };
+    };
+  };
 };
 
 return modules;
