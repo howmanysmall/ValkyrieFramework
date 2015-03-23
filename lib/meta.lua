@@ -8,7 +8,7 @@ function module.getMeta(key, gid)
   local result      = mysql.query(mysql.select_base, "value", ("meta_%s"):format(mysql.safe(gid)), ("`key`='%s'"):format(mysql.safe(key)));
 
   if result:numrows() == 0 then
-    yield_error("Invalid meta key!");
+    error("Invalid meta key!");
   end
 
   return result:fetch({}, "a").value;

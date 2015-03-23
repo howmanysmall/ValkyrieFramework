@@ -3,6 +3,7 @@ local app         = lapis.Application();
 -- Reminded: luasocket for time
 
 local intmodules  = dofile("interface/modules.lua");
+local permstest   = dofile("lib/permissions.lua");
 local app_helpers = require"lapis.application";
 
 local capture_errors  = app_helpers.capture_errors;
@@ -30,7 +31,7 @@ app:match("/:module/:funct/:gid/:cokey", capture_errors({
 }));
 
 app:match("/testparse/:stuff", function(self)
-  return json.encode(parser.parse(encoder.encode({a = "f", i = {123, true, 5.3, {",q"}}})));
+  permstest.parsePermissions();
 end)
 
 
