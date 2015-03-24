@@ -1,9 +1,9 @@
 local lapis       = require("lapis");
 local app         = lapis.Application();
--- Reminded: luasocket for time
 
+require"libraries";
 local intmodules  = dofile("interface/modules.lua");
-local permstest   = dofile("lib/permissions.lua");
+local permstest   = library("permissions");
 local app_helpers = require"lapis.application";
 
 local capture_errors  = app_helpers.capture_errors;

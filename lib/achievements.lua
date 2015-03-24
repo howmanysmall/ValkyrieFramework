@@ -1,7 +1,7 @@
 local module              = {};
-local mysql               = dofile("lib/mysql.lua");
-local encoder             = dofile("lib/encode.lua");
-local metamanager         = dofile("lib/meta.lua");
+local mysql               = library("mysql");
+local encoder             = library("encode");
+local metamanager         = library("meta");
 local app_helpers         = require"lapis.application";
 
 local yield_error         = app_helpers.yield_error;

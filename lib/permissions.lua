@@ -31,6 +31,10 @@ local possperms     = {
     "setOnlineGame";
     "goOffline";
   };
+  datastore         = {
+    "saveData";
+    "loadData";
+  };
   ["*"]             = {
     "modules.*";
     "achievements.*";
@@ -39,6 +43,7 @@ local possperms     = {
     "messages.*";
     "playerinfo.*";
     "friends.*";
+    "datastore.*";
   };
 };
 
@@ -80,13 +85,14 @@ local function insertRecursively(table, path, value, prevvalue)
 end
 
 local function getRecursively(table, path)
-  if not path:find(".") then
+  print(path);
+  if not path:find("%.") then
     return table[path];
   else
-    if table[path:sub(1, table:find("."))] == nil then
+    if table[path:sub(1, arg(1, path:find("%.")) - 1)] == nil then
       return nil;
     end
-    return getRecursively(table, path:sub(path:find(".")));
+    return getRecursively(table[path:sub(1, arg(1, path:find("%.") - 1))], path:sub(arg(1, path:find("%.") + 1)));
   end
 end
 
@@ -107,13 +113,11 @@ function module.parsePermissions()
     end
     line            = permsfile:read("*line");
   end
-
-  print(ins(currentperms));
 end
 
 function module.getPermission(gid, key)
-  local allowed     = getRecursively(permissions[gid].allow);
-  local denied      = getRecursively(permissions[gid].deny);
+  local allowed     = getRecursively(permissions[gid].allow, key);
+  local denied      = getRecursively(permissions[gid].deny, key);
 
   if allowed then
     if denied then

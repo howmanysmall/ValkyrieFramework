@@ -103,7 +103,7 @@ end
 
 local sockets   = require("socket");
 local ssl       = require("ssl");
-local encoder   = dofile("lib/encode.lua");
+local encoder   = library("encode");
 local lapisutl  = require("lapis.util");
 
 local function postReq(url, fields, extrahead)

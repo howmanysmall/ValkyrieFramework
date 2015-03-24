@@ -1,5 +1,5 @@
 local module        = {};
-local mysql         = dofile("lib/mysql.lua");
+local mysql         = library("mysql");
 local app_helpers   = require"lapis.application";
 
 local yield_error   = app_helpers.yield_error;

@@ -87,6 +87,14 @@ local modules       = {
       };
     };
   };
+
+  datastore         = {
+    libName         = "data_store";
+    functions       = {
+      "saveData";
+      "loadData";
+    };
+  };
 };
 
 return modules;

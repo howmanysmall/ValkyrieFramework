@@ -1,18 +1,20 @@
 local module                  = {};
 local modules                 = dofile("interface/modulespec.lua");
-local parser                  = dofile("lib/parse.lua");
-local auth                    = dofile("lib/check_cokey.lua");
+local parser                  = library("parse");
+local encoder                 = library("encode");
+local auth                    = library("check_cokey");
 local inspect                 = require("inspect");
-
+local perms                   = library("permissions");
 
 module                        = setmetatable(module, {
   __index                     = function(self, module)
+    perms.parsePermissions();
     local moduleMeta  = modules[module];
     if moduleMeta == nil then
       error("Invalid module name!");
     end
 
-    local lib                 = dofile(("lib/%s.lua"):format(moduleMeta.libName));
+    local lib                 = library(moduleMeta.libName);
 
     return setmetatable({}, {
       __index                 = function(self2, funcName)
@@ -48,6 +50,14 @@ module                        = setmetatable(module, {
 
           if #missingArgs ~= 0 then
             error("Missing arguments: " .. table.concat(missingArgs, ", "));
+          end
+
+          if not perms.getPermission(request.gid, "modules.require") then
+            return encoder.encode({success = false; error = "You do not have the permission modules.require"});
+          elseif not perms.getPermission(request.gid, "modules.function") then
+            return encoder.encode({success = false; error = "You do not have the permission modules.function"});
+          elseif not perms.getPermission(request.gid, ("%s.%s"):format(module, funcName)) then
+            return encoder.encode({success = false; error = "You do not have the permission " .. ("%s.%s"):format(module, funcName)});
           end
 
           if not moduleMeta.skipAuth then

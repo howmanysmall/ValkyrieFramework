@@ -2,9 +2,9 @@ local module    = {};
 local sockets   = require("socket");
 local ssl       = require("ssl");
 local json      = require("cjson");
-local encoder   = dofile("lib/encode.lua");
+local encoder   = library("encode");
 local lapisutl  = require("lapis.util");
-local metamgr   = require("lib/meta.lua");
+local metamgr   = library("meta");
 
 local function postReq(url, fields, extrahead)
   local req = "POST " .. url .. " HTTP/1.1\n";

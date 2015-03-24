@@ -1,8 +1,8 @@
 local module                = {};
-local mysql                 = dofile("lib/mysql.lua");
-local encoder               = dofile("lib/encode.lua");
-local parser                = dofile("lib/parse.lua");
-local friends               = dofile("lib/friends.lua");
+local mysql                 = library("mysql");
+local encoder               = library("encode");
+local parser                = library("parse");
+local friends               = library("friends");
 local app_helpers           = require"lapis.application";
 
 local yield_error           = app_helpers.yield_error;
