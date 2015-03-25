@@ -34,6 +34,7 @@ local possperms     = {
   datastore         = {
     "saveData";
     "loadData";
+    "getSpace";
   };
   ["*"]             = {
     "modules.*";
@@ -85,7 +86,6 @@ local function insertRecursively(table, path, value, prevvalue)
 end
 
 local function getRecursively(table, path)
-  print(path);
   if not path:find("%.") then
     return table[path];
   else
