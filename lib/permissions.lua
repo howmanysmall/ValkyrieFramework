@@ -58,7 +58,6 @@ local currentperms  = {allow = {}, deny = {}};
 
 -- Do not try to understand this function. It works, k?
 local function insertRecursively(table, path, value, prevvalue)
-  print(path, prevvalue);
   if path:sub(1, 1) == "*" then
     if prevvalue then
       for index, name in next, possperms[prevvalue] do

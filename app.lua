@@ -36,7 +36,7 @@ app:match("/:module/:funct/:gid/:cokey/:valkargs", capture_errors({
   on_error = err_func;
   function(self)
     local result       = nil;
-    local success, message = pcall(function() result = intmodules[self.params.module][self.params.funct](self, parser.parse(self.valkargs)); end);
+    local success, message = pcall(function() result = intmodules[self.params.module][self.params.funct](self, parser.parse(self.params.valkargs)); end);
     if not success then
       yield_error(message);
     end
