@@ -38,6 +38,10 @@ local possperms     = {
     "getSpace";
     "listKeys";
   };
+  bans              = {
+    "createBan";
+    "isBanned";
+  };
   ["*"]             = {
     "modules.*";
     "achievements.*";
@@ -47,6 +51,7 @@ local possperms     = {
     "playerinfo.*";
     "friends.*";
     "datastore.*";
+    "bans.*";
   };
 };
 

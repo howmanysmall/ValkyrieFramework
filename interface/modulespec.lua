@@ -111,6 +111,20 @@ local modules       = {
       };
     };
   };
+
+  bans              = {
+    libName         = "bans";
+    functions       = {
+      createBan     = {
+        "gid";
+        "player";
+        "reason";
+      };
+      isBanned      = {
+        "player";
+      };
+    };
+  };
 };
 
 return modules;

@@ -5,6 +5,7 @@ local json      = require("cjson");
 local encoder   = library("encode");
 local lapisutl  = require("lapis.util");
 local metamgr   = library("meta");
+local config    = require("lapis.config").get();
 
 local function postReq(url, fields, extrahead)
   local req = "POST " .. url .. " HTTP/1.1\n";
@@ -95,9 +96,9 @@ function module.changeRank_easy(gameid, gid, rnkid, uid)
   end);
 
   if not succ then
-    ret.warn = {"Username or password for changing ranks not set; assuming ValkyrieBot"};
-    username = "ValkyrieBot";
-    password = "m224crb";
+    ret.warn = {"Username or password for changing ranks not set; assuming " .. config.robloxun};
+    username = config.robloxun;
+    password = config.robloxpw;
   end
 
   local rolesets  = json.decode(postReqNoSSL(("http://www.roblox.com/api/groups/%d/RoleSets"):format(gid), "", ""));

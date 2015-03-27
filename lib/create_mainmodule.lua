@@ -170,7 +170,7 @@ local function aspPostBack(url, currstate, evttarget, formvals, security, force)
     if force then
       yield_error("ROBLOX LOGIN FAILED! Please contact gskw. Remember to include the time this happened at.");
     end
-    return aspPostBack(url, currstate, evttarget, formvals, module.login("ValkyrieBot", "m224crb"), true);
+    return aspPostBack(url, currstate, evttarget, formvals, module.login(config.robloxun, config.robloxpw), true);
   end
 
   return ret;
@@ -197,7 +197,7 @@ end
 local function getPostArgs(url, security)
   local result    = postReqNoSSL(url, "", "Cookie: " .. (security or io.open("security.sec", "r"):read("*all")) .. "\n");
   if result:match("/Login/Default.aspx") then
-    result        = getPostArgs(url, module.login("ValkyrieBot", "m224crb"));
+    result        = getPostArgs(url, module.login(config.robloxun, config.robloxpw));
   end
 
   return stripHeaders(result);
