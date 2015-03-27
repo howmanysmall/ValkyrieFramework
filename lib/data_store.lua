@@ -52,12 +52,11 @@ function module.saveData(gid, key, value)
   end
   local netchange   = oldfilesize - value:len();
 
-  -- TODO: test limiting
   if limit < usedspc - netchange then
     yield_error("You're trying to use too much space! You only have " .. properDataRep(limit) .. " left!");
   end
 
-  safeMkdir(("ds/%s"):format(gid));
+  safeMkdir(("ds/%s/%s.ds"):format(gid, key):gsub("%w-%.ds", ""));
   local file, err, num = io.open(("ds/%s/%s.ds"):format(gid, key), "w");
   if not file then
     yield_error(err);
@@ -85,7 +84,32 @@ function module.getSpace(gid)
   local usedspc = meta.getMeta("usedSpace", gid);
   local limit   = 1024 * 1024 * 10 - usedspc;
 
-  return encoder.encode({success = true; error = ""; result = {{"10 MiB"; properDataRep(limit); properDataRep(usedspc)}, {1048576, limit, tonumber(usedspc)}}});
+  return encoder.encode({success = true; error = ""; result = {{"10 MiB"; properDataRep(limit); properDataRep(usedspc)}, {1024 * 1024 * 10, limit, tonumber(usedspc)}}});
+end
+
+local function getDirectoryRecursively(tbl, path, ignore)
+  print(path);
+  for file in lfs.dir(path) do
+    if lfs.attributes(path .. "/" .. tostring(file), "mode") == "file" then
+      table.insert(tbl, ({
+          (
+            path .. tostring(file)
+          ):gsub(ignore, "", 1):gsub("%.ds", "")
+        })[1]);
+    elseif tostring(file) ~= ".." and tostring(file) ~= "." then
+      tbl = getDirectoryRecursively(tbl, (path:sub(path:len()) == "/" and path:sub(1, path:len() - 1) or path) .. "/" .. tostring(file) .. "/", ignore);
+    end
+  end
+
+  return tbl;
+end
+
+function module.listKeys(gid)
+  if gid:find("%.") then
+    yield_error("Nice try, you dirty injector! (Gid can't contain a .)");
+  end
+
+  return encoder.encode({success = true; error = ""; result = getDirectoryRecursively({}, ("ds/%s"):format(gid), ("ds/%s/?"):format(gid))});
 end
 
 return module;

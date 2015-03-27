@@ -92,4 +92,11 @@ function module.list(gid, othgid, filter)
   });
 end
 
+function module.getReward(gid)
+  local usedreward  = metamanager.getMeta("usedreward", gid);
+  local limit       = 1000 - usedreward;
+
+  return encoder.encode({success = true; error = ""; result = {1000, limit, tonumber(usedreward)}});
+end
+
 return module;

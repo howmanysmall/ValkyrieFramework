@@ -22,11 +22,7 @@ module                        = setmetatable(module, {
         if not functionMeta then
           error("Invalid function name!");
         end
-        return function(request)
-          ngx.req.read_body();
-          local parsedbody    = parser.parse(ngx.req.get_body_data());
-          --print(inspect(parsedbody));
-
+        return function(request, parsedbody)
           local passArgs      = {};
           local missingArgs   = {};
           local request       = request.params;

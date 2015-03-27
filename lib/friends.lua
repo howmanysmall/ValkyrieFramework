@@ -20,7 +20,7 @@ function module.getFriends(id)
   end
 
   for index, value in next, friends do
-    local toinsert    = {value.Id; value.IsOnline};
+    local toinsert    = {value.Id; value.Username; value.IsOnline};
     table.insert(toinsert, ingameplayers[value.Id]);
     table.insert(ret, toinsert);
   end

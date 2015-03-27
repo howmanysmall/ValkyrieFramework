@@ -107,6 +107,7 @@ local encoder   = library("encode");
 local lapisutl  = require("lapis.util");
 
 local function postReq(url, fields, extrahead)
+  print(url, fields, extrahead);
   local req = "POST " .. url .. " HTTP/1.1\n";
   req = req .. "Host: www.roblox.com\n";
   req = req .. "Accept: */*\n";
@@ -145,7 +146,6 @@ local function postReqNoSSL(url, fields, extrahead, usegzip)
   print("\27[33mRequest:\27[0m\n", req);
   local rep = sock:receive("*a");
   print("\27[33mReturn:\27[0m\n", rep);
-  print(rep, "LEN = ", rep:len());
   sock:close();
   return rep;
 end
@@ -185,7 +185,11 @@ function module.login(user, pw)
   local result    = postReq("https://www.roblox.com/Services/Secure/LoginService.asmx/ValidateLogin", ("{\"userName\":\"%s\",\"password\":\"%s\",\"isCaptchaOn\":false,\"challenge\":\"\",\"captchaResponse\":\"\"}"):format(user, pw), "X-Requested-With: XMLHttpRequest\nContent-Type: application/json\nAccept-Encoding: gzip\n");
   local security  = result:match("(%.ROBLOSECURITY=.-);");
 
-  io.open("security.sec", "w"):write(security);
+  local secfile, err = io.open("security.sec", "w");
+  if not secfile then
+    error(err);
+  end
+  secfile:write(security);
 
   return security;
 end
@@ -211,13 +215,13 @@ function module.lockAsset(mid)
     ["rdoNotifications"]                        = "on"
   }, io.open("security.sec", "r"):read("*all")));
 
-  return encoder.encode({success = true, error = false});
+  return encoder.encode({success = true, error = ""});
 end
 
 function module.upload(data, mid, security, force)
   local result = postReqNoSSL("/Data/Upload.ashx?assetid=" .. mid .. "&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True",
     data, "Cookie: " .. security .. "\nContent-Type: text/xml\n");
-  if result:match("/RobloxDefaultErrorPage/") then
+  if result:match("/RobloxDefaultErrorPage") then
     if force then
       yield_error("ROBLOX LOGIN FAILED! Please contact gskw. Remember to include the time this happened at.");
     end
@@ -232,7 +236,7 @@ function module.toAID(AVID)
   return tonumber(result:match("Location: /.-id=(%d*)"));
 end
 
-function module.uploadModel(data, mid)
+function module.load(data, mid)
   local ret = module.toAID(module.upload(module.createModel(data), mid, io.open("security.sec", "r"):read("*all")));
   print(ret);
   return encoder.encode({success = true; error = ""; result = ret});

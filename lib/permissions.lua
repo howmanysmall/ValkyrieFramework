@@ -11,6 +11,7 @@ local possperms     = {
     "award";
     "create";
     "list";
+    "getReward";
   };
   auth              = {
     "check";
@@ -35,6 +36,7 @@ local possperms     = {
     "saveData";
     "loadData";
     "getSpace";
+    "listKeys";
   };
   ["*"]             = {
     "modules.*";

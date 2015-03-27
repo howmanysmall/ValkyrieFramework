@@ -19,6 +19,9 @@ local modules       = {
         "gameid";
         "filter";
       };
+      getReward     = {
+        "gid";
+      };
     };
   };
 
@@ -101,6 +104,9 @@ local modules       = {
         "key";
       };
       getSpace      = {
+        "gid";
+      };
+      listKeys      = {
         "gid";
       };
     };
