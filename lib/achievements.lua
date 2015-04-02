@@ -6,7 +6,7 @@ local app_helpers         = require"lapis.application";
 
 local yield_error         = app_helpers.yield_error;
 
-function module.create(gid, id, desc, name, reward)
+function module.create(gid, id, desc, name, reward, icon)
   if reward < 1 then
     yield_error("The reward can't be less than 1!");
   end
@@ -25,7 +25,7 @@ function module.create(gid, id, desc, name, reward)
   end
   metamanager.setMeta("usedreward", usedreward + reward, gid);
 
-  local add_result        = mysql.query(mysql.insert_base, mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s', description='%s', name='%s', reward='%d'"):format(mysql.safe(id), mysql.safe(desc), mysql.safe(name), reward));
+  local add_result        = mysql.query(mysql.insert_base, mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s', description='%s', name='%s', reward='%d' icon='%d'"):format(mysql.safe(id), mysql.safe(desc), mysql.safe(name), reward, icon));
 
   return encoder.encode({success = true, error = ""});
 end
@@ -81,7 +81,7 @@ function module.list(gid, othgid, filter)
   local ret     = {};
   local row     = result:fetch({}, "a");
   while row do
-    table.insert(ret, {tonumber(row.reward), row.achv_id, row.name, row.description});
+    table.insert(ret, {tonumber(row.reward), row.achv_id, row.name, row.description, tonumber(row.icon)});
     row         = result:fetch({}, "a");
   end
 

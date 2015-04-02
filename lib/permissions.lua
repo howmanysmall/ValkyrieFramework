@@ -26,6 +26,7 @@ local possperms     = {
   };
   playerinfo        = {
     "getUserinfo";
+    "tryCreateUser";
   };
   friends           = {
     "getFriends";

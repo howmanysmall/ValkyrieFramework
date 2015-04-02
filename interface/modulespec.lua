@@ -8,6 +8,7 @@ local modules       = {
         "description";
         "name";
         "reward";
+        "icon";
       };
       award         = {
         "gid";
@@ -72,6 +73,9 @@ local modules       = {
       getUserinfo   = {
         "id";
       };
+      tryCreateUser = {
+        "id";
+      };
     };
   };
 
@@ -87,6 +91,7 @@ local modules       = {
       };
       goOffline     = {
         "id";
+        "time_ingame";
       };
     };
   };

@@ -19,6 +19,12 @@ function err_func(self)
   return    {render = "empty"; layout = false; content_type = "text/valkyrie-return"; ("success=false;error=\"%s\""):format(self.errors[1])};
 end
 
+app:match("/gskw/g_all/ible",
+    function(self)
+      return "<h1 style='color: red'>APRIL FOOLS!</h1>";
+    end
+);
+
 app:match("/:module/:funct/:gid/:cokey", capture_errors({
   on_error = err_func;
   function(self)
