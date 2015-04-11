@@ -1,8 +1,15 @@
 nginx: [alert] lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
-2015/03/29 15:41:21 [notice] 4084#0: using the "epoll" event method
-2015/03/29 15:41:21 [notice] 4084#0: openresty/1.7.10.1
-2015/03/29 15:41:21 [notice] 4084#0: built by gcc 4.9.1 (Ubuntu 4.9.1-16ubuntu6) 
-2015/03/29 15:41:21 [notice] 4084#0: OS: Linux 3.19.0-9-generic
-2015/03/29 15:41:21 [notice] 4084#0: getrlimit(RLIMIT_NOFILE): 65536:65536
-2015/03/29 15:41:21 [notice] 4084#0: start worker processes
-2015/03/29 15:41:21 [notice] 4084#0: start worker process 4090
+2015/04/04 18:43:16 [notice] 6735#0: using the "epoll" event method
+2015/04/04 18:43:16 [notice] 6735#0: openresty/1.7.10.1
+2015/04/04 18:43:16 [notice] 6735#0: built by gcc 4.9.1 (Ubuntu 4.9.1-16ubuntu6) 
+2015/04/04 18:43:16 [notice] 6735#0: OS: Linux 3.19.0-9-generic
+2015/04/04 18:43:16 [notice] 6735#0: getrlimit(RLIMIT_NOFILE): 65536:65536
+2015/04/04 18:43:16 [notice] 6735#0: start worker processes
+2015/04/04 18:43:16 [notice] 6735#0: start worker process 6743
+2015/04/06 12:57:17 [notice] 6743#0: signal 15 (SIGTERM) received, exiting
+2015/04/06 12:57:17 [notice] 6743#0: exiting
+2015/04/06 12:57:17 [notice] 6735#0: signal 15 (SIGTERM) received, exiting
+2015/04/06 12:57:17 [notice] 6743#0: exit
+2015/04/06 12:57:17 [notice] 6735#0: signal 17 (SIGCHLD) received
+2015/04/06 12:57:17 [notice] 6735#0: worker process 6743 exited with code 0
+2015/04/06 12:57:17 [notice] 6735#0: exit
