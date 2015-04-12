@@ -52,7 +52,7 @@ local function fixDate(date, diff)
   date                      = date:gsub("(%d-)a", function(a) return " " .. tostring(tonumber(a) - 1970) .. "a"; end);
   date                      = date:gsub("(%d-)([md]) ", function(a, b) return tostring(tonumber(a) - 1) .. b .. " "; end);
   date                      = date:gsub("(%d-)h", function(a) return tostring(tonumber(a) - 2) .. "h"; end);
-  print(date);
+
   date                      = date:gsub(" 0%l*", "");
   if date:sub(1, 1) == " " then
     return date:sub(2);
@@ -73,7 +73,11 @@ local function getDBGeneralInfo(id)
   local userinfo_ret        = mysql.query(mysql.select_base, "*", "player_info", ("player=%d"):format(id));
 
   local row                 = userinfo_ret:fetch({}, "a");
-  ret[2]                    = {row.time_ingame, row.joined, row.last_online};
+  if ret then
+    ret[2]                  = {row.time_ingame, row.joined, row.last_online};
+  else
+    ret[2]                  = {0, 0, 0}; 
+  end
 
   table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", row.time_ingame), true));
   table.insert(ret[1], fixDate(os.date("%Ya %mm %dd", math.floor(socket.gettime()) - row.joined)));

@@ -6,7 +6,9 @@ local app_helpers = require"lapis.application";
 local yield_error = app_helpers.yield_error;
 
 local mysqlenv    = lib.mysql();
-local connection  = mysqlenv:connect("valkyrie_engine", config.user, config.password, config.host);
+local connection, err = mysqlenv:connect("valkyrie_engine", config.user, config.password, config.host);
+
+assert(connection, "Connection attempt failed: " .. (err or "no error"));
 
 function module.safe(...)
   local ret = {};
