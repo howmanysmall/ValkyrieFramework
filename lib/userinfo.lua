@@ -73,7 +73,7 @@ local function getDBGeneralInfo(id)
   local userinfo_ret        = mysql.query(mysql.select_base, "*", "player_info", ("player=%d"):format(id));
 
   local row                 = userinfo_ret:fetch({}, "a");
-  if ret then
+  if row then
     ret[2]                  = {row.time_ingame, row.joined, row.last_online};
   else
     ret[2]                  = {0, 0, 0}; 
