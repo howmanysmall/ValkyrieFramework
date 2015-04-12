@@ -57,3 +57,7 @@
 2015/04/07 22:33:08 [alert] 9229#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
 2015/04/08 17:14:05 [alert] 2840#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
 2015/04/08 17:14:15 [alert] 3047#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
+2015/04/11 18:50:04 [alert] 4642#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
+2015/04/11 18:51:00 [alert] 4663#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
+2015/04/11 18:55:44 [alert] 4686#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
+2015/04/11 18:57:23 [alert] 4714#0: lua_code_cache is off; this will hurt performance in /var/www/valkyrie/nginx.conf.compiled:15
