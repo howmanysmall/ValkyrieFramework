@@ -75,13 +75,12 @@ local function getDBGeneralInfo(id)
   local row                 = userinfo_ret:fetch({}, "a");
   if row then
     ret[2]                  = {row.time_ingame, row.joined, row.last_online};
+    table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", row.time_ingame), true));
+    table.insert(ret[1], fixDate(os.date("%Ya %mm %dd", math.floor(socket.gettime()) - row.joined)));
+    table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", math.floor(socket.gettime()) - row.last_online)));
   else
-    ret[2]                  = {0, 0, 0}; 
+    ret = {{-1,-1,-1}, {"N/A","N/A","N/A"}};
   end
-
-  table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", row.time_ingame), true));
-  table.insert(ret[1], fixDate(os.date("%Ya %mm %dd", math.floor(socket.gettime()) - row.joined)));
-  table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", math.floor(socket.gettime()) - row.last_online)));
 
   return ret;
 end
