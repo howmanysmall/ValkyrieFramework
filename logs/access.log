@@ -732,3 +732,5 @@
 10.0.2.2 - - [12/Apr/2015:13:04:18 +0000] "POST /playerinfo/getUserinfo/test/testKey HTTP/1.1" 200 96 "-" "Roblox/WinInet"
 10.0.2.2 - - [12/Apr/2015:13:06:24 +0000] "GET /auth/check/test/testKey?uid=999 HTTP/1.1" 200 32 "-" "Roblox/WinInet"
 10.0.2.2 - - [12/Apr/2015:13:06:31 +0000] "POST /playerinfo/getUserinfo/test/testKey HTTP/1.1" 200 96 "-" "Roblox/WinInet"
+10.0.2.2 - - [12/Apr/2015:13:16:20 +0000] "GET /auth/check/test/testKey?uid=999 HTTP/1.1" 200 32 "-" "Roblox/WinInet"
+10.0.2.2 - - [12/Apr/2015:13:16:26 +0000] "POST /playerinfo/getUserinfo/test/testKey HTTP/1.1" 200 96 "-" "Roblox/WinInet"
