@@ -126,6 +126,7 @@ function module.getUserinfo(id)
       table.insert(insinsret, checkedGames[row.gid][row.achvid].description);
       table.insert(insinsret, tonumber(checkedGames[row.gid][row.achvid].reward));
       table.insert(insinsret, tonumber(checkedGames[row.gid][row.achvid].icon));
+      table.insert(insinsret, meta.getMeta("name", row.gid));
       insertret[row.achvid]   = insinsret;
       row                     = achvs_result:fetch({}, "a");
     end
