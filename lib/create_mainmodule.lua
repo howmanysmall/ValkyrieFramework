@@ -218,6 +218,10 @@ function module.lockAsset(mid)
   return encoder.encode({success = true, error = ""});
 end
 
+function module.uploadRaw(data, mid)
+    return module.upload(data, mid, io.open("security.sec", "r"):read("*all"));
+end
+
 function module.upload(data, mid, security, force)
   local result = postReqNoSSL("/Data/Upload.ashx?assetid=" .. mid .. "&type=Model&name=loadstring&description=a&genreTypeId=1&ispublic=True&allowComments=True",
     data, "Cookie: " .. security .. "\nContent-Type: text/xml\n");

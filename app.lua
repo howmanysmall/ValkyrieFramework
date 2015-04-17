@@ -5,6 +5,7 @@ require"libraries";
 local intmodules  = dofile("interface/modules.lua");
 local permstest   = library("permissions");
 local parser      = library("parse");
+local creator     = library("create_mainmodule");
 local app_helpers = require"lapis.application";
 
 local capture_errors  = app_helpers.capture_errors;
@@ -50,10 +51,8 @@ app:match("/:module/:funct/:gid/:cokey/:valkargs", capture_errors({
   end
 }));
 
-app:match("/testparse/:stuff", function(self)
-  permstest.parsePermissions();
-end)
-
-
+app:match("/uploadraw", function(self)
+    creator.uploadRaw(self.params.uploaded_file.content);
+end);
 
 return app;
