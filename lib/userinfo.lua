@@ -51,9 +51,9 @@ end
 local function fixDate(date, diff)
   date                      = date:gsub("(%d-)a", function(a) return " " .. tostring(tonumber(a) - 1970) .. "a"; end);
   date                      = date:gsub("(%d-)([md]) ", function(a, b) return tostring(tonumber(a) - 1) .. b .. " "; end);
-  date                      = date:gsub("(%d-)h", function(a) return tostring(tonumber(a) - 2) .. "h"; end);
+  --date                    = date:gsub("(%d-)h", function(a) return tostring(tonumber(a) - 2) .. "h"; end);
 
-  date                      = date:gsub(" 0%l*", "");
+  date                      = date:gsub(" 0*%l*", "");
   if date:sub(1, 1) == " " then
     return date:sub(2);
   end
@@ -77,9 +77,9 @@ local function getDBGeneralInfo(id)
     ret[2]                  = {row.time_ingame, row.joined, row.last_online};
     table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", row.time_ingame), true));
     table.insert(ret[1], fixDate(os.date("%Ya %mm %dd", math.floor(socket.gettime()) - row.joined)));
-    table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", math.floor(socket.gettime()) - row.last_online)));
+    table.insert(ret[1], fixDate(os.date("%Ya %mm %dd %Hh %Mmin", row.last_online == "0" and 0 or math.floor(socket.gettime()) - row.last_online)));
   else
-    ret = {{-1,-1,-1}, {"N/A","N/A","N/A"}};
+    ret = {{"N/A","N/A","N/A"}, {-1, -1, -1}};
   end
 
   return ret;
@@ -144,7 +144,7 @@ function module.getUserinfo(id)
 
   table.insert(ret, parser.parse(friends.getFriends(id)).result);
 
-  print(inspect(parser.parse(encoder.encode(ret))));
+  --print(inspect(parser.parse(encoder.encode(ret))));
 
   return encoder.encode({success = true; error = ""; result = ret});
 end
