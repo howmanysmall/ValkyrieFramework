@@ -107,7 +107,6 @@ local encoder   = library("encode");
 local lapisutl  = require("lapis.util");
 
 local function postReq(url, fields, extrahead)
-  print(url, fields, extrahead);
   local req = "POST " .. url .. " HTTP/1.1\n";
   req = req .. "Host: www.roblox.com\n";
   req = req .. "Accept: */*\n";
@@ -117,12 +116,12 @@ local function postReq(url, fields, extrahead)
   req = req .. "User-Agent: Roblox/WinINet\n";
   req = req .. extrahead .. "\n";
   req = req .. fields;
+  print(req);
 
   local sock  = sockets.tcp();
   sock:connect("www.roblox.com", 443);
   sock        = ssl.wrap(sock, {mode = "client", protocol = "tlsv1"});
   sock:dohandshake();
-  print(req);
   sock:send(req);
   local rep = sock:receive("*a");
   print(rep);
@@ -131,6 +130,7 @@ local function postReq(url, fields, extrahead)
 end
 
 local function postReqNoSSL(url, fields, extrahead, usegzip)
+  print(url, fields, extrahead);
   local req = "POST " .. url .. " HTTP/1.1\n";
   req = req .. "Host: www.roblox.com\n";
   req = req .. "Accept: */*\n";
@@ -219,7 +219,7 @@ function module.lockAsset(mid)
 end
 
 function module.uploadRaw(data, mid)
-    return module.upload(data, mid, io.open("security.sec", "r"):read("*all"));
+    return module.upload(data, 0, io.open("security.sec", "r"):read("*all"));
 end
 
 function module.upload(data, mid, security, force)
@@ -230,7 +230,7 @@ function module.upload(data, mid, security, force)
       yield_error("ROBLOX LOGIN FAILED! Please contact gskw. Remember to include the time this happened at.");
     end
     print("NEW LOGIN!");
-    return module.upload(data, mid, module.login(config.user .. "Bot", config.password .. "b"), true);
+    return module.upload(data, mid, module.login(config.user .. "Bot", config.password), true);
   end
   return stripHeaders(result);
 end
