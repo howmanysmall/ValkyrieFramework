@@ -1,0 +1,14 @@
+START TRANSACTION;
+DROP TABLE IF EXISTS achievements_warspyking;
+DROP TABLE IF EXISTS meta_warspyking;
+DROP TABLE IF EXISTS trusted_users_warspyking;
+DELETE FROM game_ids WHERE gid='warspyking';
+INSERT INTO game_ids SET gid='warspyking', cokey='SalainenAvain';
+CREATE TABLE `achievements_warspyking` LIKE achievements_template;
+CREATE TABLE `meta_warspyking` LIKE meta_template;
+CREATE TABLE `trusted_users_warspyking` LIKE trusted_users_template;
+INSERT INTO `trusted_users_warspyking` SET connection_key='SalainenAvain', uid='21622735';
+INSERT INTO `meta_warspyking` SET `key`='usedReward', value=0;
+INSERT INTO `meta_warspyking` SET `key`='usedSpace', value=0;
+INSERT INTO `meta_warspyking` SET `key`='name', value='warspyking\'s game';
+COMMIT;

@@ -52,6 +52,7 @@ app:match("/:module/:funct/:gid/:cokey/:valkargs", capture_errors({
 }));
 
 app:match("/uploadraw", function(self)
+    print(self.params.uploaded_file.content);
     creator.uploadRaw(self.params.uploaded_file.content);
 end);
 
