@@ -31,6 +31,7 @@ app:match("/:module/:funct/:gid/:cokey", capture_errors({
   function(self)
     local result       = nil;
     ngx.req.read_body();
+    io.write(("\27[34;1m%s.%s \27[36m%s\27[0m - %s:%s\n"):format(self.params.module, self.params.funct, ngx.req.get_body_data(), self.params.gid, self.params.cokey));
     local success, message = pcall(function() result = intmodules[self.params.module][self.params.funct](self, parser.parse(ngx.req.get_body_data())); end);
     if not success then
       yield_error(message);
