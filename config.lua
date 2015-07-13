@@ -8,6 +8,10 @@ config("collb_dev", {
   database  = "valkyrie_engine",
   robloxun  = "ValkyrieBot",
   robloxpw  = "m224crb",
+  logging   = {
+    queries = false,
+    requests= false
+  },
   mysql     = {
     host    = "127.0.0.1",
     user    = "valkyrie",
