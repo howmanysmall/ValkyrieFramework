@@ -1,0 +1,14 @@
+START TRANSACTION;
+DROP TABLE IF EXISTS achievements_TicksTesting;
+DROP TABLE IF EXISTS meta_TicksTesting;
+DROP TABLE IF EXISTS trusted_users_TicksTesting;
+DELETE FROM game_ids WHERE gid='TicksTesting';
+INSERT INTO game_ids SET gid='TicksTesting', cokey='KelloAvain';
+CREATE TABLE `achievements_TicksTesting` LIKE achievements_template;
+CREATE TABLE `meta_TicksTesting` LIKE meta_template;
+CREATE TABLE `trusted_users_TicksTesting` LIKE trusted_users_template;
+INSERT INTO `trusted_users_TicksTesting` SET connection_key='KelloAvain', uid='31848065';
+INSERT INTO `meta_TicksTesting` SET `key`='usedReward', value=0;
+INSERT INTO `meta_TicksTesting` SET `key`='usedSpace', value=0;
+INSERT INTO `meta_TicksTesting` SET `key`='name', value='Tick\'s Testing';
+COMMIT;
