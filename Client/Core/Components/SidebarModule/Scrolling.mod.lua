@@ -1,6 +1,6 @@
 _G.ValkyrieC:LoadLibrary "Design";
 local Core          		= _G.ValkyrieC;
-local Scroller 				= {};
+local Scroller 				= wrapper({});
 local RenderStepped			= game:GetService"RunService".RenderStepped;
 
 local function DeltaWait()
@@ -10,57 +10,52 @@ local function DeltaWait()
 end
 
 function Scroller:BindScrolling(Sidebar)
-	local Last, Origin, TouchLocation, Esc, Current, ContentFrameY, TouchDown, TouchChanged = nil, nil, nil, nil, nil, false, false;
+	local origin, current, last, TouchLocation, down;
 	local ContentFrame 		= Sidebar.ItemContainer;
-	
-	RenderStepped:connect(function()
-		if TouchDown then
-			Origin 				= TouchLocation;
-			Current				= TouchLocation;
-			Last 				= TouchLocation;
-			
-			if TouchChanged then
-				TouchChanged 	= false;
-				Last 		 	= Current;
-				Current 		= TouchLocation;
-				Esc 			= Current;
-				
-				ContentFrameY 	= ContentFrame.Position.Y.Offset;
-				ContentFrame.Position 	= UDim2.new(0,0,0, ContentFrameY + (Current.Y - ContentFrameY) * 0.9);
-				
-				RenderStepped:wait();
-				
-				if Esc.Y.Offset == Current.Y.Offset then
-					ContentFrame.Position = UDim2.new(0,0,0, ContentFrameY + (Current.Y - ContentFrameY) * 0.99)
-					RenderStepped:wait();
-					if Esc.Y.Offset == Current.Y.Offset then
-						ContentFrame.Position = UDim2.new(0,0,0, ContentFrameY);
-						Last 	= Current;
-					end
-				end
+
+	Sidebar.InputEnded:connect(function(InputObject)
+		if InputObject.UserInputType == Enum.UserInputType.Touch then
+			print"end"
+			TouchLocation 	= InputObject.Position;
+			down 		= false;
+			local Velocity 	= Current.Y - Last.Y;
+			local Delta;
+			while math.abs(Velocity) > 1 and not down do
+				Delta 		= DeltaWait();
+				ContentFrame.Position 	= ContentFrame.Position + UDim2.new(0,0,0,ContentFrame.Position.Y.Offset+Velocity * Delta);
+				Velocity  	= Velocity - (5) * Delta;
 			end
 		end
 	end);
 
-	Sidebar.InputChanged:connect(function(InputObject)
-		InputObject = wrapper(InputObject);
+	Sidebar.InputBegan:connect(function(InputObject)
 		if InputObject.UserInputType == Enum.UserInputType.Touch then
+			print"begin"
+			TouchLocation 	= InputObject.Position;
+			origin, current, last = TouchLocation, TouchLocation, TouchLocation;
+			down = true;
+		end;
+	end);
+
+
+	Sidebar.InputChanged:connect(function(InputObject)
+		if InputObject.UserInputType == Enum.UserInputType.Touch then
+			print"change"
 			TouchChanged 		= true;
 			TouchLocation 		= InputObject.Position;
-			if InputObject.UserInputState == Enum.UserInputState.Begin then
-				TouchDown 		= true;
-			elseif InputObject.UserInputState == Enum.UserInputState.End then
-				TouchDown 		= false;
-				local Velocity 	= Current.Y - Last.Y;
-				local Delta;
-				
-				while Velocity > 1 and not TouchDown do
-					Delta 		= DeltaWait();
-					ContentFrame.Position 	= ContentFrame.Position + UDim2.new(0,0,0, Velocity * Delta);
-					Velocity  	= Velocity - (5) * Delta;
-				end
+			local esc = TouchLocation;
+			local ldiff = 0;
+			local cy = ContentFrame.Y.Offset;
+			local cydiff = current.Y - origin.Y;
+			while ldiff < 1 and esc == TouchLocation and down do
+				ldiff = ldiff + DeltaWait()*8;
+				ContentFrame.Position = UDim2.new(0,0,0,cy+cydiff*ldiff);
 			end
-		end
+			if esc == TouchLocation then
+				ContentFrame.Position = UDim2.new(0,0,0,cy+cydiff);
+				last = current;
+			end;
+		end;
 	end);
 end
 

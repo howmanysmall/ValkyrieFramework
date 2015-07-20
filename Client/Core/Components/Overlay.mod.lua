@@ -8,7 +8,7 @@ local DashboardActivity;
 local Overlay = {};
 local ActivityClass = {};
 local ScreenClass = {};
-local ABStatus = {
+local activeAppbar = Appbar:CreateAppbar({
 	Header = {};
 	RightIcon = {
 		Icon = {
@@ -22,18 +22,37 @@ local ABStatus = {
 			Name = 'dashboard'
 		};
 	};
-	RBind = function()
-		Overlay.Close();
-	end;
-	LBind = function()
-		Overlay.OpenActivity(DashboardActivity);
-	end;
-};
-local activeAppbar, activeSidebar, activeActivity, activeScreen;
+},
+	nil,
+	0,
+	true
+	);
+activeAppbar:GetRightIcon():SetCallback(function()
+	Overlay.Close();
+end)
+activeAppbar:GetLeftIcon():SetCallback(function()
+	Overlay.OpenActivity(DashboardActivity);
+end);
+local activeSidebar = Sidebar:CreateSidebar(
+	{
+		BackgroundColor = Colour.White;
+		BorderColor = Colour.Grey[200];
+	},
+	nil,
+	0,
+	true
+);
+spawn(function()
+activeAppbar:Hide(nil,0);
+activeSidebar:Hide(nil,0);
+end);
+
+local activeActivity, activeScreen;
 local Controller = newproxy(true);
 local Player = game:GetService("Players").LocalPlayer;
 local mt = getmetatable(Controller);
 local Activities = setmetatable({},{__mode = 'k'});
+local ActivityLinks = setmetatable({},{__mode = 'kv'});
 local amt = {
 	__index = ActivityClass;
 	__tostring = function(t)
@@ -48,6 +67,7 @@ local smt = {
 	end;
 	__metatable = "Locked metatable: Valkyrie";
 };
+
 local OverlayFrame = Instance.new("Frame");
 OverlayFrame.Position = UDim2.new(0,0,0,36);
 OverlayFrame.Size = UDim2.new(1,0,1,-36);
@@ -65,8 +85,11 @@ shadeTemplate.ZIndex = 5;
 -- Index range for Screens is [6-7] Card, elements
 
 local easeOut = function(i)
-	return -1*(i^4-1)
+	return -(i^4-1)
 end;
+local easeIn = function(i)
+return i^4
+end
 
 local isInstance = function(v)
 	if type(v) == 'userdata' then
@@ -77,38 +100,58 @@ local isInstance = function(v)
 end;
 
 Overlay.Open = function()
-	activeAppbar = Appbar:CreateAppbar(
-		ABStatus,
-		"outCubic",
-		0.3,
-		true
-	);
-	activeAppbar:GetRightIcon():SetCallback(ABStatus.RBind);
-	activeAppbar:GetLeftIcon():SetCallback(ABStatus.LBind);
-	do 
+	Overlay.Appbar = activeAppbar;
+	Overlay.Sidebar = activeSidebar;
+	activeAppbar:Show("outQuad", 0.1, true);
+	do
 		local d = Valkyrie:GetOverlay();
 		d.Parent = nil;
 		d.Parent = Player.PlayerGui;
 	end;
+	local Activity, Screen;
 	if activeActivity then
-		activeActivity.Frame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.1);
-		local later = tick()+0.18;
-		spawn(function()
-			activeActivity.Screen.Transparency = 1;
-			activeActivity.Screen.Parent = activeActivity.Frame;
-			while tick() < later do
-				RenderStepped:wait();
-				activeActivity.Screen.Transparency = 1-easeOut((later - tick())*2.2);
-			end;
-			activeActivity.Screen.Transparency = 0.6;
-		end);
+		Activity = Activities[activeActivity];
+		Activity.Frame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.1);
 	end;
 	if activeScreen then
-		activeScreen.Frame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.18);
+		Screen = ActivityLinks[activeScreen].Screens[activeScreen];
+		Screen.Frame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.18);
+		local later = tick()+0.18;
+		spawn(function()
+			local Shade = Activity.Shade;
+			Shade.Transparency = 1;
+			Shade.Parent = Activity.Frame;
+			while tick() < later do
+				RenderStepped:wait();
+				Shade.Transparency = 1-easeOut((later - tick())*5.5)*0.4;
+			end;
+			Shade.Transparency = 0.6;
+		end);
 	end;
+	IntentService:BroadcastIntent("OverlayOpened");
 end;
 Overlay.Close = function()
-	activeAppbar:Destroy(0.2, "inQuad", true)
+	activeAppbar:Hide("inQuad", 0.2, true);
+	activeSidebar:Hide("inQuad", 0.2, true);
+	local Activity, Screen;
+	if activeActivity then
+		Activity = Activities[activeActivity];
+		Activity.Frame:TweenPosition(UDim2.new(0,0,1,0),"In",nil,0.2);
+	end;
+	if activeScreen then
+		Screen = ActivityLinks[activeScreen].Screens[activeScreen];
+		Screen.Frame:TweenPosition(UDim2.new(0,0,1,0),"In",nil,0.1);
+		local later = tick()+0.1;
+		local Shade = Activity.Shade;
+		spawn(function()
+			while tick() < later do
+				RenderStepped:wait();
+				Shade.Transparency = 0.6+easeIn((later - tick())*10)*0.4;
+			end;
+		Shade.Transparency = 1;
+		end);
+	end;
+	IntentService:BroadcastIntent("OverlayClosed");
 end;
 Overlay.CreateActivity = function(...)
 	local data;
@@ -131,17 +174,22 @@ Overlay.CreateActivity = function(...)
 		Shade = shadeTemplate:Clone();
 	};
 	Activities[newactivity] = adata;
-	aFrame.Size = UDim2.new(
+	aFrame.Size = UDim2.new(1,0,1,0);
+	aFrame.BorderSizePixel = 0;
+	aFrame.BackgroundColor3 = Color3.new(1,1,1);
+	aFrame.Name = data.Name or "Activity"
 	IntentService:BroadcastIntent("ActivityCreated", newactivity);
 	return newactivity;
 end;
 Overlay.OpenActivity = function(Activity)
-	local Activity = Activity and Activities[Activity];
-	assert(Activity, "You need to supply a valid Activity as #1", 2);
-	if not Activity then return end -- Bail out time
-	local aFrame = Activity.Frame;
+	local activity = Activity and Activities[Activity];
+	assert(activity, "You need to supply a valid Activity as #1", 2);
+	if not activity then return end -- Bail out time
+	local aFrame = activity.Frame;
 	aFrame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.2);
-	activeActivity:Close();
+	if activeActivity then
+		activeActivity:Close();
+	end;
 	activeActivity = Activity;
 	local r = activeAppbar:GetRightIcon();
 	r:DisconnectCallback();
@@ -149,31 +197,35 @@ Overlay.OpenActivity = function(Activity)
 		Tileset = 'Navigation';
 		Name = 'close'
 	},0.24,nil,true)
-	ABStatus.RBind = function()
+	r:SetCallback(function()
 		Activity:Close();
 		activeActivity = nil;
 		Overlay.ShowMain();
-	end
-	r:SetCallback(ABStatus.RBind);
+	end);
 	local l = activeAppbar:GetLeftIcon();
 	l:DisconnectCallback();
 	l:ChangeIcon({
 		Tileset = 'Navigation';
 		Name = 'menu'
 	},0.24,nil,true);
-	ABStatus.LBind = function()
-		-- Open the sidebar
-	end
-	l:SetCallback(ABStatus.LBind);
-	ABStatus.Color = Activity.Color;
+	local lbind;
+	lbind = function()
+		l:DisconnectCallback();
+		activeSidebar:Show("outQuad", 0.2, false);
+		l:SetCallback(function()
+			l:DisconnectCallback();
+			activeSidebar:Hide("outQuad", 0.2, false);
+			l:SetCallback(lbind);
+		end);
+	end;
+	l:SetCallback(lbind);
 	activeAppbar:TweenBarColor(Activity.Color,0.3,nil,true);
 	activeAppbar:GetTextObject():ChangeText(
-		Activity.Name,
+		activity.Name,
 		0.24,
 		nil,
 		true
 	);
-	ABStatus.Header.Text = Activity.Name;
 	IntentService:BroadcastIntent("ActivityOpened", Activity);
 end;
 Overlay.ShowMain = function()
@@ -183,23 +235,23 @@ Overlay.ShowMain = function()
 	local LBind = function()
 		Overlay.OpenActivity(DashboardActivity);
 	end;
-	ABStatus.LBind = LBind;
-	ABStatus.RBind = RBind;
 	local l = activeAppbar:GetLeftIcon();
 	local r = activeAppbar:GetRightIcon()
-	l:SetCallback(LBind);
-	r:SetCallback(RBind);
+	l:DisconnectCallback();
+	r:DisconnectCallback();
 	l:ChangeIcon({
 		Tileset = 'Action',
 		Name = 'dashboard'
 	},0.24,nil,true);
+	l:SetCallback(LBind);
 	r:ChangeIcon({
 		Tileset = 'Navigation',
 		Name = 'close'
 	},0.24,nil,true);
+	r:SetCallback(RBind);
 	ABStatus.Header.Text = '';
 	activeAppbar:GetTextObject():ChangeText('',0.24,nil,true);
-	activeAppbar:TweenBarColor(Colour.Blue[500],)
+	activeAppbar:TweenBarColor(Colour.Blue[500],0.24,nil,true)
 	IntentService:BroadcastIntent "OverlayHome"
 end;
 
@@ -213,9 +265,15 @@ ActivityClass.NewScreen = function(self,data)
 	self.Screens[newScreen] = {
 		Frame = sFrame;
 		Activity = self;
-		
+		Name = data.Name or 'Screen;
 	};
-	
+	sFrame.ZIndex = 6;
+	sFrame.Size = UDim2.new(1,0,1,0);
+	sFrame.BorderSizePixel = 0;
+	sFrame.BackgroundColor3 = Color3.new(1,1,1);
+	sFrame.Name = data.Name or "Screen";
+	ActivityLinks[newScreen] = self;
+	return newScreen;
 end;
 ActivityClass.SetContent = function(self,content)
 	assert(type(content) == 'table', "You must provide a table!", 2);
@@ -248,19 +306,91 @@ ActivityClass.Close = function(self)
 	if not Activity then return end;
 	local aFrame = Activity.Frame;
 	aFrame:TweenPosition(UDim2.new(0,0,1,0), nil, nil, 0.2);
+	if activeScreen then
+		activeScreen:Close();
+	end;
 end;
 ActivityClass.OpenScreen = function(self, screen)
 	local Activity = self and Activities[self];
 	assert(Activity, "You should be supplying an Activity as self", 2);
 	if not Activity then return end;
 	local Screen = screen and Activity.Screens[screen];
-	local RBind = function()
-		-- ?TODO
-	end;
+	assert(Screen, "You should be supplying a Screen to open", 2);
+	activeScreen = screen;
 	local LBind = function()
 		screen:Close();
 	end;
-	Screen.Frame:TweenPosition(UDim2.new(0,0,1,-36),nil,nil,0.2);
+	local l = activeAppbar:GetLeftIcon();
+	local r = activeAppbar:GetRightIcon();
+	l:DisconnectCallback();
+	l:ChangeIcon({
+		Tileset = 'Navigation',
+		Name = 'close'
+	},0.16,nil,true);
+	l:SetCallback(LBind);
+	r:Disable();
+	Screen.Frame:TweenPosition(UDim2.new(0,0,0,36),nil,nil,0.2);
+end;
+ActivityClass.SetSidebarContent = function(self, content)
+
+end;
+
+ScreenClass.Close = function(self)
+	local Activity = self and ActivityLinks[self];
+	assert(Activity, "You should be supplying a screen with an active activity as self", 2);
+	local Screen = Activity.Screens[self];
+	local sFrame = Screen.Frame;
+	local shade = Activity.Shade;
+	activeAppbar:GetRightIcon():Enable();
+	sFrame:TweenPosition(UDim2.new(0,0,1,0), "In", nil, 0.2);
+	spawn(function()
+		local later = tick() + 0.2;
+		while tick() < later do
+			RenderStepped:wait();
+			activeActivity.Shade.Transparency = 0.6+easeIn((later - tick())*10)*0.4;
+		end;
+		shade.Transparency = 1;
+		shade.Parent = nil;
+	end);
+end;
+ScreenClass.SetContent = function(self)
+	local Screen = ActivityLinks[self].Screens[self];
+	local sFrame = Screen.Frame;
+	for _,v in ipairs(sFrame:GetChildren()) do
+		v:Destroy();
+	end;
+	for i=1, #content do
+		local content = content[i];
+		assert(isInstance(content), "There should be no non-Instance values", 2);
+		content.Parent = aFrame;
+		if content:IsA("GuiObject") then
+			content.ZIndex = 7;
+			spawn(function()
+				while content.Changed:wait() and content.Parent do -- No disconnecting c:
+					if content.ZIndex ~= 7 then
+						content.ZIndex = 7;
+					end;
+				end;
+			end);
+		end;
+	end;
+end;
+
+do
+	DashboardActivity = Overlay.CreateActivity {
+		Name = "";
+		Colour = Colour.Blue[500];
+	};
+	local DashboardContent = {};
+	IntentService:RegisterIntent("ActivityCreated", function(activity)
+		local newLauncher = Instance.new("Frame");
+		table.insert(DashboardContent, newLauncher);
+		local tcbind = function()
+			Overlay.OpenActivity(activity);
+		end;
+
+	end);
+	DashboardActivity:SetContent(DashboardContent);
 end;
 
 mt.__index = Overlay;

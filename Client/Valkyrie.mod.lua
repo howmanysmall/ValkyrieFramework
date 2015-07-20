@@ -33,7 +33,7 @@ do
 			end;
 		end;
 	})
-end	
+end
 local Components = {};
 cxitio.GetComponent = function(...)
 	local c = extract(...)
@@ -66,6 +66,18 @@ local overlay = script.Parent.ValkyrieOverlay;
 overlay.Parent = script.Parent.Parent;
 cxitio.GetOverlay = function() return overlay	end;
 
+local CurrentContentFrame = nil;
+cxitio.GetContentFrame = function() return CurrentContentFrame or overlay; end;
+cxitio.SetContentFrame = function(...)
+	local new, owner = extract(...);
+	for _, Instance in next, (CurrentContentFrame or overlay):GetChildren() do
+		if Instance ~= new and Instance ~= owner then
+			Instance.Parent = new;
+		end
+	end
+	CurrentContentFrame = new;
+end;
+
 do
 	local Libraries = {};
 	local loaded = setmetatable({},{__mode = 'k'});
@@ -76,7 +88,7 @@ do
 		local l = extract(...);
 		assert(type(l) == 'string', "You must provide a string library name", 2);
 		local lib = libSpace:FindFirstChild(l);
-		if lib then 
+		if lib then
 			lib = require(lib)
 		elseif Libraries[l] then
 			lib = Libraries[l];
@@ -102,7 +114,7 @@ do
 				end;
 				__metatable = "Locked metatable: Valkyrie Library Environment";
 			});
-			_ENV.Wrapper = Wrapper;
+			_ENV.wrapper = Wrapper;
 			local e = _ENV;
 			Wrapper:mod(e.getfenv, function(f)
 				f = f or 1;
@@ -116,7 +128,7 @@ do
 					return r
 				end
 			end);
-			
+
 			local convert = Wrapper._rawConvert
 			for _, f in pairs({e.table.insert, e.table.remove, e.table.sort, e.rawset}) do
 				Wrapper:mod(f, function(...)

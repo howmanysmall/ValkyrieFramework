@@ -130,7 +130,7 @@ do
 	local l = extract(...);
 	assert(type(l) == 'string', "You must provide a string library name", 2);
 	local lib = libSpace:FindFirstChild(l) or rlibSpace:FindFirstChild(l);
-	if lib then 
+	if lib then
 		lib = require(lib)
 	elseif Libraries[l] then
 		lib = Libraries[l];
@@ -156,7 +156,7 @@ do
 			end;
 			__metatable = "Locked metatable: Valkyrie Library Environment";
 		});
-		_ENV.Wrapper = Wrapper;
+		_ENV.wrapper = Wrapper;
 		local e = _ENV
 		local convert = Wrapper._rawConvert;
 		Wrapper:mod(e.getfenv, function(f)
@@ -195,7 +195,7 @@ do
 		loaded[_ENV] = Wrapper;
 		loaded[newEnv] = Wrapper;
 		setfenv(2, newEnv);
-		lib(Wrapper);
+		setfenv(lib, newEnv)(Wrapper);
 	end
 	pcall(print,"Loaded library",l,"into",_ENV,"successfully");
 	end;
@@ -295,6 +295,8 @@ return setfenv(function(GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
+
+	require(script.Shared.Components.IntentService)
 
 	GId = GID;
 	_GCore._ValkyrieCores = cxitio;

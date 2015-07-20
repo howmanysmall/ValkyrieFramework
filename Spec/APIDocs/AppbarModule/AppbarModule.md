@@ -29,12 +29,12 @@ AppbarModule:CreateAppbar(
 ```
 `AppbarInstance` is explained in AppbarInstance.md.
 
-This function creates an Appbar, applies the given settings to it and 
-tweens it in from the left.
+This function creates an Appbar, applies the given settings to it and
+tweens it in from the top.
 It also creates a Frame called `ContentFrame` inside the Overlay. This is where
 all content should go while the Appbar is visible.
 
-Broadcasts `AppbarCreated` when the Appbar is ready and fully visible.
+Broadcasts `AppbarCreated` when the Appbar is ready and fully visible (unless called asynchronously).
 Broadcasts `AppbarDestroyed` when the Appbar's Parent is set to nil.
 Broadcasts `AppbarTweeningIn` when the Appbar is tweening in.
 Broadcasts `AppbarTweeningOut` when the Appbar is tweening out.

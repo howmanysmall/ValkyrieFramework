@@ -6,11 +6,23 @@ local Valkyrie = _G.Valkyrie;
 local IntentService = Valkyrie:GetComponent "IntentService";
 local NotifOverlay = new "ScreenGui":Instance {
 	Parent = LocalPlayer:WaitForChild "PlayerGui";
-	Name = "Valkyrie Notificaiton Overlay";
+	Name = "Valkyrie Notification Overlay";
 };
-local Settings = {
+local DefaultTime;
+do
+	local Settings = Valkyrie:GetSettings("Notifications");
 	DefaultTime = 1;
-};
+	Settings:RegisterSetting("DefaultTime", {
+		set = function(t)
+			if type(t) == 'number' then
+				DefaultTime = math.max(t,0);
+			end;
+		end;
+		get = function()
+			return DefaultTime;
+		end;
+		});
+end;
 
 local deb = false;
 LocalPlayer.PlayerGui.ChildAdded:connect(function(o)
@@ -28,7 +40,7 @@ local notifications = setmetatable({},{__mode = 'v'});
 
 local recalculatePositions = function()
 	for i,v in ipairs(notifications) do
-		spawn(function() 
+		spawn(function()
 			v:VTweenPosition(
 				new 'UDim2' (0,0,0,(i-1)*32),
 				'outQuad',
@@ -54,7 +66,9 @@ local removeNotif = function(n)
 	for i,v in ipairs(notifications) do
 		if v == n then table.remove(notifications,i) break end;
 	end;
-	n:Destroy();
+	n:TweenPosition(new UDim2 (0,0,0,-36), nil, nil, 0.12, nil, function()
+		n:Destroy()
+	end);
 	recalculatePositions();
 end;
 
@@ -65,18 +79,23 @@ local HandleNotification = function(data)
 	assert(type(Text) == 'string', "['Text'] must be a string", 2);
 	local Image = rawget(data, 'Image');
 	local Callback = rawget(data, 'Callback');
-	local Time = rawget(data, 'Time') or Settings.DefaultTime;
+	local Time = rawget(data, 'Time') or DefaultTime;
 	new "TextLabel":Instance {
 		Parent = notif;
-		Size = new 'UDim2' (1, Image and -32 or 0, 1, 0);
-		Position = new 'UDim2' (0, Image and 32 or 0, 0, 0);
+		Size = new 'UDim2' (1, Image and -42 or -10, 1, 0);
+		Position = new 'UDim2' (0, Image and 42 or 10, 0, 0);
 		BackgroundTransparency = 1;
 		BorderSizePixel = 0;
+		Text = Text;
+		TextColor3 = Color3.White;
+		TextXAlignment = Enum.TextXAlignment.Left;
+		FontSize = Enum.FontSize.Size18;
 	};
 	if Image then
 		new "ImageLabel":Instance {
 			Image = Image;
 			Size = new 'UDim2' (0,32,0,32);
+			Position = new 'UDim2' (0,10,0,0);
 			BackgroundTransparency = 1;
 			BorderSizePixel = 0;
 		};
@@ -91,9 +110,12 @@ local HandleNotification = function(data)
 			Size = new 'UDim2' (1,0,1,0);
 		}.MouseButton1Click:connect(Callback);
 	end;
+
+	notif.Position = new 'UDim2' (0,0,0,-32);
+	spawn(function() notif:VTweenPosition(new 'UDim2' (),'inQuad',0.12); end);
+
 	delay(Time,function()
 		removeNotif(notif)
-		recalculatePositions();
 	end);
 end;
 
@@ -116,7 +138,7 @@ local HandlePlain = function(text, img)
 	else
 		tl.Size = new 'UDim2' (1,0,1,0);
 	end
-	delay(Settings.DefaultTime,function()
+	delay(DefaultTime,function()
 		removeNotif(notif);
 		recalculatePositions();
 	end);
@@ -137,15 +159,17 @@ local extract = function(...)
 	end;
 end;
 
-mt.__index = ControllerProxy;
-mt.__newindex = function(t,k,v)
-	assert(v ~= nil, "You can't set the values to nil :c", 2);
-	Settings[k] = v;
+ControllerProxy.new = function(...)
+	return HandleNotification(extract(...));
 end;
+ControllerProxy.newPlain = function(...)
+	return HandlePlain(extract(...));
+end;
+
+mt.__index = ControllerProxy;
 mt.__tostring = function()
 	return "Valkyrie Notifications Controller"
 end;
 mt.__metatable = "Locked Metatable: Valkyrie";
-mt.
 
 return NotificationController;

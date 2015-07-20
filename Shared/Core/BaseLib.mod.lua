@@ -72,6 +72,10 @@ local convert do
 					for k,v in pairs(value) do
 						pcall(rawset, ret, convert(from, to, this, k), convert(from, to, this, v));
 					end;
+				elseif type(ret) == 'userdata' then
+					if pcall(gs, game, value) then
+						getmetatable(ret).__index = this.imt.__index;
+					end;
 				end;
 				return ret;
 			end;
@@ -88,7 +92,6 @@ local convert do
 				if from.pairs[value] and this.useContextInversion then
 					-- If we're using context inversion, and the current value already has
 					-- a wrap target, then escape instead of generating an inversion.
-					print("Skipping inversion for ", value);
 					return value;
 				end
 			end
@@ -137,7 +140,7 @@ local convert do
 		elseif type == 'userdata' then
 			if this.useFullConversion == false and to.unwrapper then
 				-- If we're not converting fully
-				return value 
+				return value
 			end;
 			ret = newproxy(true);
 			local mt = getmetatable(ret);
@@ -321,11 +324,38 @@ end;
 
 WrapperClass._rawConvert = convert;
 
+local TypeChecks do
+	local tv2 = Vector2.new(0,0);
+	local con = game.Changed.connect;
+	local tsp = Instance.new("Part");
+	local ud = UDim.new(0,0);
+	local tui = Instance.new("ImageLabel");
+	local BrickColor = BrickColor;
+	TypeChecks = {
+	--[[	Color3 = BrickColor.new;
+		Vector2 = function(o) return tv2 + o end;
+		Event = function(o) con(o,function()end):disconnect() end;
+		Vector3 = function(o) tsp.Size = o end;
+		UDim = function(o) return ud+o end;
+		UDim2 = function(o) tui.Position = o end;
+		BrickColor = function(o) tsp.BrickColor = o end; ]]
+		Color3 = function(o) return assert(o.r,'') end;
+		Event = function(o) return assert(o.connect,'') end;
+		Vector3 = function(o) return assert(o.z,'') end;
+		UDim = function(o) return assert(o.Scale,'') end;
+		UDim2 = function(o) return assert(o.X.Scale,'') end;
+		BrickColor = function(o) return assert(o.Color.r,'') end;
+		Vector2 = function(o) return assert(o.x,'') end;
+	};
+end;
+
 local function newWrapper(private)
 	local self = {};
 
 	self.ulist = private and {unwrapper = true, ref = setmetatable({},{__mode = 'k'})} or GlobalUnwrapper;
 	self.wlist = private and {unwrapper = false, ref = setmetatable({},{__mode = 'v'})} or GlobalWrapper;
+	self.wlist.pairs = self.wlist.ref;
+	self.ulist.pairs = self.ulist.ref;
 	self.unwrapper = self.ulist;
 	self.wrapper = self.wlist
 
@@ -339,32 +369,16 @@ local function newWrapper(private)
 		Instance = {};
 		Types = {};
 	}
-	
+
 	self.useStackedWrappers = false;
 	self.useFullConversion = false;
 	self.convertFullBidirectional = true;
 	self.useContextInversion = true;
 
 	self.genSeed = tick();
-	
-	do
-		local tv2 = Vector2.new(0,0);
-		local con = game.Changed.connect;
-		local tsp = Instance.new("Part");
-		local ud = UDim.new(0,0);
-		local tui = Instance.new("ImageLabel");
-		self.TypeChecks = {
-			Color3 = BrickColor.new;
-			Vector2 = function(o) return tv2 + o end;
-			Event = function(o) con(o,function()end):disconnect() end;
-			Vector3 = function(o) tsp.Size = o end;
-			UDim = function(o) return ud+o end;
-			UDim2 = function(o) tui.Position = o end;
-			BrickColor = function(o) tsp.BrickColor = o end;
-		};
-	end;
 
 	self.TypeIdentities = _G.TypeIdentities or setmetatable({},{__mode = 'k'});
+	self.TypeChecks = TypeChecks;
 
 	for e,m in pairs(defaultmt) do
 		self.mt[e] = convert(self.ulist,self.wlist,self,m);
@@ -433,7 +447,7 @@ local function newWrapper(private)
 			return r
 		end
 	end);
-	
+
 	for _, f in pairs({e.table.insert, e.table.remove, e.table.sort, e.rawset}) do
 		self:mod(f, function(...)
 			local r = pack(pcall(f,...));
@@ -454,6 +468,8 @@ local function newWrapper(private)
 			end
 		end)
 	end
+
+	convert(self.unwrapper, self.wrapper, self, _G);
 
 	return r;
 end;
