@@ -264,7 +264,7 @@ return setfenv(function(GID, CoKey)
 		gpn.Parent = game.ReplicatedStorage;
 	end
 
-	require(script.Shared.Components.IntentService)
+	require(script.Shared.Core.Components.IntentService)
 
 	GId = GID;
 	_GCore._ValkyrieCores = cxitio;
