@@ -1,4 +1,5 @@
 -- Handlers for individual players. Joy.
+repeat wait() until _G.Valkyrie end;
 local Valkyrie = _G.Valkyrie;
 local IntentService = Valkyrie:GetComponent("IntentService");
 local Settings = Valkyrie:GetSettings("AntiCheat");

@@ -370,7 +370,7 @@ ScreenClass.SetContent = function(self)
 					if content.ZIndex ~= 7 then
 						content.ZIndex = 7;
 					end;
-				end;
+				end;t
 			end);
 		end;
 	end;
@@ -388,9 +388,8 @@ do
 		local tcbind = function()
 			Overlay.OpenActivity(activity);
 		end;
-
+		DashboardActivity:SetContent(DashboardContent);
 	end);
-	DashboardActivity:SetContent(DashboardContent);
 end;
 
 mt.__index = Overlay;
