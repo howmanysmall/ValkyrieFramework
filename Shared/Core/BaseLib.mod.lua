@@ -264,7 +264,7 @@ function WrapperClass:OverrideGlobal(global)
 				setmetatable(override,{__call = function(_,...) oldGlobal(...) end});
 				self.Overrides.Globals[global] = override;
 			elseif ot == 'table' then
-				for k,v in pairs(oldGlobal) do
+				for k,v in pairs(oldGolbal) do
 					rawset(override,k,v);
 				end;
 				setmetatable(override,{__index = oldGlobal});
@@ -274,7 +274,7 @@ function WrapperClass:OverrideGlobal(global)
 					__call = function(_,...) return oldGlobal(...) end;
 					__index = function(_,k) return oldGlobal[k] end;
 				});
-						self.Overrides.Globals[global] = override;
+				self.Overrides.Globals[global] = override;
 			else
 				self.Overrides.Globals[global] = override;
 			end;

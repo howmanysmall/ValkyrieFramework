@@ -1,5 +1,7 @@
-_G.ValkyrieC:LoadLibrary "Design";
-_G.ValkyrieC:LoadLibrary "Util";
+local import = _G.ValkyrieC.LoadLibrary;
+import "Design";
+import "Util";
+
 local Core          		= _G.ValkyrieC;
 local cAppbarInstance       = {};
 local InstanceFunctions 	= {};

@@ -84,6 +84,7 @@ do
 	local libSpace = script.Libraries;
 	local newWrapper = require(script.Core.BaseLib);
 	local gs = game.GetService;
+	local ll;
 	cxitio.LoadLibrary = function(...)
 		local l = extract(...);
 		assert(type(l) == 'string', "You must provide a string library name", 2);
@@ -100,10 +101,10 @@ do
 			lib(loaded[_ENV]);
 		else
 			local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
-			local glOverrides = Wrapper.Overrides.Globals;
+			Wrapper.wlist.ref[ll] = ll;
 			local newEnv = setmetatable({},{
 				__index = function(_,k)
-					local v = glOverrides[k] or _ENV[k];
+					local v = Wrapper.Overrides.Globals[k] or _ENV[k];
 					if v then return v end;
 					local s,v = pcall(game.GetService,game,k);
 					if s then return v end;
@@ -115,41 +116,6 @@ do
 				__metatable = "Locked metatable: Valkyrie Library Environment";
 			});
 			_ENV.wrapper = Wrapper;
-			local e = _ENV;
-			Wrapper:mod(e.getfenv, function(f)
-				f = f or 1;
-				if type(f) == "number" and f > 0  then
-					f = f + 1;
-				end
-				local s, r = xpcall(function() return getfenv(f) end, echo);
-				if not s then
-					error(r, 2);
-				else
-					return r
-				end
-			end);
-
-			local convert = Wrapper._rawConvert
-			for _, f in pairs({e.table.insert, e.table.remove, e.table.sort, e.rawset}) do
-				Wrapper:mod(f, function(...)
-					local r = pack(pcall(f,...));
-					if r[1] then
-						local t = ...
-						local _t = convert(Wrapper.ulist, Wrapper.wlist, Wrapper, t);
-						for k in pairs(_t) do
-							rawset(_t, k, nil);
-						end
-						for k, v in pairs(t) do
-							local _k = convert(Wrapper.ulist, Wrapper.wlist, Wrapper, k);
-							local _v = convert(Wrapper.ulist, Wrapper.wlist, Wrapper, v);
-							rawset(_t,_k,_v);
-						end
-						return unpack(r,2,r.n)
-					else
-						error(r[2],2);
-					end
-				end)
-			end
 			newEnv = Wrapper(newEnv);
 			loaded[_ENV] = Wrapper;
 			loaded[newEnv] = Wrapper;
@@ -158,6 +124,7 @@ do
 		end
 		--pcall(print,"Loaded library",l,"into",_ENV,"successfully");
 	end;
+	ll = cxitio.LoadLibrary;
 	cxitio.AddLibrary = function(...)
 		local l,n = extract(...);
 		assert(l, "You need to supply a library to add", 2);
