@@ -170,8 +170,8 @@ function InstanceFunctions:TweenBarColor(NewColor, Tween, Duration, Async)
 	AssertType("Argument #4", Async, 	"boolean", 	true);
 
 	local TextObject 		= self:GetTextObject();
-	local MainTextObject	= TextObject.MainObject;
-	local AltTextObject 	= TextObject.AltObject;
+	local MainTextObject	= TextObject:GetMainObject();
+	local AltTextObject 	= TextObject:GetAltObject();
 
 	-- Wonder if I should do a debounce here or let the user handle it.
 	local function Runner()
@@ -198,7 +198,7 @@ local ir,il,to = setmetatable({},{__mode = 'k'}),setmetatable({},{__mode = 'k'})
 
 function InstanceFunctions:GetLeftIcon()
 	if not il[self] then
-		local Appbar 			= self.Raw;
+		local Appbar 			= self:GetRaw();
 		local Icon 				= Appbar.TopLeftButton;
 		local AltIcon 			= Appbar.TopLeftButton_alt;
 
@@ -209,7 +209,7 @@ end
 
 function InstanceFunctions:GetRightIcon()
 	if not ir[self] then
-		local Appbar 			= self.Raw;
+		local Appbar 			= self:GetRaw();
 		local Icon 				= Appbar.TopRightButton;
 		local AltIcon 			= Appbar.TopRightButton_alt;
 

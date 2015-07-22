@@ -70,7 +70,7 @@ function InstanceFunctions:ChangeIcon(NewIcon, Tween, Duration, Async)
 
 	local MainIcon 		= self:GetMainIcon();
 	local AltIcon 		= self:GetAltIcon();
-	local Connections = self:GetCallback();
+	local Connections 	= self:GetCallback();
 	local Duration 		= Duration or 0.27
 
 	local CenterPoint, Alt, Main;

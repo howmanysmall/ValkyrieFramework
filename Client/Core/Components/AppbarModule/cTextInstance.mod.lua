@@ -72,8 +72,8 @@ function InstanceFunctions:ChangeText(NewText, Tween, Duration, Async)
 
 	local function Runner()
 		spawn(function() 	MainObject:VTweenPosition(UDim2.new(-0.5, 0, 0, 10), Tween, Duration); end);
-											AltObject :VTweenPosition(UDim2.new(0, 50, 0, 10), 	 Tween, Duration);
-		MainObject.Position 											= UDim2.new(0, 50, 0, -100);
+							AltObject :VTweenPosition(UDim2.new(0, 50, 0, 10), 	 Tween, Duration);
+		MainObject.Position 						= UDim2.new(0, 50, 0, -100);
 	end
 
 	MainObject.Name 			= "TopHeader_alt";
