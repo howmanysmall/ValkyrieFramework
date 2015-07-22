@@ -370,7 +370,7 @@ ScreenClass.SetContent = function(self)
 					if content.ZIndex ~= 7 then
 						content.ZIndex = 7;
 					end;
-				end;t
+				end;
 			end);
 		end;
 	end;

@@ -31,6 +31,7 @@ setfenv(0,{})
 setfenv(1,{})
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
+local wviis = setmetatable({},{__mode = 'k'});
 
 local echo = function(...) return ... end;
 local pack = function(...) return {n=select('#',...),...} end;
@@ -67,7 +68,7 @@ end
 local Libraries = {};
 local cxitio = {};
 local function extract(...)
-	if (...) == cxitio then
+	if (...) == cxitio or wviis[...] then
 	return select(2,...);
 	else
 	return ...
@@ -144,6 +145,7 @@ do
 	else
 		local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
 		Wrapper.wlist.ref[ll] = ll;
+		wviis[Wrapper(cxitio)] = true;
 		local newEnv = setmetatable({},{
 			__index = function(_,k)
 				local v = Wrapper.Overrides.Glob[k] or _ENV[k];

@@ -5,9 +5,10 @@ local function pack(...) return {n=select('#',...),...} end;
 
 local cxitio = {};
 local r;
+local wviis = setmetatable({},{__mode = 'k'});
 
 local function extract(...)
-	if (...) == r then
+	if (...) == r or wviis[...] then
 		return select(2,...)
 	else
 		return ...
@@ -102,6 +103,7 @@ do
 		else
 			local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
 			Wrapper.wlist.ref[ll] = ll;
+			wviis[Wrapper(r)] = true;
 			local newEnv = setmetatable({},{
 				__index = function(_,k)
 					local v = Wrapper.Overrides.Globals[k] or _ENV[k];
