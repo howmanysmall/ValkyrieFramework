@@ -3,7 +3,7 @@ import "Design";
 import "Util";
 
 local Core          		= _G.ValkyrieC;
-local cAppbarInstance       = {};
+local cAppbarInstance       = wrapper({});
 local InstanceFunctions 	= {};
 
 local IconInstance 			= require(script.Parent.cIconInstance);

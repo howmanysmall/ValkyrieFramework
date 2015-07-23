@@ -1,7 +1,7 @@
 _G.ValkyrieC:LoadLibrary "Design";
 _G.ValkyrieC:LoadLibrary "Util";
 local Core          			= _G.ValkyrieC;
-local cTextInstance 			= {};
+local cTextInstance 			= wrapper({});
 local InstanceFunctions 		= {};
 local SharedVariables 			= Core:GetComponent "References";
 
