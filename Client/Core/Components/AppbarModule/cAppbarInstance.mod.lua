@@ -163,7 +163,7 @@ end
 
 
 
-function InstanceFunctions:TweenBarColor(NewColor, Tween, Duration, Async)
+function InstanceFunctions:TweenBarColor(NewColor, NewBorderColor, Tween, Duration, Async)
 	AssertType("Argument #1", NewColor, "Color3");
 	AssertType("Argument #2", Tween, 	"string", 	true);
 	AssertType("Argument #3", Duration, "number", 	true);
@@ -172,12 +172,14 @@ function InstanceFunctions:TweenBarColor(NewColor, Tween, Duration, Async)
 	local TextObject 		= self:GetTextObject();
 	local MainTextObject	= TextObject:GetMainObject();
 	local AltTextObject 	= TextObject:GetAltObject();
+	local BorderFrame 		= self:GetRaw().Border;
 
 	-- Wonder if I should do a debounce here or let the user handle it.
 	local function Runner()
 		spawn(function() 	self:GetRaw() :TweenColor3(	NewColor,	Tween,	Duration); end);
 		spawn(function() 	MainTextObject:TweenColor3( NewColor,	Tween,	Duration); end);
-							AltTextObject :TweenColor3( NewColor,	Tween,	Duration);
+		spawn(function() 	AltTextObject :TweenColor3( NewColor,	Tween,	Duration); end);
+							BorderFrame   :TweenColor3( NewBorderColor, Tween, 	Duration);
 	end
 	if Async then
 		return RunAsync(Runner);
