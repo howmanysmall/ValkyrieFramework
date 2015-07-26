@@ -28,7 +28,7 @@ local function spawn(f)
 	coroutine.wrap(f)();
 end
 
-local function ApplySettingsToIcon(Icon, Settings)
+local function ApplySettingsToIcon(self, Side, Icon, Settings)
 	AssertType("Argument #1", Icon, "Instance");
 	AssertType("Argument #2", Settings, "table");
 
@@ -44,6 +44,12 @@ local function ApplySettingsToIcon(Icon, Settings)
 		AssertType("Settings.Icon.Name", 	Settings.Icon.Name,		"string");
 
 		Icon:LoadIcon(Settings.Icon.Tileset, Settings.Icon.Name);
+	end
+
+	if Settings.Callback and Side then -- If Side == nil don't set callback. Effiency.
+		AssertType("Settings.Callback", 	Settings.Callback, 		"function");
+
+		self["Get" .. Side .. "Icon"](self):SetCallback(Settings.Callback);
 	end
 end
 
@@ -103,7 +109,7 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
 	ContentFrame.Name 						= "ContentFrame";
 
-	local AppbarInstance 							= newproxy(true);
+	local AppbarInstance 					= newproxy(true);
 	SharedVariables[AppbarInstance]			= {Raw = Appbar, ContentFrame = ContentFrame};
 
 	CopyMetatable(AppbarInstance, SharedMetatable);
@@ -119,12 +125,12 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 		end
 
 		if Settings.LeftIcon then
-			ApplySettingsToIcon(Appbar.TopLeftButton, 		Settings.LeftIcon);
-			ApplySettingsToIcon(Appbar.TopLeftButton_alt, 	Settings.LeftIcon);
+			ApplySettingsToIcon(AppbarInstance, "Left", Appbar.TopLeftButton, 		Settings.LeftIcon);
+			ApplySettingsToIcon(AppbarInstance, nil, 	Appbar.TopLeftButton_alt, 	Settings.LeftIcon); -- nil == don't set callback
 		end
 		if Settings.RightIcon then
-			ApplySettingsToIcon(Appbar.TopRightButton, 		Settings.RightIcon);
-			ApplySettingsToIcon(Appbar.TopRightButton_alt, 	Settings.RightIcon);
+			ApplySettingsToIcon(AppbarInstance, "Right", Appbar.TopRightButton, 	Settings.RightIcon);
+			ApplySettingsToIcon(AppbarInstance, nil, 	Appbar.TopRightButton_alt, Settings.RightIcon); -- nil == don't set callback
 		end
 
 		if Settings.Header then
@@ -165,9 +171,10 @@ end
 
 function InstanceFunctions:TweenBarColor(NewColor, NewBorderColor, Tween, Duration, Async)
 	AssertType("Argument #1", NewColor, "Color3");
-	AssertType("Argument #2", Tween, 	"string", 	true);
-	AssertType("Argument #3", Duration, "number", 	true);
-	AssertType("Argument #4", Async, 	"boolean", 	true);
+	AssertType("Argument #2", NewBorderColor, "Color3");
+	AssertType("Argument #3", Tween, 	"string", 	true);
+	AssertType("Argument #4", Duration, "number", 	true);
+	AssertType("Argument #5", Async, 	"boolean", 	true);
 
 	local TextObject 		= self:GetTextObject();
 	local MainTextObject	= TextObject:GetMainObject();
