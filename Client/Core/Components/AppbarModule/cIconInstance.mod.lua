@@ -152,8 +152,8 @@ function InstanceFunctions:SetCallback(Callback)
 	end
 
 	SharedVariables[self].Connections = {
-		Main	 			= self.MainIcon.InputEnded:connect(Connection);
-		Alt					= self.AltIcon.InputEnded:connect(Connection);
+		Main	 			= self:GetMainIcon().InputEnded:connect(Connection);
+		Alt					= self:GetAltIcon().InputEnded:connect(Connection);
 	};
 end
 
