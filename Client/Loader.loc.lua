@@ -1,26 +1,48 @@
 --game.Players.LocalPlayer.PlayerGui:SetTopbarTransparency(0);
-local oprint	= print;
+warn("Alright.");
 require(script.Parent:WaitForChild("Valkyrie"));
 _G.ValkyrieC:LoadLibrary "Design";
-oprint(table.insert);
-local a = _G.ValkyrieC:GetComponent"DataTypes";
-game.StarterGui:SetCoreGuiEnabled("All", false);
-local is ={
-	{Text = "Hello", BackgroundColor = Color3.Red};
-	{Text = "World!", BackgroundColor = Color3.DeepOrange};
-	{Text = "And all who", BackgroundColor = Color3.Amber};
-};
-for i = 1, 30 do
-	table.insert(is, {Text = "Hello", BackgroundColor = Color3.Blue});
+
+_G.ValkyrieC:GetComponent 
+	"Logger"
+	:Tag "AnimationManager"
+	:Info "Playing 'walking' animation!"
+	-- I thought it looked fun to do it like that
+
+local Items = {};
+
+for i = 1, 40 do
+	table.insert(Items, {Text = "Hello", BackgroundColor = Color3.new(math.random(), math.random(), math.random())});
 end
-local sb = _G.ValkyrieC:GetComponent "SidebarModule":CreateSidebar({Items = is, BorderColor = Color3.Grey[300]});
-local i  = sb:GetItem(1);
-i:TweenOnX(100, 1, "inQuad", false);
+table.insert(Items, {Text = "Hello2"});
 
-i:TweenBackgroundColor(Color3.Green, 5, "inQuint", false);
+game.Players.LocalPlayer.PlayerGui:SetTopbarTransparency(0);
 
-sb:GetItem(3):TweenOnX(-100, 1, "inOutQuad", false);
+local sb = _G.ValkyrieC:GetComponent"SidebarModule":CreateSidebar{Items = Items};
+sb:Hide("inQuad", 0.5, false);
+sb:Show("outQuad", 0.5, false);
+_G.ValkyrieC:GetComponent"Notifications".new{Text = "Testy Text", Time = 3};
 
-game.StarterGui:SetCoreGuiEnabled("All", false);
+--print(Color3.Red);
 
-require(script.HealthBar)();
+local appbar = _G.ValkyrieC:GetComponent "AppbarModule":CreateAppbar(
+	{
+		Color = Color3.Orange, -- If I uncomment the above print, this will crash while checking the type.
+		BorderColor = Color3.Orange[600], 
+		Header = {
+			Color = Color3.White
+		}, 
+		LeftIcon = {
+			Color = Color3.White,
+			Callback = function() print"LeftCLICK"; end;
+		},
+		RightIcon = {
+			Color = Color3.White,
+			Callback = function() print"RightCLICK"; end;
+		}
+	}
+);
+
+appbar:TweenBarColor(Color3.Blue, Color3.Blue[600], "inquad", 1, true);
+appbar:GetLeftIcon():TweenIconColor(Color3.Black, "incirc", 0.5, false);
+appbar:GetTextObject():ChangeText("Hello", "inquint", .3, false);
