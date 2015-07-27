@@ -60,7 +60,30 @@ local igetType do
 		local t = type(o);
 		--[[if pcall(gs, game, o) then
 			t = "Instance"
-		elseif pcall(set, testComponent, "Position", o) then
+		elseif pcall(function() assert(o.components, ''); end) then
+			t = "CFrame";
+		elseif pcall(function() assert(o.z, ''); end) then
+			t = "Vector3";
+		elseif pcall(function() assert(o.r, ''); end) then
+			t = "Color3";
+		elseif pcall(function() assert(o.X.Scale, ''); end) then
+			t = "UDim2";
+		elseif pcall(function() assert(o.Color.r, ''); end) then
+			t = "BrickColor";
+		elseif pcall(function() assert(o.connect, ''); end) then
+			t = "Event";
+		elseif pcall(function() assert(o.disconnect); end) then
+			t = "Connection";
+		elseif pcall(function() assert(o.ClosestPoint); end) then
+			t = "Ray";
+		elseif pcall(function() assert(o.ExpandGrid); end) then
+			t = "Region3";
+		elseif pcall(function() assert(o.Scale); end) then
+			t = "UDim";
+		elseif pcall(function() assert(o.x); end) then
+			t = "Vector2";
+		end
+		--[[elseif pcall(set, testComponent, "Position", o) then
 			t = "Vector3";
 		elseif pcall(set, testComponent, "CFrame", o) then
 			t = "CFrame";
@@ -90,13 +113,6 @@ local igetType do
 				if pcall(v, o) then t = k; break; end;
 			end;
 		end;
-		if t == 'userdata' then
-			for k,v in next, customDatas do
-				if v(o) then t = k; break; end;
-			end;
-		end;
-		TypeIdentities[o] = t;
-		return t;
 	end
 end
 

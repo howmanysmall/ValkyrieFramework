@@ -200,7 +200,7 @@ function InstanceFunctions:GetRaw()
 end
 
 function InstanceFunctions:GetRealContentFrame()
-	return SharedVariables[self]:GetRealContentFrame();
+	return SharedVariables[self].ContentFrame;
 end
 
 local ir,il,to = setmetatable({},{__mode = 'k'}),setmetatable({},{__mode = 'k'}),setmetatable({},{__mode = 'k'});
