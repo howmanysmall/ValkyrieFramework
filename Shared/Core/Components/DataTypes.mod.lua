@@ -3,6 +3,7 @@ local VComponents;
 local r;
 local next = next;
 local setfenv = setfenv;
+local assert = assert;
 
 local customDatas = {};
 local identityPairs = setmetatable({},{__mode = 'k'});
@@ -17,7 +18,7 @@ end;
 
 local igetType do
 	local TypeIdentities = setmetatable({},{__mode='k'});
-	local workspace = workspace;
+	--[[local workspace = workspace;
 	local fpor = workspace.FindPartOnRay;
 	local fpir3 = workspace.FindPartsInRegion3;
 	local testComponent = Instance.new("Part");
@@ -27,9 +28,22 @@ local igetType do
 	local Enum = Enum;
 	local getItems = Enum.KeyCode.GetEnumItems;
 	local enumTest = function(o) return assert(o == Enum or getItems(o),'') end;
-	local UDim = UDim;
+	local UDim = UDim;]]
+	local assert = assert;
+	local tch = {
+		Color3 = function(o) return assert(o.r,'') end;
+		Event = function(o) return assert(o.connect,'') end;
+		Vector3 = function(o) return assert(o.z,'') end;
+		UDim = function(o) return assert(o.Scale,'') end;
+		UDim2 = function(o) return assert(o.X.Scale,'') end;
+		BrickColor = function(o) return assert(o.Color.r,'') end;
+		Vector2 = function(o) return assert(o.x,'') end;
+		Instance = function(o) return game:GetService(o); end;
+	};
 	local next = next;
-	local game = game;
+	local type = type;
+	local pcall = pcall;
+	--[[local game = game;
 	local pcall = pcall;
 	local gs = game.GetService;
 	local function checkud(o)
@@ -37,14 +51,14 @@ local igetType do
 	end;
 	local function set(o,p,i)
 		o[p] = i;
-	end
+	end]]
 	igetType = function(...)
 		local o = extract(...);
 		if TypeIdentities[o] or identityPairs[o] then
 			return TypeIdentities[o] or identityPairs[o];
 		end
-		local t = "userdata";
-		if pcall(gs, game, o) then
+		local t = type(o);
+		--[[if pcall(gs, game, o) then
 			t = "Instance"
 		elseif pcall(set, testComponent, "Position", o) then
 			t = "Vector3";
@@ -70,7 +84,12 @@ local igetType do
 			t = "UDim";
 		elseif pcall(set, testGui, "ImageRectOffset", o) then
 			t = "Vector2";
-		end
+		end]]
+		if t == 'userdata' then
+			for k,v in next, tch do
+				if pcall(v, o) then t = k; break; end;
+			end;
+		end;
 		if t == 'userdata' then
 			for k,v in next, customDatas do
 				if v(o) then t = k; break; end;
@@ -99,7 +118,7 @@ cxitio.GetCheck = function(...)
 end
 cxitio.GetType = igetType;
 
-local r = newproxy(true);
+r = newproxy(true);
 local mt = getmetatable(r);
 mt.__index = cxitio;
 mt.__call = igetType;
