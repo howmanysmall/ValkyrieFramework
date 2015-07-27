@@ -3,6 +3,7 @@ local VComponents;
 local r;
 local next = next;
 local setfenv = setfenv;
+local assert = assert;
 
 local customDatas = {};
 local identityPairs = setmetatable({},{__mode = 'k'});
@@ -122,7 +123,7 @@ cxitio.GetCheck = function(...)
 end
 cxitio.GetType = igetType;
 
-local r = newproxy(true);
+r = newproxy(true);
 local mt = getmetatable(r);
 mt.__index = cxitio;
 mt.__call = igetType;
