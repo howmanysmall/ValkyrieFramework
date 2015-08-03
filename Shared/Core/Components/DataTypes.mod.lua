@@ -18,7 +18,7 @@ end;
 
 local igetType do
 	local TypeIdentities = setmetatable({},{__mode='k'});
-	--[[local workspace = workspace;
+	local workspace = workspace;
 	local fpor = workspace.FindPartOnRay;
 	local fpir3 = workspace.FindPartsInRegion3;
 	local testComponent = Instance.new("Part");
@@ -28,22 +28,12 @@ local igetType do
 	local Enum = Enum;
 	local getItems = Enum.KeyCode.GetEnumItems;
 	local enumTest = function(o) return assert(o == Enum or getItems(o),'') end;
-	local UDim = UDim;]]
+	local UDim = UDim;
 	local assert = assert;
-	local tch = {
-		Color3 = function(o) return assert(o.r,'') end;
-		Event = function(o) return assert(o.connect,'') end;
-		Vector3 = function(o) return assert(o.z,'') end;
-		UDim = function(o) return assert(o.Scale,'') end;
-		UDim2 = function(o) return assert(o.X.Scale,'') end;
-		BrickColor = function(o) return assert(o.Color.r,'') end;
-		Vector2 = function(o) return assert(o.x,'') end;
-		Instance = function(o) return game:GetService(o); end;
-	};
 	local next = next;
 	local type = type;
 	local pcall = pcall;
-	--[[local game = game;
+	local game = game;
 	local pcall = pcall;
 	local gs = game.GetService;
 	local function checkud(o)
@@ -51,39 +41,17 @@ local igetType do
 	end;
 	local function set(o,p,i)
 		o[p] = i;
-	end]]
+	end
 	igetType = function(...)
 		local o = extract(...);
 		if TypeIdentities[o] or identityPairs[o] then
 			return TypeIdentities[o] or identityPairs[o];
 		end
 		local t = type(o);
-		--[[if pcall(gs, game, o) then
-			t = "Instance"
-		elseif pcall(function() assert(o.components, ''); end) then
-			t = "CFrame";
-		elseif pcall(function() assert(o.z, ''); end) then
-			t = "Vector3";
-		elseif pcall(function() assert(o.r, ''); end) then
-			t = "Color3";
-		elseif pcall(function() assert(o.X.Scale, ''); end) then
-			t = "UDim2";
-		elseif pcall(function() assert(o.Color.r, ''); end) then
-			t = "BrickColor";
-		elseif pcall(function() assert(o.connect, ''); end) then
-			t = "Event";
-		elseif pcall(function() assert(o.disconnect); end) then
-			t = "Connection";
-		elseif pcall(function() assert(o.ClosestPoint); end) then
-			t = "Ray";
-		elseif pcall(function() assert(o.ExpandGrid); end) then
-			t = "Region3";
-		elseif pcall(function() assert(o.Scale); end) then
-			t = "UDim";
-		elseif pcall(function() assert(o.x); end) then
-			t = "Vector2";
-		end
-		--[[elseif pcall(set, testComponent, "Position", o) then
+		if t ~= 'userdata' then return t end;
+		if pcall(gs, game, o) then
+			t = "Instance";
+		elseif pcall(set, testComponent, "Position", o) then
 			t = "Vector3";
 		elseif pcall(set, testComponent, "CFrame", o) then
 			t = "CFrame";
@@ -107,12 +75,13 @@ local igetType do
 			t = "UDim";
 		elseif pcall(set, testGui, "ImageRectOffset", o) then
 			t = "Vector2";
-		end]]
+		end
 		if t == 'userdata' then
-			for k,v in next, tch do
+			for k,v in next, customDatas do
 				if pcall(v, o) then t = k; break; end;
 			end;
 		end;
+		return t;
 	end
 end
 
