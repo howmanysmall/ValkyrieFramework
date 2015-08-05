@@ -264,8 +264,18 @@ function InstanceFunctions:GetShownItemIndices()
 	return Start, End;
 end
 
+local ItemCache = {};
+
 function InstanceFunctions:GetItem(Index)
-	return cItemInstance.new(self:GetItems()[Index]);
+	if not ItemCache[self] then
+		ItemCache[self] 	= {};
+	end
+	if not ItemCache[self][Index] then
+		local ItemInstance 	= cItemInstance.new(self:GetItems()[Index]);
+		ItemCache[self][Index] = ItemInstance;
+		return ItemInstance;
+	end
+	return ItemCache[self][Index];
 end
 
 function InstanceFunctions:Destroy(Tween, Duration, Async)
