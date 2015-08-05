@@ -150,7 +150,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 	ContentFrame.BorderSizePixel			= 0;
 	ContentFrame.BackgroundTransparency		= 1;
 	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
-	ContentFrame.Name 						= "ContentFrame";
+	ContentFrame.Name 						= "ContentFrame_Sidebar";
 
 	SharedVariables[SidebarInstance]		= {Raw = Sidebar, Items = {}, FirstItem = 1, ContentFrame = ContentFrame, NextAbsPos = nil, CanScrollDown = true};
 	CopyMetatable(SidebarInstance, SharedMetatable);

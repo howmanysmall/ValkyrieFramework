@@ -107,7 +107,7 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	ContentFrame.BorderSizePixel			= 0;
 	ContentFrame.BackgroundTransparency		= 1;
 	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
-	ContentFrame.Name 						= "ContentFrame";
+	ContentFrame.Name 						= "ContentFrame_Appbar";
 
 	local AppbarInstance 					= newproxy(true);
 	SharedVariables[AppbarInstance]			= {Raw = Appbar, ContentFrame = ContentFrame};
