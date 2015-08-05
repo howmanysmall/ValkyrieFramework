@@ -1,14 +1,10 @@
-local CanScrollDown			= {};
-local NextAbsPos 			= {};
-
 _G.ValkyrieC:LoadLibrary "Design";
+_G.ValkyrieC:LoadLibrary "Util";
 local Core          		= _G.ValkyrieC;
 local cSidebarInstance     	= {};
 local InstanceFunctions 	= {};
 
-local Util 					= require(script.Parent.Util);
 local Scrolling 			= require(script.Parent.Scrolling);
-local AssertType, RunAsync 	= Util.AssertType, Util.RunAsync;
 
 local SidebarTemplate 		= script.Parent.Sidebar;
 local ItemTemplate 			= SidebarTemplate.Item;
@@ -16,6 +12,21 @@ local ItemTemplate 			= SidebarTemplate.Item;
 local cItemInstance 		= require(script.Parent.cItemInstance);
 
 local IntentService 		= Core:GetComponent "IntentService";
+local SharedVariables 		= Core:GetComponent "References";
+
+local SharedMetatable 		= {
+	__tostring 				= function() return "Valkyrie Sidebar Instance"; end;
+	__metatable 			= Core;
+	__newindex 				= function(self, k, v)
+		if SharedVariables[self][k] then
+			SharedVariables[self][k] = v;
+		else
+			error("I can't allow you to.", 2);
+		end
+	end;
+	__index 				= InstanceFunctions;
+	__len 					= function() return 0x224; end;
+};
 
 local function spawn(f)
 	coroutine.wrap(f)();
@@ -25,7 +36,7 @@ end
 local function TweenSidebarIn(self, ContentFrame, Tween, Duration, Async)
 	IntentService:BroadcastIntent("SidebarTweeningIn", Tween, Duration, self);
 
-	local Sidebar 			= self.Raw;
+	local Sidebar 			= self:GetRaw();
 	Sidebar.Position 		= UDim2.new(0, -Sidebar.AbsoluteSize.X, 0, 0);
 
 	local function Runner()
@@ -44,8 +55,7 @@ end
 local function TweenSidebarOut(self, ContentFrame, Tween, Duration, Destroy, Async)
 	IntentService:BroadcastIntent("SidebarTweeningOut", Tween, Duration, Destroy, Sidebar);
 
-	local Sidebar 			= self.Raw;
-	local ContentFrame 		= self.ContentFrame;
+	local Sidebar 			= self:GetRaw();
 
 	local function Runner()
 		spawn(function() Sidebar 		:VTweenPosition(UDim2.new(0, -Sidebar.AbsoluteSize.X - 2, 0, 0), 	Tween, Duration); end);
@@ -70,13 +80,13 @@ local function ForwardAnimate(self)
 	local start = tick();
 	local Start 			= self:GetShownItemIndices();
 	CanScrollDown[self]		= true;
-	if self.FirstItem == 1 then
+	if self:GetFirstItem() == 1 then
 		return; -- Don't want to tween if we're as high as you can go.
 	end
-	self.FirstItem 			= self.FirstItem - 1;
+	self.FirstItem 			= self:GetFirstItem() - 1;
 
-	NextAbsPos[self]		= NextAbsPos[self] + 30 + (NextAbsPos[self] % 30 ~= 0 and 30 - NextAbsPos[self] % 30 or 0);
-	self.Raw.ItemContainer:TweenPosition(UDim2.new(0, 0, 0, 30 * -self.FirstItem + 30), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1/6, true);
+	self.NextAbsPos			= self:GetNAP() + 30 + (self:GetNAP() % 30 ~= 0 and 30 - self:GetNAP() % 30 or 0); -- Could probably be optimize but I'm lazy
+	self:GetRaw().ItemContainer:TweenPosition(UDim2.new(0, 0, 0, 30 * -self:GetFirstItem() + 30), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1/6, true);
 end
 
 local function BackwardAnimate(self)
@@ -84,20 +94,20 @@ local function BackwardAnimate(self)
 	local Start, End 		= self:GetShownItemIndices();
 	local Modifier 			= 30;
 
-	local ItemContainer 	= self.Raw.ItemContainer;
-	if not CanScrollDown[self] then
+	local ItemContainer 	= self:GetRaw().ItemContainer;
+	if not self:CanScrollDown() then
 		return;
 	end
 
-	if NextAbsPos[self] and NextAbsPos[self] - 30 <= self.Raw.AbsoluteSize.Y then
-		Modifier			= self.Raw.AbsoluteSize.Y % 30;
-		CanScrollDown[self]	= false;
+	if self:GetNAP() and self:GetNAP() - 30 <= self:GetRaw().AbsoluteSize.Y then
+		Modifier			= self:GetRaw().AbsoluteSize.Y % 30;
+		self.CanScrollDown	= false;
 	else
-		self.FirstItem 		= self.FirstItem + 1;
+		self.FirstItem 		= self:GetFirstItem() + 1;
 	end
-	NextAbsPos[self] 		= (NextAbsPos[self] or self.Items[#self.Items].AbsolutePosition.Y + Modifier) - Modifier;
+	NextAbsPos[self] 		= (self:GetNAP() or self:GetItems()[#self:GetItems()].AbsolutePosition.Y + Modifier) - Modifier;
 
-	self.Raw.ItemContainer:TweenPosition(UDim2.new(0, 0, 0, 30 * -self.FirstItem + Modifier), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1/6, true);
+	self:GetRaw().ItemContainer:TweenPosition(UDim2.new(0, 0, 0, 30 * -self:GetFirstItem() + Modifier), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1/6, true);
 end
 
 local function CreateItemWithSettings(Settings, Index, Sidebar)
@@ -130,8 +140,20 @@ local function CreateItemWithSettings(Settings, Index, Sidebar)
 end
 
 function cSidebarInstance.new(Settings, Tween, Duration, Async)
-	local Sidebar 						= SidebarTemplate:Clone();
-	local FakeIndex 					= setmetatable({Raw = Sidebar, Items = {}, FirstItem = 1}, {__index = InstanceFunctions});
+	AssertType("Argument #2", Tween, 	"string",  true);
+	AssertType("Argument #3", Duration, "number",  true);
+	AssertType("Argument #4", Async,	"boolean", true);
+
+	local Sidebar 							= SidebarTemplate:Clone();
+	local SidebarInstance	 				= newproxy(true);
+	local ContentFrame 						= Instance.new("Frame", Core:GetContentFrame());
+	ContentFrame.BorderSizePixel			= 0;
+	ContentFrame.BackgroundTransparency		= 1;
+	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
+	ContentFrame.Name 						= "ContentFrame";
+
+	SharedVariables[SidebarInstance]		= {Raw = Sidebar, Items = {}, FirstItem = 1, ContentFrame = ContentFrame, NextAbsPos = nil, CanScrollDown = true};
+	CopyMetatable(SidebarInstance, SharedMetatable);
 
 	Sidebar.Item:Destroy();
 
@@ -144,7 +166,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 			for i = 1, #Settings.Items do
 				AssertType(string.format("Settings.Items[%d]", i), Settings.Items[i], "table");
 
-				table.insert(FakeIndex.Items, CreateItemWithSettings(Settings.Items[i], i - 1, Sidebar));
+				table.insert(SharedVariables[SidebarInstance].Items, CreateItemWithSettings(Settings.Items[i], i - 1, Sidebar));
 			end
 		end
 
@@ -174,67 +196,57 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 		Sidebar.Parent 					= Core:GetOverlay();
 	end); -- NOT AppbarTweeningOut because need to go with the animation till the end
 
-	local SidebarInstance;
-
 	Sidebar.MouseWheelForward:connect(function()
 		ForwardAnimate(SidebarInstance);
 	end);
 	Sidebar.MouseWheelBackward:connect(function()
 		BackwardAnimate(SidebarInstance);
 	end);
-
-	Sidebar.Parent 						= Core:GetContentFrame();
-
 	Sidebar.AncestryChanged:connect(function(_, NewParent)
 		if NewParent == nil then
 			IntentService:BroadcastIntent("SidebarDestroyed", SidebarInstance);
 		end
 	end);
 
-	local ContentFrame 						= Instance.new("Frame", Core:GetContentFrame());
-	ContentFrame.BorderSizePixel			= 0;
-	ContentFrame.BackgroundTransparency		= 1;
-	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
-	ContentFrame.Name 						= "ContentFrame";
-
-	Core:SetContentFrame(ContentFrame, Sidebar);
-	FakeIndex.ContentFrame 					= ContentFrame;
-
-	SidebarInstance	 					= newproxy(true);
-	CanScrollDown[SidebarInstance]		= true;
 	Scrolling:BindScrolling(Sidebar);
-
-	do
-		local Metatable 				= getmetatable(SidebarInstance);
-		Metatable.__tostring 			= function() return "Valkyrie Sidebar Instance"; end;
-		Metatable.__metatable 			= Settings;
-		Metatable.__newindex 			= function(_, k, v)
-			if SidebarInstance[k] then
-				rawset(FakeIndex, k, v); -- Why does this not set anything without rawset()?
-			else
-				error("I can't allow you to.", 2);
-			end
-		end;
-		Metatable.__index 				= FakeIndex;
-		Metatable.__len 				= function() return 0x224; end;
-	end
+	Sidebar.Parent 						= Core:GetContentFrame();
+	Core:SetContentFrame(ContentFrame, Sidebar);
 
 	return SidebarInstance, TweenSidebarIn(SidebarInstance, ContentFrame, Tween, Duration, Async);
 end
 
 function InstanceFunctions:GetNumItems()
-	return #self.Items;
+	return #self:GetItems();
+end
+
+function InstanceFunctions:GetRaw()
+	return SharedVariables[self].Raw;
+end
+function InstanceFunctions:GetNAP()
+	return SharedVariables[self].NextAbsPos;
+end
+function InstanceFunctions:GetRealContentFrame()
+	return SharedVariables[self].ContentFrame;
+end
+function InstanceFunctions:GetFirstItem()
+	return SharedVariables[self].FirstItem;
+end
+function InstanceFunctions:GetItems()
+	return SharedVariables[self].Items;
+end
+function InstanceFunctions:CanScrollDown()
+	return SharedVariables[self].CanScrollDown;
 end
 
 local Overlay = Core:GetOverlay();
 function InstanceFunctions:GetShownItemIndices()
-	local Start 						= self.FirstItem;
+	local Start 						= self:GetFirstItem();
 	local End 							= nil;
 	local didStart 						= false;
 
-	local Items = self.Items;
+	local Items = self:GetItems();
 	local resY = Overlay.AbsoluteSize.Y;
-	for i=math.max(1,self.FirstItem-1), #Items do
+	for i = math.max(1, Start - 1), #Items do
 		local absY = Items[i].AbsolutePosition.Y;
 		if absY > -30 then
 			Start = i;
@@ -246,26 +258,26 @@ function InstanceFunctions:GetShownItemIndices()
 	end;
 
 	if not End then
-		End 							= #self.Items - 1;
+		End 							= #Items - 1;
 	end
 
 	return Start, End;
 end
 
 function InstanceFunctions:GetItem(Index)
-	return cItemInstance.new(self.Items[Index]);
+	return cItemInstance.new(self:GetItems()[Index]);
 end
 
 function InstanceFunctions:Destroy(Tween, Duration, Async)
-	return TweenSidebarOut(self, self.ContentFrame, Tween, Duration, true, Async);
+	return TweenSidebarOut(self, self:GetRealContentFrame(), Tween, Duration, true, Async);
 end
 
 function InstanceFunctions:Show(Tween, Duration, Async)
-	return TweenSidebarIn(self, self.ContentFrame, Tween, Duration, Async);
+	return TweenSidebarIn(self, self:GetRealContentFrame(), Tween, Duration, Async);
 end
 
 function InstanceFunctions:Hide(Tween, Duration, Async)
-	return TweenSidebarOut(self, self.ContentFrame, Tween, Duration, false, Async);
+	return TweenSidebarOut(self, self:GetRealContentFrame(), Tween, Duration, false, Async);
 end
 
 return cSidebarInstance;

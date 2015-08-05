@@ -1,40 +1,37 @@
 _G.ValkyrieC:LoadLibrary "Design";
+_G.ValkyrieC:LoadLibrary "Util";
 local Core          		= _G.ValkyrieC;
 local cItemInstance     	= {};
 local InstanceFunctions 	= {};
-
-local Util 					= require(script.Parent.Util);
-local AssertType, RunAsync 	= Util.AssertType, Util.RunAsync;
-
-local Connections 			= setmetatable({}, {__mode = "k"});
 
 local function spawn(f)
 	coroutine.wrap(f)();
 end
 
+local SharedVariables 		= Core:GetComponent "References";
+local SharedMetatable 		= {
+	__len 					= function() return math.pi; end;
+	__index 				= InstanceFunctions;
+	__metatable 			= "Cherries are awesome!";
+	__newindex 				= function(self, k, v)
+		if SharedVariables[self][k] then
+			SharedVariables[self][k] = v;
+		else
+			error("New index? Have some music instead! \14\14\14", 2);
+		end
+	end;
+};
+
 function cItemInstance.new(Item)
-	if Item == nil then
+	if Item == nil then -- Invalid index?
 		return nil;
 	end
 
 	AssertType("Argument #1", Item, "Instance");
 
-	local FakeIndex 		= setmetatable({Raw = Item, Extend = Item.Extend1}, {__index = InstanceFunctions});
-
 	local ItemInstance 		= newproxy(true);
-	do
-		local Metatable 		= getmetatable(ItemInstance);
-		Metatable.__len 		= function() return math.pi; end;
-		Metatable.__index 		= FakeIndex;
-		Metatable.__metatable	= "Cherries are awesome!";
-		Metatable.__newindex 	= function(_, k, v)
-			if FakeIndex[k] ~= nil then
-				FakeIndex[k] 	= v;
-			else
-				error("New index? Have some music instead! \14\14\14", 2);
-			end
-		end;
-	end
+	CopyMetatable(ItemInstance, SharedMetatable);
+	SharedVariables[ItemInstance] = {Raw = Item, Extend = Item.Extend1};
 
 	return ItemInstance;
 end
@@ -45,8 +42,8 @@ function InstanceFunctions:TweenBackgroundColor(NewColor, Tween, Duration, Async
 	AssertType("Argument #3", Duration, "number", 	true);
 	AssertType("Argument #4", Async, 	"boolean", 	true);
 
-	local MainObject 			= self.Raw;
-	local Extend	 			= self.Extend;
+	local MainObject 			= self:GetRaw();
+	local Extend	 			= self:GetExtension();
 
 	local function Runner()
 		spawn(function() 	MainObject:TweenBackgroundColor3(NewColor, Tween, Duration); end);
@@ -66,8 +63,8 @@ function InstanceFunctions:TweenOnX(New, Tween, Duration, Async)
 	AssertType("Argument #3", Duration, "number", 	true);
 	AssertType("Argument #4", Async, 	"boolean", 	true);
 
-	local MainObject 			= self.Raw;
-	local Extend	 			= self.Extend;
+	local MainObject 			= self:GetRaw();
+	local Extend	 			= self:GetExtension();
 
 	local function Runner()
 		spawn(function() 	Extend		:VTweenSize(	UDim2.new(0, 10 + New, 1, 0),  Tween, Duration); end);
@@ -83,14 +80,14 @@ function InstanceFunctions:TweenOnX(New, Tween, Duration, Async)
 end
 
 function InstanceFunctions:GetCallback()
-	return Connections[self.Raw];
+	return SharedVariables[self].Connection;
 end
 
 function InstanceFunctions:DisconnectCallback()
-	if Connections[self.Raw] then
-		Connections[self.Raw]:disconnect();
+	if SharedVariables[self].Connection then
+		SharedVariables[self].Connection:disconnect();
 	end
-	Connections[self.Raw] = nil;
+	SharedVariables[self].Connection = nil;
 end
 
 function InstanceFunctions:SetCallback(Callback)
@@ -106,7 +103,7 @@ function InstanceFunctions:SetCallback(Callback)
 		Callback();
 	end
 
-	Connections[self.Raw]	= self.Raw.InputEnded:connect(Connection);
+	SharedVariables[self].Connection	= self:GetRaw().InputEnded:connect(Connection);
 end
 
 return cItemInstance;
