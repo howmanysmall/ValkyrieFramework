@@ -189,12 +189,12 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 		end
 	end);
 
-	IntentService:RegisterIntent("AppbarTweeningIn", function()
+	--[[IntentService:RegisterIntent("AppbarTweeningIn", function() Why was I doing this?
 		Sidebar.Parent 					= Core:GetOverlay():FindFirstChild("ContentFrame");
 	end);
 	IntentService:RegisterIntent("AppbarDestroyed",  function()
 		Sidebar.Parent 					= Core:GetOverlay();
-	end); -- NOT AppbarTweeningOut because need to go with the animation till the end
+	end); -- NOT AppbarTweeningOut because need to go with the animation till the end]]
 
 	Sidebar.MouseWheelForward:connect(function()
 		ForwardAnimate(SidebarInstance);
