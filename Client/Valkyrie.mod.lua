@@ -71,7 +71,7 @@ local CurrentContentFrame = nil;
 cxitio.GetContentFrame = function() return CurrentContentFrame or overlay; end;
 cxitio.SetContentFrame = function(...)
 	local new, owner = extract(...);
-	for _, Instance in next, (CurrentContentFrame or overlay):GetChildren() do
+	for _, Instance in next, (CurrentContentFrame and CurrentContentFrame.Parent or overlay):GetChildren() do
 		if Instance ~= new and Instance ~= owner then
 			Instance.Parent = new;
 		end
