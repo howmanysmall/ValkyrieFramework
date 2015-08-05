@@ -31,9 +31,17 @@ function cItemInstance.new(Item)
 
 	local ItemInstance 		= newproxy(true);
 	CopyMetatable(ItemInstance, SharedMetatable);
-	SharedVariables[ItemInstance] = {Raw = Item, Extend = Item.Extend1};
+	SharedVariables[ItemInstance] = {Raw = Item, Extension = Item.Extend1};
 
 	return ItemInstance;
+end
+
+function InstanceFunctions:GetRaw()
+	return SharedVariables[self].Raw;
+end
+
+function InstanceFunctions:GetExtension()
+	return SharedVariables[self].Extension;
 end
 
 function InstanceFunctions:TweenBackgroundColor(NewColor, Tween, Duration, Async)
