@@ -10,7 +10,7 @@ function Util.GetRealType(Value)
 	if type(Value) == "userdata" then
 		return GetType(Value);
 	end
-	
+
 	return type(Value);
 end
 
@@ -18,13 +18,13 @@ function Util.CheckSingleType(Value, Type)
 	if type(Type) ~= "string" then
 		error("Your type must be a string!", 2);
 	end
-	
+
 	return Util.GetRealType(Value) == Type;
 end
 
 function Util.AssertType(Name, Value, Type, IgnoreNil)
-	if not (IgnoreNil and Value == nil) then 
-		assert(Util.CheckSingleType(Value, Type), string.format("%s needs to be a %s", Name, Type), 3);
+	if not (IgnoreNil and Value == nil) then
+		assert(Util.CheckSingleType(Value, Type), string.format("%s needs to be a %s (%s given)", Name, Type, Util.GetRealType(Value)), 3);
 	end
 end
 
