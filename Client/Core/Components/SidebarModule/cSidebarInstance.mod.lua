@@ -167,6 +167,12 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 				AssertType(string.format("Settings.Items[%d]", i), Settings.Items[i], "table");
 
 				table.insert(SharedVariables[SidebarInstance].Items, CreateItemWithSettings(Settings.Items[i], i - 1, Sidebar));
+
+				if Settings.Items[i].Callback then -- Need to do this AFTER the item has been inserted
+					AssertType("Settings.Callback", Settings.Items[i].Callback, "function");
+
+					self:GetItem(i):SetCallback(Settings.Items[i].Callback);
+				end
 			end
 		end
 
