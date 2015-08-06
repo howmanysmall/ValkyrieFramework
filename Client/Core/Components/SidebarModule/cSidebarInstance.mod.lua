@@ -181,7 +181,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 		if Settings.BackgroundColor then
 			AssertType("Settings.BackgroundColor", Settings.BackgroundColor, "Color3");
 
-			Sidebar.BackgroundColor3 	= Settings.BackgroundColor;
+			Sidebar.BackgroundColor3 		= Settings.BackgroundColor;
 		end
 
 		if Settings.BorderColor then
@@ -272,18 +272,27 @@ function InstanceFunctions:GetShownItemIndices()
 	return Start, End;
 end
 
-local ItemCache = {};
+local ItemCache		 					= {};
 
 function InstanceFunctions:GetItem(Index)
 	if not ItemCache[self] then
-		ItemCache[self] 	= {};
+		ItemCache[self] 				= {};
 	end
 	if not ItemCache[self][Index] then
-		local ItemInstance 	= cItemInstance.new(self:GetItems()[Index]);
-		ItemCache[self][Index] = ItemInstance;
+		local ItemInstance 				= cItemInstance.new(self:GetItems()[Index]);
+		ItemCache[self][Index] 			= ItemInstance;
 		return ItemInstance;
 	end
 	return ItemCache[self][Index];
+end
+
+function InstanceFunctions:SetItem(Index, Settings)
+	ItemCache[self][Index] 				= nil;
+	SharedVariables[self].Items[Index]	= CreateItemWithSettings(Settings, Index, self:GetRaw());
+
+	if Settings.Callback then
+		self:GetItem(Index):SetCallback(Settings.Callback);
+	end
 end
 
 function InstanceFunctions:Destroy(Tween, Duration, Async)
