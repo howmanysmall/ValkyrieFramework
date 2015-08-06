@@ -53,7 +53,7 @@ local function TweenSidebarIn(self, ContentFrame, Tween, Duration, Async)
 end
 
 local function TweenSidebarOut(self, ContentFrame, Tween, Duration, Destroy, Async)
-	IntentService:BroadcastIntent("SidebarTweeningOut", Tween, Duration, Destroy, Sidebar);
+	IntentService:BroadcastIntent("SidebarTweeningOut", Tween, Duration, Destroy, self);
 
 	local Sidebar 			= self:GetRaw();
 
@@ -79,7 +79,7 @@ end
 local function ForwardAnimate(self)
 	local start = tick();
 	local Start 			= self:GetShownItemIndices();
-	CanScrollDown[self]		= true;
+	self.CanScrollDown		= true;
 	if self:GetFirstItem() == 1 then
 		return; -- Don't want to tween if we're as high as you can go.
 	end
@@ -105,7 +105,7 @@ local function BackwardAnimate(self)
 	else
 		self.FirstItem 		= self:GetFirstItem() + 1;
 	end
-	NextAbsPos[self] 		= (self:GetNAP() or self:GetItems()[#self:GetItems()].AbsolutePosition.Y + Modifier) - Modifier;
+	self.NextAbsPos 		= (self:GetNAP() or self:GetItems()[#self:GetItems()].AbsolutePosition.Y + Modifier) - Modifier;
 
 	self:GetRaw().ItemContainer:TweenPosition(UDim2.new(0, 0, 0, 30 * -self:GetFirstItem() + Modifier), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1/6, true);
 end
