@@ -286,12 +286,42 @@ function InstanceFunctions:GetItem(Index)
 	return ItemCache[self][Index];
 end
 
-function InstanceFunctions:SetItem(Index, Settings)
-	ItemCache[self][Index] 				= nil;
-	SharedVariables[self].Items[Index]	= CreateItemWithSettings(Settings, Index, self:GetRaw());
+function InstanceFunctions:SetItem(Index, Settings, Tween, Duration, Async)
+	AssertType("Argument #1", Index, 	"number");
+	AssertType("Argument #2", Settings, "table");
+	AssertType("Argument #3", Tween, 	"string", 	true);
+	AssertType("Argument #4", Duration, "number", 	true);
+	AssertType("Argument #5", Async, 	"boolean", 	true);
 
-	if Settings.Callback then
-		self:GetItem(Index):SetCallback(Settings.Callback);
+	local function Runner()
+		local OldItem 						= self:GetItem(Index);
+		if OldItem then
+			Duration 						= Duration and Duration * 0.5 or 0.5;
+			OldItem:TweenOnX(-150, Tween, Duration, false);
+			OldItem:GetRaw():Destroy();
+		end
+		if ItemCache[self] then
+			ItemCache[self][Index] 			= nil;
+		end
+
+		local RawItem 						= CreateItemWithSettings(Settings, Index - 1, self:GetRaw());
+		SharedVariables[self].Items[Index]	= RawItem;
+		local NewItem 						= self:GetItem(Index);
+
+		if Settings.Callback then
+			NewItem:SetCallback(Settings.Callback);
+		end
+
+		RawItem.Position 					= UDim2.new(0, -140, 0, 30 * (Index - 1));
+		RawItem.Extend1.Position 			= UDim2.new(0, 140, 0, 0);
+		RawItem.Extend1.Size 				= UDim2.new(0, -140, 1, 0);
+		NewItem:TweenOnX(0, Tween, Duration, false);
+	end
+
+	if Async then
+		return RunAsync(Runner);
+	else
+		Runner();
 	end
 end
 
