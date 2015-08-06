@@ -1,7 +1,7 @@
 _G.ValkyrieC:LoadLibrary "Design";
 _G.ValkyrieC:LoadLibrary "Util";
 local Core          		= _G.ValkyrieC;
-local cItemInstance     	= {};
+local cItemInstance     	= wrapper({});
 local InstanceFunctions 	= {};
 
 local function spawn(f)

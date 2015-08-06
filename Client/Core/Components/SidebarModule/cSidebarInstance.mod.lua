@@ -1,7 +1,7 @@
 _G.ValkyrieC:LoadLibrary "Design";
 _G.ValkyrieC:LoadLibrary "Util";
 local Core          		= _G.ValkyrieC;
-local cSidebarInstance     	= {};
+local cSidebarInstance     	= wrapper({});
 local InstanceFunctions 	= {};
 
 local Scrolling 			= require(script.Parent.Scrolling);
@@ -18,7 +18,7 @@ local SharedMetatable 		= {
 	__tostring 				= function() return "Valkyrie Sidebar Instance"; end;
 	__metatable 			= Core;
 	__newindex 				= function(self, k, v)
-		if SharedVariables[self][k] then
+		if SharedVariables[self][k] ~= nil then
 			SharedVariables[self][k] = v;
 		else
 			error("I can't allow you to.", 2);
@@ -152,7 +152,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
 	ContentFrame.Name 						= "ContentFrame_Sidebar";
 
-	SharedVariables[SidebarInstance]		= {Raw = Sidebar, Items = {}, FirstItem = 1, ContentFrame = ContentFrame, NextAbsPos = nil, CanScrollDown = true};
+	SharedVariables[SidebarInstance]		= {Raw = Sidebar, Items = {}, FirstItem = 1, ContentFrame = ContentFrame, NextAbsPos = false, CanScrollDown = true};
 	CopyMetatable(SidebarInstance, SharedMetatable);
 
 	Sidebar.Item:Destroy();
