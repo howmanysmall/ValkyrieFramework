@@ -227,6 +227,7 @@ function WrapperClass:mod(from, to)
 		self.unwrapper.pairs[substitute] = to;
 	end
 	self.wrapper.pairs[from] = substitute;
+	self.wrapper.pairs[substitute] = substitute;
 end;
 
 function WrapperClass:Override(thing)
