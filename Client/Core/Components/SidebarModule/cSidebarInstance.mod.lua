@@ -157,8 +157,6 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 
 	Sidebar.Item:Destroy();
 
-	local table 							= table; -- FIXME
-
 	if Settings then
 		AssertType("Argument #1", Settings, "table");
 
