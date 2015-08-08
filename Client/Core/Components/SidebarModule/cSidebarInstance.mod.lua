@@ -133,7 +133,7 @@ local function CreateItemWithSettings(Settings, Index, Sidebar)
 	end
 
 	Item.Position 						= UDim2.new(0, 10, 0, 30 * Index);
-	Item.Name 							= "Item" .. Index;
+	Item.Name 							= "Item" .. Index + 1;
 	Item.Parent 						= Sidebar.ItemContainer;
 
 	return Item;
@@ -258,7 +258,7 @@ function InstanceFunctions:GetShownItemIndices()
 		if not didStart and absY > offsetY - 30 then
 			Start 						= i;
 			didStart 					= true;
-		elseif absY > resY - offsetY then
+		elseif absY > resY + offsetY then
 			End 						= i;
 			break;
 		end;
