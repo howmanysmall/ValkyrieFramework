@@ -250,15 +250,16 @@ function InstanceFunctions:GetShownItemIndices()
 	local didStart 						= false;
 	local ContainerFrame 				= self:GetRaw();
 
-	local Items = self:GetItems();
-	local resY = ContainerFrame.AbsoluteSize.Y;
+	local Items 						= self:GetItems();
+	local resY 							= ContainerFrame.AbsoluteSize.Y;
+	local offsetY 						= ContainerFrame.AbsolutePosition.Y;
 	for i = math.max(1, Start - 1), #Items do
-		local absY = Items[i].AbsolutePosition.Y;
-		if absY > -30 then
-			Start = i;
-			didStart = true;
-		elseif absY > resY then
-			End = i;
+		local absY 						= Items[i].AbsolutePosition.Y;
+		if not didStart and absY > offsetY - 30 then
+			Start 						= i;
+			didStart 					= true;
+		elseif absY > resY - offsetY then
+			End 						= i;
 			break;
 		end;
 	end;
