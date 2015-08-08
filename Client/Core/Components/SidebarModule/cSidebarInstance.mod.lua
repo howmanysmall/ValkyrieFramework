@@ -244,14 +244,14 @@ function InstanceFunctions:CanScrollDown()
 	return SharedVariables[self].CanScrollDown;
 end
 
-local Overlay = Core:GetOverlay();
 function InstanceFunctions:GetShownItemIndices()
 	local Start 						= self:GetFirstItem();
 	local End 							= nil;
 	local didStart 						= false;
+	local ContainerFrame 				= self:GetRaw();
 
 	local Items = self:GetItems();
-	local resY = Overlay.AbsoluteSize.Y;
+	local resY = ContainerFrame.AbsoluteSize.Y;
 	for i = math.max(1, Start - 1), #Items do
 		local absY = Items[i].AbsolutePosition.Y;
 		if absY > -30 then
