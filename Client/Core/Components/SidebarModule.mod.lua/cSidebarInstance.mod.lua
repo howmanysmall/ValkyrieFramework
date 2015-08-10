@@ -216,6 +216,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 	Scrolling:BindScrolling(Sidebar);
 	Sidebar.Parent 						= Core:GetContentFrame();
 	Core:SetContentFrame(ContentFrame, Sidebar);
+	Core:LockParent(Sidebar);
 
 	return SidebarInstance, TweenSidebarIn(SidebarInstance, ContentFrame, Tween, Duration, Async);
 end

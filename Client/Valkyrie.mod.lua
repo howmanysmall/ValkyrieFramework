@@ -69,15 +69,20 @@ cxitio.GetOverlay = function() return overlay	end;
 
 local CurrentContentFrame = nil;
 cxitio.GetContentFrame = function() return CurrentContentFrame or overlay; end;
+local LockedParents = {};
 cxitio.SetContentFrame = function(...)
 	local new, owner = extract(...);
 	for _, Instance in next, (CurrentContentFrame and CurrentContentFrame.Parent or overlay):GetChildren() do
-		if Instance ~= new and Instance ~= owner then
-			Instance.Parent = new;
+		if Instance ~= new and Instance ~= owner and not LockedParents[Instance] then
+			pcall(function() Instance.Parent = new; end); -- Don't tell anybody and it should be fine...
 		end
 	end
 	CurrentContentFrame = new;
 end;
+cxitio.LockParent = function(...)
+	local Instance = extract(...);
+	LockedParents[Instance] = true;
+end
 
 do
 	local Libraries = {};
