@@ -90,7 +90,6 @@ local function ForwardAnimate(self)
 end
 
 local function BackwardAnimate(self)
-	local start = tick();
 	local Start, End 		= self:GetShownItemIndices();
 	local Modifier 			= 30;
 
@@ -99,7 +98,7 @@ local function BackwardAnimate(self)
 		return;
 	end
 
-	if self:GetNAP() and self:GetNAP() - 30 <= self:GetRaw().AbsoluteSize.Y then
+	if self:GetNAP() and self:GetNAP() - 30 <= self:GetRaw().AbsoluteSize.Y + self:GetRaw().AbsolutePosition.Y then
 		Modifier			= self:GetRaw().AbsoluteSize.Y % 30;
 		self.CanScrollDown	= false;
 	else
@@ -265,7 +264,7 @@ function InstanceFunctions:GetShownItemIndices()
 	end;
 
 	if not End then
-		End 							= #Items - 1;
+		End 							= #Items;
 	end
 
 	return Start, End;
