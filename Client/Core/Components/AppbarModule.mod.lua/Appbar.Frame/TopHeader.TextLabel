@@ -1,0 +1,16 @@
+{
+	"Active": 					[2, false],
+	"BackgroundColor3":			[12, {"R": 255, "G": 255, "B": 255}],
+	"BackgroundTransparency":	[4, 0.75],
+	"Position":					[7, {"OffsetX": 50, "ScaleX": 0, "OffsetY": 0, "ScaleY": 10}],
+	"Size": 					[7, {"OffsetX": 0, "ScaleX": 0.5, "OffsetY": 30, "ScaleY": 0}],
+	"ZIndex": 					[3, 9],
+	"Font": 					[18, 0],
+	"FontSize": 				[18, 6],
+	"Text": 					[1, "Sample Text"],
+	"TextColor3": 				[12, {"R": 255, "G": 255, "B": 255}],
+	"TextScaled": 				[2, false],
+	"TextWrapped": 				[2, false],
+	"TextXAlignment": 			[18, 0],
+	"TextYAlignment": 			[18, 2]
+}
