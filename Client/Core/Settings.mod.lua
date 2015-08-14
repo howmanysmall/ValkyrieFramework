@@ -41,4 +41,4 @@ mt.__index = function(_,k) return sets[k]; end;
 mt.__metatable = "Locked Metatable: Valkyrie";
 mt.__tostring = function() return "Valkyrie Client Settings"; end;
 
-return ;r
+return r;
