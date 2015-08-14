@@ -5,13 +5,5 @@
 	"Position":					[7, {"OffsetX": 0, "ScaleX": 0, "OffsetY": 0, "ScaleY": 0}],
 	"Size": 					[7, {"OffsetX": 0, "ScaleX": 1, "OffsetY": 0, "ScaleY": 1}],
 	"ZIndex": 					[3, 1],
-	"Font": 					[18, 0],
-	"FontSize": 				[18, 0],
-	"Text": 					[1, "100 %"],
-	"TextColor3": 				[12, {"R": 255, "G": 255, "B": 255}],
-	"TextScaled": 				[2, false],
-	"TextWrapped": 				[2, true],
-	"TextXAlignment": 			[18, 2],
-	"TextYAlignment": 			[18, 2],
 	"BorderSizePixel":			[3, 0]
 }

@@ -12,5 +12,6 @@
 	"TextScaled": 				[2, false],
 	"TextWrapped": 				[2, false],
 	"TextXAlignment": 			[18, 0],
-	"TextYAlignment": 			[18, 2]
+	"TextYAlignment": 			[18, 2],
+	"BorderSizePixel": 			[3, 0]
 }

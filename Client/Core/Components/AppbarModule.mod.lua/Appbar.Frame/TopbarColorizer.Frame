@@ -4,5 +4,6 @@
 	"BackgroundTransparency":	[4, 0],
 	"Position":					[7, {"OffsetX": 0, "ScaleX": 0, "OffsetY": -36, "ScaleY": 0}],
 	"Size": 					[7, {"OffsetX": 0, "ScaleX": 1, "OffsetY": 36, "ScaleY": 0}],
-	"ZIndex": 					[3, 9]
+	"ZIndex": 					[3, 9],
+	"BorderSizePixel":			[3, 0]
 }
