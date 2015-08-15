@@ -93,7 +93,6 @@ return function(wrapper)
 	wrapper:OverrideGlobal "pack" (pack);
 
 	for FuncName, UtilFunction in next, UtilMod do
-		print("Overriding", FuncName, UtilFunction);
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
 	end
 
