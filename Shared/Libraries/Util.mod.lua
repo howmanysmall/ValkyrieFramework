@@ -39,6 +39,7 @@ local map = function(f,t)
 	end;
 	return t;
 end;
+local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
@@ -50,6 +51,7 @@ return function(wrapper)
 	if client then
 		wrapper:OverrideGlobal "LocalPlayer" (game.Players.LocalPlayer)
 	end;
+	wrapper:OverrideGlobal "isLocal" (client)
 	wrapper:OverrideGlobal "new" (function(thing)
 		return setmetatable({
 			Instance = function(_,t)
@@ -70,6 +72,7 @@ return function(wrapper)
 			end
 		},{
 			__call = function(_,...)
+				if CustomClasses[thing] then return CustomClasses[thing](...) end;
 				local _ENV = getfenv(2);
 				local r = pack(
 					pcall(
@@ -102,5 +105,9 @@ return function(wrapper)
 				p.Character:BreakJoints();
 			end;
 		end;
+	};
+	wrapper:Override "ModuleScript":Instance {
+		require = require;
+		Require = require;
 	};
 end;

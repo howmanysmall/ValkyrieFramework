@@ -161,7 +161,6 @@ local c3lerp = function(a,b,al)
 end
 
 local Tweens = _G._Valkyrie:GetComponent("Tweens");
-local CFI = require(script.CFI);
 
 local rad,sin,cos = math.rad,math.sin, math.cos;
 local function calculateCircularTween(origin, radius, degrees)
@@ -1180,9 +1179,8 @@ local PartMod = {
 		TweenTime = TweenTime or 1;
 		assert(type(NewCF) == 'CFrame', "You need to supply a valid CFrame to tween to!", 2);
 		local t = 0;
-		local _,CFIFunc = CFI(start, NewCF)
 		while t < TweenTime do
-			self.CFrame = CFIFunc(tween(t,0,1,TweenTime));
+			self.CFrame = start:Lerp(NewCF,tween(t,0,1,TweenTime));
 			t = t+wait()
 		end
 		self.CFrame = NewCF;
