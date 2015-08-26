@@ -36,66 +36,40 @@ mt.__index = {
 	ClassList = ClassesList;
 	NewClass = function(className)
 		return function(class)
-			local new;
-			if type(class.new) == 'function' then
-				new = function(...)
-					local repl = class.new(...)
-					local cap = {};
-					for k,v in next,class do
-						if k ~= 'new' and not k:find("^__") then
-							cap[k] = v;
-						end;
-					end;
-					for k,v in next,repl do
+			local new = function(repl)
+				local repl = type(repl) == 'table' and repl or {};
+				local cap = {};
+				for k,v in next,class do
+					if k ~= 'new' and (type(k) ~= 'string' or k:sub(1,2) ~= '__') then
 						cap[k] = v;
 					end;
-					local r = newproxy(true);
-					local mt = getmetatable(r);
-					mt.__index = cap;
-					mt.__newindex = function(_,k,v) cap[k] = v end;
-					mt.__tostring = class.__tostring;
-					mt.__metatable = class.__metatable;
-					mt.__len = class.__len;
-					mt.__lt = class.__lt;
-					mt.__le = class.__le;
-					mt.__eq = class.__eq;
-					mt.__add = class.__add;
-					mt.__sub = class.__sub;
-					mt.__mul = class.__mul;
-					mt.__div = class.__div;
-					mt.__pow = class.__pow;
-					mt.__mod = class.__mod;
-					return r;
 				end;
-			else
-				new = function(repl)
-					local repl = type(repl) == 'table' and repl or {};
-					local cap = {};
-					for k,v in next,class do
-						if k ~= 'new' and not k:find("^__") then
-							cap[k] = v;
-						end;
-					end;
-					for k,v in next,repl do
-						cap[k] = v;
-					end;
-					local r = newproxy(true);
-					local mt = getmetatable(r);
-					mt.__index = cap;
-					mt.__newindex = function(_,k,v) cap[k] = v end;
-					mt.__tostring = class.__tostring;
-					mt.__metatable = class.__metatable;
-					mt.__len = class.__len;
-					mt.__lt = class.__lt;
-					mt.__le = class.__le;
-					mt.__eq = class.__eq;
-					mt.__add = class.__add;
-					mt.__sub = class.__sub;
-					mt.__mul = class.__mul;
-					mt.__div = class.__div;
-					mt.__pow = class.__pow;
-					mt.__mod = class.__mod;
-					return r;
+				for k,v in next,repl do
+					cap[k] = v;
+				end;
+				local r = newproxy(true);
+				local mt = getmetatable(r);
+				mt.__index = cap;
+				mt.__newindex = function(_,k,v) cap[k] = v end;
+				mt.__tostring = class.__tostring;
+				mt.__metatable = class.__metatable;
+				mt.__len = class.__len;
+				mt.__lt = class.__lt;
+				mt.__le = class.__le;
+				mt.__eq = class.__eq;
+				mt.__add = class.__add;
+				mt.__sub = class.__sub;
+				mt.__mul = class.__mul;
+				mt.__div = class.__div;
+				mt.__pow = class.__pow;
+				mt.__mod = class.__mod;
+				return r;
+			end;
+			if type(class.new) == 'function' then
+				local onew = new;
+				local cnew = class.new;
+				new = function(...)
+					return onew(cnew(...));
 				end;
 			end;
 			ClassList[className] = new;
