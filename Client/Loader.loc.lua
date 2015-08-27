@@ -2,7 +2,7 @@
 warn("Alright.");
 require(script.Parent:WaitForChild("Valkyrie"));
 
-_G.ValkyrieC:LoadLibrary "Design";
+--[[_G.ValkyrieC:LoadLibrary "Design";
 _G.ValkyrieC:GetComponent "Logger":Tag "AnimationManager":Info "Playing 'walking' animation!";
 
 local Items = {{Text = "Hello1", BackgroundColor = Color3.Black}};
@@ -43,4 +43,4 @@ local appbar = _G.ValkyrieC:GetComponent "AppbarModule":CreateAppbar(
 
 appbar:TweenBarColor(Color3.Blue, Color3.Blue[600], "inquad", 1, true);
 appbar:GetLeftIcon():TweenIconColor(Color3.Black, "incirc", 0.5, false);
-appbar:GetTextObject():ChangeText("Hello", "inquint", .3, false);
+appbar:GetTextObject():ChangeText("Hello", "inquint", .3, false);]]
