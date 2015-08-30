@@ -16,7 +16,7 @@ config("collb_dev", {
     host    = "127.0.0.1",
     user    = "valkyrie",
     password= "m224crb",
-    database= "valkyrie_engine" 
+    database= "valkyrie_engine"
   }
 });
 config("local_dev", {
@@ -26,5 +26,11 @@ config("local_dev", {
   password  = "m224crb",
   database  = "valkyrie_engine",
   robloxun  = "ValkyrieBot",
-  robloxpw  = "m224crb"
+  robloxpw  = "m224crb",
+  mysql     = {
+    host    = "127.0.0.1",
+    user    = "valkyrie",
+    password= "m224crb",
+    database= "valkyrie_engine"
+  }
 });
