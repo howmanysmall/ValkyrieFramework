@@ -46,6 +46,7 @@ local echoerror = function(e,s)
 end;
 
 local convert do
+	local ignorerec = {};
 	-- Variadic form of convert
 	local convertAll = function(from, to, this, ...)
 		-- Pack all the extra arguments into a table
@@ -69,9 +70,13 @@ local convert do
 				if type(value) == 'table' and type(ret) == 'table' then
 					-- If we're dealing with a table then sort out the cloning
 					-- Also make sure we're plain converting
+					ignorerec[value] = true;
 					for k,v in pairs(value) do
-						pcall(rawset, ret, convert(from, to, this, k), convert(from, to, this, v));
+						if not ignorerec[v] then
+							pcall(rawset, ret, convert(from, to, this, k), convert(from, to, this, v));
+						end;
 					end;
+					ignorerec[value] = nil;
 				elseif type(ret) == 'userdata' then
 					if pcall(gs, game, value) then
 						getmetatable(ret).__index = this.imt.__index;
