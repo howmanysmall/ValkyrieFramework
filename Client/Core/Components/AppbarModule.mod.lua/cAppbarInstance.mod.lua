@@ -157,6 +157,7 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	Appbar.Parent 							= Core:GetOverlay();
 
 	Core:SetContentFrame(ContentFrame, Appbar);
+	Core:LockParent(Appbar);
 
 	Appbar.AncestryChanged:connect(function(_, NewParent)
 		if NewParent == nil then

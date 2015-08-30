@@ -104,7 +104,7 @@ local function FormatMessage(self, ...)
     local Formatted     = MessageFormat;
     Formatted           = Formatted:gsub("\1", Settings[self].Level);
     Formatted           = Formatted:gsub("\2", table.concat(Settings[self].Tags, ", "));
-    Formatted           = Formatted:gsub("\3", (function() local a, b = {...}, ""; for i = 1, #a do b = b .. tostring(a[i]) .. "\t"; end return b:sub(1, b:len() - 1); end)()); -- Add the message last because it may contain \1 or \2
+    Formatted           = Formatted:gsub("\3", (function(...) local a, b = {...}, ""; for i = 1, #a do b = b .. tostring(a[i]) .. "\t"; end return b:sub(1, b:len() - 1); end)(...)); -- Add the message last because it may contain \1 or \2
     return Formatted;
 end
 

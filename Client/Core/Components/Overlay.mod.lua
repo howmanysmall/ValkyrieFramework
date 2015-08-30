@@ -265,7 +265,7 @@ ActivityClass.NewScreen = function(self,data)
 	self.Screens[newScreen] = {
 		Frame = sFrame;
 		Activity = self;
-		Name = data.Name or 'Screen;
+		Name = data.Name or 'Screen';
 	};
 	sFrame.ZIndex = 6;
 	sFrame.Size = UDim2.new(1,0,1,0);

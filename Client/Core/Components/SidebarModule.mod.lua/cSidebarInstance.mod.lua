@@ -90,7 +90,6 @@ local function ForwardAnimate(self)
 end
 
 local function BackwardAnimate(self)
-	local start = tick();
 	local Start, End 		= self:GetShownItemIndices();
 	local Modifier 			= 30;
 
@@ -99,7 +98,7 @@ local function BackwardAnimate(self)
 		return;
 	end
 
-	if self:GetNAP() and self:GetNAP() - 30 <= self:GetRaw().AbsoluteSize.Y then
+	if self:GetNAP() and self:GetNAP() - 30 <= self:GetRaw().AbsoluteSize.Y + self:GetRaw().AbsolutePosition.Y then
 		Modifier			= self:GetRaw().AbsoluteSize.Y % 30;
 		self.CanScrollDown	= false;
 	else
@@ -133,7 +132,7 @@ local function CreateItemWithSettings(Settings, Index, Sidebar)
 	end
 
 	Item.Position 						= UDim2.new(0, 10, 0, 30 * Index);
-	Item.Name 							= "Item" .. Index;
+	Item.Name 							= "Item" .. Index + 1;
 	Item.Parent 						= Sidebar.ItemContainer;
 
 	return Item;
@@ -217,6 +216,7 @@ function cSidebarInstance.new(Settings, Tween, Duration, Async)
 	Scrolling:BindScrolling(Sidebar);
 	Sidebar.Parent 						= Core:GetContentFrame();
 	Core:SetContentFrame(ContentFrame, Sidebar);
+	Core:LockParent(Sidebar);
 
 	return SidebarInstance, TweenSidebarIn(SidebarInstance, ContentFrame, Tween, Duration, Async);
 end
@@ -244,27 +244,28 @@ function InstanceFunctions:CanScrollDown()
 	return SharedVariables[self].CanScrollDown;
 end
 
-local Overlay = Core:GetOverlay();
 function InstanceFunctions:GetShownItemIndices()
 	local Start 						= self:GetFirstItem();
 	local End 							= nil;
 	local didStart 						= false;
+	local ContainerFrame 				= self:GetRaw();
 
-	local Items = self:GetItems();
-	local resY = Overlay.AbsoluteSize.Y;
+	local Items 						= self:GetItems();
+	local resY 							= ContainerFrame.AbsoluteSize.Y;
+	local offsetY 						= ContainerFrame.AbsolutePosition.Y;
 	for i = math.max(1, Start - 1), #Items do
-		local absY = Items[i].AbsolutePosition.Y;
-		if absY > -30 then
-			Start = i;
-			didStart = true;
-		elseif absY > resY then
-			End = i;
+		local absY 						= Items[i].AbsolutePosition.Y;
+		if not didStart and absY > offsetY - 30 then
+			Start 						= i;
+			didStart 					= true;
+		elseif absY > resY + offsetY then
+			End 						= i;
 			break;
 		end;
 	end;
 
 	if not End then
-		End 							= #Items - 1;
+		End 							= #Items;
 	end
 
 	return Start, End;

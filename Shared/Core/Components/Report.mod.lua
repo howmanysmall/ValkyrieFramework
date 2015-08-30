@@ -25,7 +25,7 @@ do
 			success = (reportBufferProxy[1]:lower() ~= 'Error');
 			source = reportBufferProxy[2] or setfenv(2,getfenv(2));
 			tag = reportBufferProxy[3];
-			unpack(reportBufferProxy,3);
+			unpack(reportBufferProxy,4);
 		};
 		for k in next, reportBufferProxy do
 			rawset(reportBufferProxy,k,nil);

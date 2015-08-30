@@ -1,0 +1,9 @@
+{
+	"Active": 					[2, false],
+	"BackgroundColor3":			[12, {"R": 76, "G": 175, "B": 80}],
+	"BackgroundTransparency":	[4, 0],
+	"Position":					[7, {"OffsetX": 0, "ScaleX": 0, "OffsetY": 0, "ScaleY": 0}],
+	"Size": 					[7, {"OffsetX": 0, "ScaleX": 1, "OffsetY": 0, "ScaleY": 1}],
+	"ZIndex": 					[3, 1],
+	"BorderSizePixel":			[3, 0]
+}

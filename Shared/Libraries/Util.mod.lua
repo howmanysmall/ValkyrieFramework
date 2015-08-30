@@ -39,6 +39,8 @@ local map = function(f,t)
 	end;
 	return t;
 end;
+local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
+local QueryImmediate = _G.Valkyrie:GetComponent "Query".Direct
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
@@ -50,6 +52,7 @@ return function(wrapper)
 	if client then
 		wrapper:OverrideGlobal "LocalPlayer" (game.Players.LocalPlayer)
 	end;
+	wrapper:OverrideGlobal "isLocal" (client)
 	wrapper:OverrideGlobal "new" (function(thing)
 		return setmetatable({
 			Instance = function(_,t)
@@ -61,7 +64,7 @@ return function(wrapper)
 				);
 				if r[1] then
 					for k,v in pairs(t) do
-						r[2][k] = wrapper:unwrap(v);
+						r[2][k] = v;
 					end;
 					return r[2];
 				else
@@ -70,6 +73,7 @@ return function(wrapper)
 			end
 		},{
 			__call = function(_,...)
+				if CustomClasses[thing] then return CustomClasses[thing](...) end;
 				local _ENV = getfenv(2);
 				local r = pack(
 					pcall(
@@ -91,9 +95,9 @@ return function(wrapper)
 	wrapper:OverrideGlobal "CFrame" (CFO);
 	wrapper:OverrideGlobal "map" (map);
 	wrapper:OverrideGlobal "pack" (pack);
+	wrapper:OverrideGlobal "query" (QueryImmediate);
 
 	for FuncName, UtilFunction in next, UtilMod do
-		print("Overriding", FuncName, UtilFunction);
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
 	end
 
@@ -103,5 +107,9 @@ return function(wrapper)
 				p.Character:BreakJoints();
 			end;
 		end;
+	};
+	wrapper:Override "ModuleScript":Instance {
+		require = require;
+		Require = require;
 	};
 end;

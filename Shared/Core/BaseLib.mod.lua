@@ -333,20 +333,13 @@ local TypeChecks do
 	local tui = Instance.new("ImageLabel");
 	local BrickColor = BrickColor;
 	TypeChecks = {
-	--[[	Color3 = BrickColor.new;
+		Color3 = BrickColor.new;
 		Vector2 = function(o) return tv2 + o end;
 		Event = function(o) con(o,function()end):disconnect() end;
 		Vector3 = function(o) tsp.Size = o end;
 		UDim = function(o) return ud+o end;
 		UDim2 = function(o) tui.Position = o end;
-		BrickColor = function(o) tsp.BrickColor = o end; ]]
-		Color3 = function(o) return assert(o.r,'') end;
-		Event = function(o) return assert(o.connect,'') end;
-		Vector3 = function(o) return assert(o.z,'') end;
-		UDim = function(o) return assert(o.Scale,'') end;
-		UDim2 = function(o) return assert(o.X.Scale,'') end;
-		BrickColor = function(o) return assert(o.Color.r,'') end;
-		Vector2 = function(o) return assert(o.x,'') end;
+		BrickColor = function(o) tsp.BrickColor = o end;
 	};
 end;
 
