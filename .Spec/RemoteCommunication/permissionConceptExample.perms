@@ -1,0 +1,11 @@
+:game1
++achievement.award
++loadstring.load
+-kernel.killServer
+
+:guest
+-modules.doCommands
++date.getServerTime
+
+:secretAdminGame
++*.*
