@@ -1,0 +1,14 @@
+START TRANSACTION;
+DROP TABLE IF EXISTS achievements_WILD;
+DROP TABLE IF EXISTS meta_WILD;
+DROP TABLE IF EXISTS trusted_users_WILD;
+DELETE FROM game_ids WHERE gid='WILD';
+INSERT INTO game_ids SET gid='WILD', cokey='VilliAvain';
+CREATE TABLE `achievements_WILD` LIKE achievements_template;
+CREATE TABLE `meta_WILD` LIKE meta_template;
+CREATE TABLE `trusted_users_WILD` LIKE trusted_users_template;
+INSERT INTO `trusted_users_WILD` SET connection_key='VilliAvain', uid='25661233';
+INSERT INTO `meta_WILD` SET `key`='usedReward', value=0;
+INSERT INTO `meta_WILD` SET `key`='usedSpace', value=0;
+INSERT INTO `meta_WILD` SET `key`='name', value='WILD';
+COMMIT;
