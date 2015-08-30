@@ -1,0 +1,11 @@
+POST https://www.roblox.com/Services/Secure/LoginService.asmx/ValidateLogin HTTP/1.1
+Host: www.roblox.com
+Accept: */*
+Connection: close
+Content-Length: 103
+X-Requested-With: XMLHttpRequest
+User-Agent: Roblox/WinINet
+Content-Type: application/json
+Accept-Encoding: gzip
+
+{"userName":"asdf","password":"asdf","isCaptchaOn":false,"challenge":"","captchaResponse":""}
