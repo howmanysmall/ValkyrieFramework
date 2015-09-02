@@ -40,6 +40,7 @@ local map = function(f,t)
 	return t;
 end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
+local QueryImmediate = _G.Valkyrie:GetComponent "Query".Direct
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
@@ -63,7 +64,7 @@ return function(wrapper)
 				);
 				if r[1] then
 					for k,v in pairs(t) do
-						r[2][k] = wrapper:unwrap(v);
+						r[2][k] = v;
 					end;
 					return r[2];
 				else
@@ -94,6 +95,7 @@ return function(wrapper)
 	wrapper:OverrideGlobal "CFrame" (CFO);
 	wrapper:OverrideGlobal "map" (map);
 	wrapper:OverrideGlobal "pack" (pack);
+	wrapper:OverrideGlobal "query" (QueryImmediate);
 
 	for FuncName, UtilFunction in next, UtilMod do
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
