@@ -8,7 +8,7 @@ local yield_error = app_helpers.yield_error;
 
 function module.check(gid, cokey, uid)
   local game_id_result  = mysql.select("id from game_ids where gid=? and cokey=?", gid, cokey); -- Don't worry, Lapis will escape the strings
-  if #game_id_result then
+  if #game_id_result < 1 then
     yield_error("Invalid UID-GID-CoKey combination!");
   end
 
@@ -21,7 +21,7 @@ function module.check(gid, cokey, uid)
 end
 
 function module.check_nouid(gid, cokey)
-  local game_id_reuslt  = mysql.select("id from game_ids where gid=? and cokey=?", gid, cokey);
+  local game_id_result  = mysql.select("id from game_ids where gid=? and cokey=?", gid, cokey);
   if game_id_result:numrows() == 0 then
     yield_error("Invalid GID-CoKey pair!");
   end

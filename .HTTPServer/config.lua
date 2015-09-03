@@ -20,7 +20,7 @@ config("collb_dev", {
   }
 });
 config("local_dev", {
-  port      = 1274,
+  port      = 224,
   host      = "127.0.0.1",
   user      = "valkyrie",
   password  = "m224crb",
