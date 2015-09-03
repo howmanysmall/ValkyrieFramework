@@ -22,7 +22,7 @@ end
 
 function module.check_nouid(gid, cokey)
   local game_id_result  = mysql.select("id from game_ids where gid=? and cokey=?", gid, cokey);
-  if game_id_result:numrows() == 0 then
+  if #game_id_result < 1 then
     yield_error("Invalid GID-CoKey pair!");
   end
 
