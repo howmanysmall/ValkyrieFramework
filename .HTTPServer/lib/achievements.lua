@@ -64,7 +64,7 @@ function module.award(gid, pid, aid)
 end
 
 function module.list(gid, othgid, filter)
-  local exists_result   = mysql.select("table_name from information_schema.tables where table_name=?", ("achievements_%s", othgid));
+  local exists_result   = mysql.select("table_name from information_schema.tables where table_name=?", ("achievements_%s"):format(othgid));
   if #exists_result == 0 then
     yield_error("That game doesn't exist");
   end
