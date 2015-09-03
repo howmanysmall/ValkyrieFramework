@@ -69,7 +69,6 @@ function module.list(gid, othgid, filter)
     yield_error("That game doesn't exist");
   end
 
-  local query = mysql.select_base:format("*", ("achievements_%s"):format(mysql.safe(othgid)), "1=1 "); -- hax
   local query = "* from ? where 1=1 ";
   if filter[1] ~= "" and filter[1] and filter[2] then
     if filter[1] == ">" then
