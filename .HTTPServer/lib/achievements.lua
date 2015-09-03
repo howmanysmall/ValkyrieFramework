@@ -1,5 +1,6 @@
 local module              = {};
-local mysql               = library("mysql");
+local mysql               = require "lapis.db";
+local gid_table           = library("gid_table");
 local encoder             = library("encode");
 local metamanager         = library("meta");
 local app_helpers         = require"lapis.application";
@@ -11,9 +12,9 @@ function module.create(gid, id, desc, name, reward, icon)
     yield_error("The reward can't be less than 1!");
   end
 
-  local uniq_result       = mysql.query(mysql.select_base, "id", mysql.safe(("`achievements_%s`"):format(mysql.safe(gid))), ("achv_id='%s'"):format(mysql.safe(id)));
+  local uniq_result       = mysql.select("id from ? where achv_id=?", gid_table("achievements", gid), id);
 
-  if uniq_result:numrows() ~= 0 then
+  if #uniq_result ~= 0 then
     yield_error("An achievement with that ID already exists!");
   end
 
@@ -25,41 +26,51 @@ function module.create(gid, id, desc, name, reward, icon)
   end
   metamanager.setMeta("usedreward", usedreward + reward, gid);
 
-  local add_result        = mysql.query(mysql.insert_base, mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s', description='%s', name='%s', reward='%d' icon='%d'"):format(mysql.safe(id), mysql.safe(desc), mysql.safe(name), reward, icon));
+  mysql.insert(("achievements_%s"):format(gid), {
+        achv_id           = id,
+        description       = desc,
+        name              = name,
+        reward            = reward,
+        icon              = icon
+    });
 
   return encoder.encode({success = true, error = ""});
 end
 
 function module.award(gid, pid, aid)
-  local uniq_result       = mysql.query(mysql.select_base, "id", mysql.safe(("achievements_%s"):format(gid)), ("achv_id='%s'"):format(mysql.safe(aid)));
-  if uniq_result:numrows() == 0 then
+  local uniq_result       = mysql.select("id from ? where achv_id=?", gid_table("achievements", gid), id);
+  if #uniq_result == 0 then
     yield_error("That achievement doesn't exist!");
   end
 
-  local plr_exist_result  = mysql.query(mysql.select_base, "table_name", "information_schema.tables", ("table_name='player_achv_%d'"):format(pid));
-  if plr_exist_result:numrows() == 0 then
+  local plr_exist_result  = mysql.select("table_name from information_schema.table where table_name='player_achv_?'", pid);
+  if #plr_exist_result == 0 then
     print("\27[1;36mA table for " .. pid .. " doesn't exist; creating it!\27[0m");
 
-    mysql.query(mysql.create_base, ("player_achv_%d"):format(pid), "LIKE player_achv_template");
+    mysql.query("create table `player_achv_?` like player_achv_template", pid);
   end
 
-  local aw_uniq_res       = mysql.query(mysql.select_base, "id", ("player_achv_%d"):format(pid), ("achvid='%s'"):format(mysql.safe(aid)));
-  if aw_uniq_res:numrows() ~= 0 then
+  local aw_uniq_res       = mysql.select("id from ? where achvid=?", gid_table("player_achv", pid), aid);
+  if #aw_uniq_res ~= 0 then
     yield_error("That achievement has already been awarded to the player");
   end
 
-  mysql.query(mysql.insert_base, ("player_achv_%d"):format(pid), ("achvid='%s', gid='%s'"):format(mysql.safe(aid), mysql.safe(gid)));
+  mysql.insert(("player_achv_%d"):format(pid), {
+      achvid              = aid,
+      gid                 = gid
+  });
 
   return encoder.encode({success = true, error = ""});
 end
 
 function module.list(gid, othgid, filter)
-  local exists_result   = mysql.query(mysql.select_base, "table_name", "information_schema.tables", ("table_name='achievements_%s'"):format(mysql.safe(othgid)));
-  if exists_result:numrows() == 0 then
+  local exists_result   = mysql.select("table_name from information_schema.tables where table_name=?", ("achievements_%s", othgid));
+  if #exists_result == 0 then
     yield_error("That game doesn't exist");
   end
 
   local query = mysql.select_base:format("*", ("achievements_%s"):format(mysql.safe(othgid)), "1=1 "); -- hax
+  local query = "* from ? where 1=1 ";
   if filter[1] ~= "" and filter[1] and filter[2] then
     if filter[1] == ">" then
       query = query .. ("AND %s>=%d "):format("reward", filter[2]);
@@ -77,13 +88,13 @@ function module.list(gid, othgid, filter)
     query = query .. ("AND %s LIKE '%%%s%%' "):format("name", mysql.safe(filter[5]));
   end
 
-  local result  = mysql.literalQuery(query);
-  local ret     = {};
+  local ret  = mysql.select(query);
+  --[[local ret     = {};
   local row     = result:fetch({}, "a");
   while row do
     table.insert(ret, {tonumber(row.reward), row.achv_id, row.name, row.description, tonumber(row.icon)});
     row         = result:fetch({}, "a");
-  end
+end]]
 
   return encoder.encode({
     success = true,
