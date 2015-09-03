@@ -13,7 +13,7 @@ function module.check(gid, cokey, uid)
   end
 
   local user_id_result = mysql.select("id from ? where uid=? and connection_key=?", gid_table("trusted_users", gid), uid, cokey);
-  if user_id_result:numrows() == 0 then
+  if #user_id_result < 1 then
     yield_error("Invalid UID-CoKey-GID combination!");
   end
 
