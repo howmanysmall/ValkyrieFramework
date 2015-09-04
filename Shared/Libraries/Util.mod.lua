@@ -112,4 +112,14 @@ return function(wrapper)
 		require = require;
 		Require = require;
 	};
+
+	wrapper:Override "UDim2" {
+		__mul = function(a, b)
+			if type(b) == "UDim2" then
+				return UDim2.new(a.X.Scale * b.X.Scale, a.X.Offset * b.X.Offset, a.Y.Scale * b.Y.Scale, a.Y.Offset * b.Y.Offset);
+			else
+				return UDim2.new(a.X.Scale * b, a.X.Offset * b, a.Y.Scale * b, a.Y.Offset * b);
+			end
+		end
+	};
 end;
