@@ -11,7 +11,7 @@ local PermissionLinks = {};
 local function createPermission(name)
 	-- Check people aren't being stupid
 	assert(type(name)=='string', "Give a permission name as #1");
-	
+
 	-- Work out what this permission is
 	local start = Permissions;
 	local subsets = {};
@@ -41,11 +41,11 @@ local function createPermission(name)
 	mt.__metatable = {};
 	-- Will possibly extend this later if Valkyrie gets a standard way to extend
 	-- operator behaviour on data.
-	
+
 	-- Bind
 	Permissionmtlist[newPermission] = mt;
 	PermissionLinks[name] = newPermission;
-	
+
 	return newPermission;
 end;
 
@@ -123,8 +123,8 @@ local function createGroup(name, inherits)
 			end;
 		end;
 	end;
-	
+
 	glinks[newGroup] = {pProx,uProx};
-	
+
 	return newGroup;
 end;
