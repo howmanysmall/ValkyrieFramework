@@ -80,7 +80,15 @@ local function createGroup(name, inherits)
 	local uProx = newproxy(true);
 	do
 		local pmt = getmetatable(pProx);
-		pmt.__index = gPermissions;
+		pmt.__index = function(_,k)
+			if type(k) == 'string' then
+				if PermissionLinks[k] then
+					return gPermissions[PermissionLinks[k]];
+				end
+			else
+				return gPermissions[k];
+			end
+		end;
 		pmt.__tostring = function()
 			return "Permissions: "..name;
 		end;
@@ -113,10 +121,10 @@ local function createGroup(name, inherits)
 	end;
 	mt.__index = function(_,k)
 		if type(k) == 'string' then
-			k = k:lower();
-			if k == 'users' then
+			nk = k:lower();
+			if nk == 'users' then
 				return uProx;
-			elseif k == 'permissions' then
+			elseif nk == 'permissions' then
 				return pProx;
 			else
 				return gclass[k];
@@ -127,4 +135,69 @@ local function createGroup(name, inherits)
 	glinks[newGroup] = {pProx,uProx};
 
 	return newGroup;
+end;
+
+function gclass:AddPermission(permission)
+	local plist = glinks[self][1];
+	-- Check if our target permission exists
+	local target;
+	if type(permission) == 'string' then
+		target = PermissionLinks[permission];
+	elseif type(permission) == 'userdata' then
+		target = Permissionmtlist[permission] and permission or nil;
+	end;
+	if not target then
+		-- Not a valid permission? Shameful.
+		return error(
+			report.Error.Permissions.AddPermission
+			["A valid permission was not supplied to be added."]
+		(), 2);
+	end;
+	plist[target] = true;
+end;
+
+function gclass:BlockPermission(permission)
+	local plist = glinks[self][1];
+	-- Check if our target permission exists
+	local target;
+	if type(permission) == 'string' then
+		target = PermissionLinks[permission];
+	elseif type(permission) == 'userdata' then
+		target = Permissionmtlist[permission] and permission or nil;
+	end;
+	if not target then
+		-- Not a valid permission? Shameful.
+		return error(
+			report.Error.Permissions.BlockPermission
+			["A valid permission was not supplied to be blocked."]
+		(), 2);
+	end;
+	plist[target] = false;
+end;
+
+function gclass:RemovePermission(permission)
+	local plist = glinks[self][1];
+	-- Check if our target permission exists
+	local target;
+	if type(permission) == 'string' then
+		target = PermissionLinks[permission];
+	elseif type(permission) == 'userdata' then
+		target = Permissionmtlist[permission] and permission or nil;
+	end;
+	if not target then
+		-- Not a valid permission? Shameful.
+		return error(
+			report.Error.Permissions.RemovePermission
+			["A valid permission was not supplied to be removed/defaulted."]
+		(), 2);
+	end;
+	plist[target] = nil;
+end;
+
+function gclass:AddUser(user, alias)
+
+end;
+
+function gclass:RemoveUser(user)
+	
 end;
