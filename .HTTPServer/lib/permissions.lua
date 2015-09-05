@@ -22,7 +22,7 @@ local possperms     = {
   };
   messages          = {
     "addMessage";
-    "checkMessage";
+    "checkMessages";
   };
   playerinfo        = {
     "getUserinfo";
