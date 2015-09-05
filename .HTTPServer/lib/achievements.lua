@@ -8,7 +8,7 @@ local app_helpers         = require"lapis.application";
 local yield_error         = app_helpers.yield_error;
 
 function module.create(gid, id, desc, name, reward, icon)
-  if reward < 1 then
+  if tonumber(reward) < 1 then
     yield_error("The reward can't be less than 1!");
   end
 
@@ -21,7 +21,7 @@ function module.create(gid, id, desc, name, reward, icon)
   local usedreward        = metamanager.getMeta("usedreward", gid);
   local maxreward         = 1000 - usedreward;
 
-  if maxreward < reward then
+  if maxreward < tonumber(reward) then
     yield_error("The reward exceeds the maximum available reward (" .. maxreward .. ")!");
   end
   metamanager.setMeta("usedreward", usedreward + reward, gid);
