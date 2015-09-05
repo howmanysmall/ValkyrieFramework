@@ -1,6 +1,5 @@
 local module      = {};
 local encoder     = library("encode");
-local mysql       = library("mysql");
 local meta        = library("meta");
 local yield_error = require"lapis.application".yield_error;
 local lfs         = require("lfs");
