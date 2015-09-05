@@ -49,6 +49,16 @@ local function createPermission(name)
 	return newPermission;
 end;
 
+local function getPermission(permission)
+	local target;
+	if type(permission) == 'string' then
+		target = PermissionLinks[permission];
+	elseif type(permission) == 'userdata' then
+		target = Permissionmtlist[permission] and permission or nil;
+	end;
+	return target
+end
+
 -- Populate the Permissions
 do
 	local Defaults = require(script.DefaultPermissions);
@@ -132,7 +142,7 @@ local function createGroup(name, inherits)
 		end;
 	end;
 
-	glinks[newGroup] = {pProx,uProx};
+	glinks[newGroup] = {gPermissions,gUsers};
 
 	return newGroup;
 end;
@@ -140,12 +150,7 @@ end;
 function gclass:AddPermission(permission)
 	local plist = glinks[self][1];
 	-- Check if our target permission exists
-	local target;
-	if type(permission) == 'string' then
-		target = PermissionLinks[permission];
-	elseif type(permission) == 'userdata' then
-		target = Permissionmtlist[permission] and permission or nil;
-	end;
+	local target = getPermission(permission)
 	if not target then
 		-- Not a valid permission? Shameful.
 		return error(
@@ -158,15 +163,8 @@ end;
 
 function gclass:BlockPermission(permission)
 	local plist = glinks[self][1];
-	-- Check if our target permission exists
-	local target;
-	if type(permission) == 'string' then
-		target = PermissionLinks[permission];
-	elseif type(permission) == 'userdata' then
-		target = Permissionmtlist[permission] and permission or nil;
-	end;
+	local target = getPermission(permission)
 	if not target then
-		-- Not a valid permission? Shameful.
 		return error(
 			report.Error.Permissions.BlockPermission
 			["A valid permission was not supplied to be blocked."]
@@ -177,15 +175,8 @@ end;
 
 function gclass:RemovePermission(permission)
 	local plist = glinks[self][1];
-	-- Check if our target permission exists
-	local target;
-	if type(permission) == 'string' then
-		target = PermissionLinks[permission];
-	elseif type(permission) == 'userdata' then
-		target = Permissionmtlist[permission] and permission or nil;
-	end;
+	local target = getPermission(permission);
 	if not target then
-		-- Not a valid permission? Shameful.
 		return error(
 			report.Error.Permissions.RemovePermission
 			["A valid permission was not supplied to be removed/defaulted."]
@@ -195,9 +186,152 @@ function gclass:RemovePermission(permission)
 end;
 
 function gclass:AddUser(user, alias)
-
+	local ulist = glinks[self][1];
+	assert(user, "You must provide a user to add", 2);
+	if usergroups[user] then
+		usergroups[user]:RemoveUser(user);
+	elseif alias and usergroups[alias] then
+		usergroups[alias]:RemoveUser(alias);
+	end;
+	if alias then
+		ulist[alias] = user;
+		usergroups[alias] = self;
+	else
+		ulist[user] = user;
+		usergroups[user] = self;
+	end;
 end;
 
 function gclass:RemoveUser(user)
-	
+	local ulist = glinks[self][1];
+	assert(user, "You must provide a user to add", 2);
+	usergroups[user] = nil;
+	if ulist[user] then
+		ulist[user] = nil;
+	else
+		for k,v in next, ulist do
+			if v == user then ulist[k] = nil break end;
+		end;
+	end;
 end;
+
+-- Manage the controller
+-- Users
+-- Groups
+-- Permissions
+
+local controller = newproxy(true);
+local controllerclass = {};
+local controllermt = getmetatable(controller);
+
+local function extract(...)
+	if (...) == controller then
+		return select(2, ...);
+	else
+		return ...
+	end
+end
+
+function controllerclass.CreatePermission(...)
+	return createPermission(extract(...));
+end;
+
+function controllerclass.GetPermission(...)
+	return getPermission(extract(...));
+end;
+
+function controllerclass.CreateGroup(...)
+	return createGroup(extract(...));
+end;
+
+function controllerclass.AddUserPermission(...)
+	local user, permission = extract(...);
+	assert(user and permission, "You need to supply (user, permission)", 2);
+	local target = getPermission(permission);
+	if not target then
+		return error(
+			report.Error.Permissions.AddUserPermission
+			["A valid permission was not supplied to be added."]
+		(), 2);
+	end;
+	if not users[user] then users[user] = {} end;
+	users[user][target] = true;
+end;
+
+function controllerclass.RemoveUserPermission(...)
+	local user, permission = extract(...);
+	assert(user and permission, "You need to supply (user, permission)", 2);
+	local target = getPermission(permission);
+	if not target then
+		return error(
+			report.Error.Permissions.RemoveUserPermission
+			["A valid permission was not supplied to be removed/defaulted."]
+		(), 2);
+	end;
+	if not users[user] then users[user] = {} end;
+	users[user][target] = nil;
+end;
+
+function controllerclass.BlockUserPermission(...)
+	local user, permission = extract(...);
+	assert(user and permission, "You need to supply (user, permission)", 2);
+	local target = getPermission(permission);
+	if not target then
+		return error(
+			report.Error.Permissions.BlockUserPermission
+			["A valid permission was not supplied to be blocked."]
+		(), 2);
+	end;
+	if not users[user] then users[user] = {} end;
+	users[user][target] = false;
+end;
+
+function controllerclass.GetUserPermission(...)
+	local user, permission = extract(...);
+	assert(user and permission, "You need to supply (user, permission)", 2);
+	local target = getPermission(permission);
+	if not target then
+		return error(
+			report.Error.Permissions.GetUserPermission
+			["A valid permission was not supplied to be checked."]
+		(), 2);
+	end;
+	if not users[user] then users[user] = {} end;
+	return users[user][target] or (usergroups[user] and usergroups[user].Permissions[target] or nil);
+end;
+
+function controllerclass.GetUserPermissions(...)
+	local user = extract(...);
+	assert(user, "You need to supply a user", 2);
+	local uplist = {};
+	if usergroups[user] then
+		local curr = glinks[usergroups[user]][1];
+		local cursion = {curr};
+		while getmetatable(curr).__index do
+			curr = getmetatable(curr).__index;
+			cursion[#cursion+1] = curr;
+		end;
+		for i=#cursion, 1, -1 do
+			for k,v in next, cursion[i] do
+				uplist[k] = v;
+			end;
+		end;
+	end;
+	if not users[user] then users[user] = {} end;
+	for k,v in next, users[user] do
+		uplist[k] = v;
+	end;
+	return uplist;
+end;
+
+function controllerclass.GetGroup(...)
+	local name = extract(...);
+	assert(name, "You must provide a name of a Group", 2);
+	return groups[name];
+end;
+
+controllermt.__index = controllerclass;
+controllermt.__tostring = function() return "Permissions controller" end;
+controllermt.__metatable = "Locked metatable: Valkyrie";
+
+return controller
