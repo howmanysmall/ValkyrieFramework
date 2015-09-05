@@ -63,6 +63,10 @@ function module.award(gid, pid, aid)
   return encoder.encode({success = true, error = ""});
 end
 
+local function escape_filter(name, filter)
+  return ("AND %s LIKE %s"):format(name, mysql.escape_literal(("%%%s%%"):format(filter)));
+end
+
 function module.list(gid, othgid, filter)
   local exists_result   = mysql.select("table_name from information_schema.tables where table_name=?", ("achievements_%s"):format(othgid));
   if #exists_result == 0 then
@@ -70,24 +74,24 @@ function module.list(gid, othgid, filter)
   end
 
   local query = "* from ? where 1=1 ";
-  if filter[1] ~= "" and filter[1] and filter[2] then
+  if filter[1] and filter[2] and filter[1] ~= "" then
     if filter[1] == ">" then
       query = query .. ("AND %s>=%d "):format("reward", filter[2]);
     else
       query = query .. ("AND %s<=%d "):format("reward", filter[2]);
     end
   end
-  if filter[3] ~= "" and filter[3] then
-    query = query .. ("AND %s LIKE '%%%s%%' "):format("achv_id", mysql.safe(filter[3]));
+  if filter[3] and filter[3] ~= "" then
+    query = query .. escape_filter("achv_id", filter[3]);
   end
-  if filter[4] ~= "" and filter[4] then
-    query = query .. ("AND %s LIKE '%%%s%%' "):format("name", mysql.safe(filter[4]));
+  if filter[4] and filter[4] ~= "" then
+    query = query .. escape_filter("name", filter[4]);
   end
-  if filter[5] ~= "" and filter[5] then
-    query = query .. ("AND %s LIKE '%%%s%%' "):format("name", mysql.safe(filter[5]));
+  if filter[5] and filter[5] ~= "" then
+    query = query .. escape_filter("description", filter[5]);
   end
 
-  local ret  = mysql.select(query);
+  local ret  = mysql.select(query, gid_table("achievements", othgid));
   --[[local ret     = {};
   local row     = result:fetch({}, "a");
   while row do
