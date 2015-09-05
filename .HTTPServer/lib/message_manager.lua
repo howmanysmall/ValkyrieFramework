@@ -1,5 +1,5 @@
 local module      = {};
-local mysql       = library("mysql");
+local mysql       = require"lapis.db";
 local encoder     = library("encode");
 local app_helpers = require"lapis.application";
 local socket      = require"socket"; -- For time
@@ -8,7 +8,12 @@ local yield_error = app_helpers.yield_error;
 
 function module.addMessage(user, message, gid)
   local time    = math.floor(socket.gettime());
-  local result  = mysql.query(mysql.insert_base, "messages", ("sent=%d, user='%s', message='%s', gid='%s'"):format(time, mysql.safe(user, message, gid)));
+  local result  = mysql.insert("messages", {
+    sent        = time,
+    user        = user,
+    message     = message,
+    gid         = gid
+  });
 
   return encoder.encode({success = true, error = ""});
 end
@@ -18,12 +23,10 @@ function module.checkMessages(since, fresh, gidfilter)
     return encoder.encode({success = true, error = "", result = math.floor(socket.gettime())});
   end
 
-  local result  = mysql.query(mysql.select_base, "message, sent, user", "messages", ("sent > %d AND gid='%s'"):format(since, gidfilter));
+  local result  = mysql.select("message, sent, user from messages where sent > ? and gid=?", since, gidfilter);
   local ret     = {math.floor(socket.gettime())};
-  local row     = result:fetch({}, "a");
-  while row do
-    table.insert(ret, {tonumber(row.user), row.message, tonumber(row.sent), row.gid});
-    row         = result:fetch({}, "a");
+  for i = 1, #result do
+    table.insert(ret, result[i]);
   end
 
   return encoder.encode({success = true, error = "", result = ret});
