@@ -4,6 +4,5 @@ return {
 	"Players.Action.Reset";
 	"Players.Action.Chat";
 	"Overlay.Open";
-	"Overlay.AttachCustom"; -- If I use this I'll block it by default.
-	
+	"Overlay.AttachCustom"; -- If I use this I'll block it by default
 };
