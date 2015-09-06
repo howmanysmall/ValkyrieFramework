@@ -1,26 +1,34 @@
 local module        = {};
-local mysql         = library("mysql");
+local mysql         = require"lapis.db";
 local app_helpers   = require"lapis.application";
+local gid_table     = library"gid_table";
 
 local yield_error   = app_helpers.yield_error;
 
 function module.getMeta(key, gid)
-  local result      = mysql.query(mysql.select_base, "value", ("meta_%s"):format(mysql.safe(gid)), ("`key`='%s'"):format(mysql.safe(key)));
+  local result      = mysql.select("value from ? where `key`=?", gid_table("meta", gid), key);
 
-  if result:numrows() == 0 then
+  if #result == 0 then
     error("Invalid meta key!");
   end
 
-  return result:fetch({}, "a").value;
+  return result[1].value;
 end
 
 function module.setMeta(key, value, gid)
-  local uniq_res    = mysql.query(mysql.select_base, "value", ("meta_%s"):format(mysql.safe(gid)), ("`key`='%s'"):format(mysql.safe(key)));
+  local uniq_res    = mysql.select("value from ? where `key`=?", gid_table("meta", gid), key);
 
-  if uniq_res:numrows() == 0 then
-    mysql.query(mysql.insert_base, ("meta_%s"):format(mysql.safe(gid)), ("`key`='%s', value='%s'"):format(mysql.safe(key), mysql.safe(value)));
+  if #uniq_res == 0 then
+    mysql.insert(("meta_%s"):format(gid), {
+      key           = key;
+      value         = value;
+    });
   else
-    mysql.query(mysql.update_base, ("meta_%s"):format(mysql.safe(gid)), ("value='%s'"):format(mysql.safe(value)), ("`key`='%s'"):format(mysql.safe(key)));
+    mysql.update(("meta_%s"):format(gid), {
+      value         = value;
+    }, {
+      key           = key;
+    });
   end
 end
 

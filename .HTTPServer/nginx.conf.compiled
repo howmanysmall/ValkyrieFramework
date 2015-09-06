@@ -1,4 +1,4 @@
-env LAPIS_ENVIRONMENT=collb_dev;
+env LAPIS_ENVIRONMENT=local_dev;
 worker_processes 1;
 error_log stderr notice;
 daemon off;
@@ -11,7 +11,7 @@ http {
   include mime.types;
 
   server {
-    listen 8080;
+    listen 224;
     lua_code_cache off;
 
     location / {

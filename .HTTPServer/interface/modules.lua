@@ -60,7 +60,7 @@ module                        = setmetatable(module, {
             auth.check_nouid(request.gid, request.cokey);
           end
 
-          io.write(("\27[34;1m%s.%s{\27[36m%s\27[0m} - %s:%s\n"):format(module, funcName, table.concat(passArgs, ", "), request.gid, request.cokey));
+          --io.write(("\27[34;1m%s.%s{\27[36m%s\27[0m} - %s:%s\n"):format(module, funcName, table.concat(passArgs, ", "), request.gid, request.cokey));
           return lib[funcName](unpack(passArgs));
         end; -- return
       end; -- __index
