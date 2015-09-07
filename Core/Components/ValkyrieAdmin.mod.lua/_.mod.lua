@@ -100,6 +100,38 @@ Players.PlayerAdded:connect(function(p)
   end)
   local ca = clientAdmin:Clone();
   ca.RPC.OnServerEvent:connect(runCommand);
-  ca.Parent = p.PlayerScripts;
+  ca.Parent = p:WaitForChild("PlayerScripts");
 end)
 
+-- Create the API
+local controller = newproxy(true);
+local controllermt = getmetatable(controller);
+local controllerclass = {};
+
+local extract = function(...)
+  if ... == controller then
+    return select(2, ...);
+  else
+    return ...
+  end
+end
+
+controllerclass.AddCommand = function(...)
+  local name, command = extract(...);
+  assert(type(name) == 'string' and type(command) == 'function', "You need to supply (name, command)", 2);
+  local newPermission = Permissions:CreatePermission("Admin.Command."..name);
+  commands[name] = command;
+  return newPermission;
+end;
+
+controllerclass.RunCommand = function(...)
+  local as, command = extract(...)
+  assert(as and command, "You need to supply a Player to run the command as, and a command to run", 2);
+  runCommand(as, command);
+end;
+
+controllermt.__index = controllerclass;
+controllermt.__metatable = "Locked metatable: Valkyrie"
+controllermt.__tostring = function() return "Admin controller" end;
+
+return controller;
