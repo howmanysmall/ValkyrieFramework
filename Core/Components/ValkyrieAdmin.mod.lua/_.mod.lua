@@ -88,6 +88,8 @@ local function runCommand(as,cmd)
   else return end;
 end;
 
+local clientAdmin = script.VAClient;
+
 -- Bind the Player events
 Players.PlayerAdded:connect(function(p)
   -- Bind the Chat commands
@@ -96,4 +98,8 @@ Players.PlayerAdded:connect(function(p)
       runCommand(p,str:sub(3,#str));
     end;
   end)
+  local ca = clientAdmin:Clone();
+  ca.RPC.OnServerEvent:connect(runCommand);
+  ca.Parent = p.PlayerScripts;
 end)
+
