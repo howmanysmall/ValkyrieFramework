@@ -104,6 +104,21 @@ Players.PlayerAdded:connect(function(p)
 end)
 
 -- Create the API
+local addCommand = function(name, command)
+  assert(type(name) == 'string' and type(command) == 'function', "You need to supply (name, command)", 2);
+  local newPermission = Permissions:CreatePermission("Admin.Command."..name);
+  commands[name] = command;
+  return newPermission;
+end;
+
+-- Schedule to build the defaults
+spawn(function()
+  for k,v in next, require(script.DefaultCommands) do
+    addCommand(k,v)
+  end
+end)
+
+-- Create the controller
 local controller = newproxy(true);
 local controllermt = getmetatable(controller);
 local controllerclass = {};
@@ -116,19 +131,15 @@ local extract = function(...)
   end
 end
 
-controllerclass.AddCommand = function(...)
-  local name, command = extract(...);
-  assert(type(name) == 'string' and type(command) == 'function', "You need to supply (name, command)", 2);
-  local newPermission = Permissions:CreatePermission("Admin.Command."..name);
-  commands[name] = command;
-  return newPermission;
-end;
+controllerclass.AddCommand = function(...) return addCommand(extract(...)) end;
 
 controllerclass.RunCommand = function(...)
   local as, command = extract(...)
   assert(as and command, "You need to supply a Player to run the command as, and a command to run", 2);
   runCommand(as, command);
 end;
+
+controllerclass.GetMatching = getMatching;
 
 controllermt.__index = controllerclass;
 controllermt.__metatable = "Locked metatable: Valkyrie"
