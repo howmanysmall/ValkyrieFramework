@@ -34,7 +34,10 @@ see a flaw, in which case make a pull request and sort it out there.
 
 Why can't I change the core?
 ---
-Do you *want* to break things?
+Do you *want* to break things? If you're changing the core, only change how a 
+process works; don't try and add new parts to the core API (Put them in a
+component), and don't change how the API works schematically (Keep input/returns
+the same)
 
 How do I contribute?
 ---
