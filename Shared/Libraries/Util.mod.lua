@@ -40,7 +40,8 @@ local map = function(f,t)
 	return t;
 end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
-local QueryImmediate = _G.Valkyrie:GetComponent "Query".Direct
+local QueryImmediate = print--_G.Valkyrie:GetComponent "Query".Direct
+local newInst = Instance.new;
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
@@ -58,7 +59,7 @@ return function(wrapper)
 			Instance = function(_,t)
 				local r = pack(
 					pcall(
-						Instance.new,
+						newInst,
 						thing
 					)
 				);
