@@ -334,4 +334,13 @@ controllermt.__index = controllerclass;
 controllermt.__tostring = function() return "Permissions controller" end;
 controllermt.__metatable = "Locked metatable: Valkyrie";
 
+game:GetService"Players".PlayerRemoving:connect(function(p)
+	users[p] = nil;
+	if usergroups[p] then
+		local g = usergroups[p];
+		usergroups[p] = nil;
+		g:RemoveUser(p);
+	end;
+end);
+
 return controller
