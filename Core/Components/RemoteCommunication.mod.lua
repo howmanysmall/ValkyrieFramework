@@ -21,7 +21,7 @@ do
 		do
 			func_proxy 			= newproxy(true);
 			local func_mt		= getmetatable(func_proxy);
-			func_mt.__tostring	= format("Valkyrie RemoteCommunication: %s Module", rem_module);
+			func_mt.__tostring	= function() return format("Valkyrie RemoteCommunication: %s Module", rem_module); end
 			func_mt.__len		= function() return 117; end;
 			func_mt.__newindex	= function() warn "This time I don't even want to think of what's going inside your head!"; end;
 			func_mt.__metatable	= "HAHAHAHA NOPE";
