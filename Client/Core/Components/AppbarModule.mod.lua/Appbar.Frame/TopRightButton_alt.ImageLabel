@@ -1,6 +1,6 @@
 {
 	"BackgroundTransparency": 	[4, 1],
-	"Position": 				[7, {"OffsetX": 10, "ScaleX": 1, "OffsetY": 10, "ScaleY": 0}],
+	"Position": 				[7, {"OffsetX": 16, "ScaleX": 1, "OffsetY": 16, "ScaleY": 0}],
 	"Size": 					[7, {"OffsetX": 30, "ScaleX": 0, "OffsetY": 30, "ScaleY": 0}],
 	"ZIndex":					[3, 9],
 	"ImageRectSize": 			[13, {"X": 96, "Y": 96}],
