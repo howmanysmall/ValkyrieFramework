@@ -1,6 +1,6 @@
 {
 	"Active": 					[2, false],
-	"BackgroundColor3":			[12, {"R": 255, "G": 255, "B": 255}],
+	"BackgroundColor3":			[12, {"R": 33, "G": 150, "B": 243}],
 	"BackgroundTransparency":	[4, 0.75],
 	"Position":					[7, {"OffsetX": 72, "ScaleX": 0, "OffsetY": -38, "ScaleY": 1}],
 	"Size": 					[7, {"OffsetX": 0, "ScaleX": 0.5, "OffsetY": 18, "ScaleY": 0}],
