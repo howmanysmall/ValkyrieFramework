@@ -176,7 +176,7 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	LeftAltIcon.Position 					= UDim2.new(0, -16 - Height + 32, 0, 16);
 	RightAltIcon.Position					= UDim2.new(1,  16 + Height - 32, 0, 16);
 
-	Appbar.Size 							= UDim2.new(0, 1, 0, Height);
+	Appbar.Size 							= UDim2.new(1, 0, 0, Height);
 
 	Appbar.Parent 							= Core:GetOverlay();
 
