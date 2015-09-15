@@ -45,6 +45,17 @@ function Util.CopyMetatable(Object, Metatable)
 	end
 end
 
+function Util.GetScreenResolution()
+	local DummyFrame 		= Instance.new("Frame", Core:GetOverlay());
+	DummyFrame.BackgroundTransparency = 1;
+	DummyFrame.BorderSizePixel = 0;
+	DummyFrame.Size 		= UDim2.new(1,0,1,0);
+	local Size 				= DummyFrame.AbsoluteSize;
+	DummyFrame:Destroy();
+
+	return Size;
+end
+
 Util.isLocal = isLocal;
 
 Util.wait = wait;
