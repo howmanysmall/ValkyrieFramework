@@ -55,7 +55,7 @@ StackMetatable 	= {
 	end;
 	__sub 				= function(Stack, Num)
 		return {Stack:Pop(Num)};
-	end
+	end,
 	__tostring 			= function(Stack) return "Valkyrie Stack: " .. StackToString(Stack); end;
 	__metatable 		= function() return "XeR mdmwii Volderbeek Rasenukyi 7NewHope7 jaeremix10"; end;
 	__index 			= function(Stack, Index)

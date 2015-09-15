@@ -22,7 +22,7 @@ return {
     for player in API.GetMatching(where) do
       p = player; break;
     end;
-    if (not p) or not (p.Character and p.Character:FindFirstChild("Torso") then return end;
+    if (not p) or not (p.Character and p.Character:FindFirstChild("Torso")) then return end;
     for player in API.GetMatching(who) do
       if player.Character and player.Character:FindFirstChild("Torso") then
         player.Character.Torso.CFrame = p.Character.Torso;
