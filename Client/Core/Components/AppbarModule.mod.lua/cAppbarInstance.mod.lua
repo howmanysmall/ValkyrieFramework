@@ -96,6 +96,10 @@ local function TweenAppbarOut(self, Tween, Duration, Destroy, Async)
 	end
 end
 
+local function GetAppbarHeight()
+	return GetScreenResolution().X < 1024 and 48 or 64; -- Phone -> 48, tablet/PC -> 64
+end
+
 function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	AssertType("Argument #2", Tween, 	"string",  true);
 	AssertType("Argument #3", Duration, "number",  true);
@@ -109,8 +113,10 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 	ContentFrame.Size 						= UDim2.new(1, 0, 1, 0);
 	ContentFrame.Name 						= "ContentFrame_Appbar";
 
+	local Height 							= GetAppbarHeight();
+
 	local AppbarInstance 					= newproxy(true);
-	SharedVariables[AppbarInstance]			= {Raw = Appbar, ContentFrame = ContentFrame};
+	SharedVariables[AppbarInstance]			= {Raw = Appbar, ContentFrame = ContentFrame, Height = Height};
 
 	CopyMetatable(AppbarInstance, SharedMetatable);
 
@@ -153,6 +159,22 @@ function cAppbarInstance.new(Settings, Tween, Duration, Async)
 			Appbar.Border.BackgroundColor3 	= Settings.BorderColor;
 		end
 	end
+
+	-- Applying height-dependent metrics
+	local LeftIcon 							= Appbar.TopLeftButton;
+	local RightIcon 						= Appbar.TopRightButton;
+	local LeftAltIcon 						= Appbar.TopLeftButton_alt;
+	local RightAltIcon						= Appbar.TopRightButton_alt;
+
+	LeftIcon.Size 							= UDim2.new(0, Height - 32, 0, Height - 32);
+	RightIcon.Size 							= UDim2.new(0, Height - 32, 0, Height - 32);
+	LeftAltIcon.Size 						= UDim2.new(0, Height - 32, 0, Height - 32);
+	RightAltIcon.Size						= UDim2.new(0, Height - 32, 0, Height - 32);
+
+	--LeftIcon.Position 					= UDim2.new(0, 16, 0, 16); -- Not height-dependent
+	RightIcon.Position 						= UDim2.new(1, -16 - Height + 32, 0, 16);
+	LeftAltIcon.Position 					= UDim2.new(0, -16 - Height + 32, 0, 16);
+	RightAltIcon.Position					= UDim2.new(1,  16 + Height - 32, 0, 16);
 
 	Appbar.Parent 							= Core:GetOverlay();
 
@@ -249,6 +271,10 @@ end
 
 function InstanceFunctions:Hide(Tween, Duration, Async)
 	return TweenAppbarOut(self, Tween, Duration, false, Async);
+end
+
+function InstanceFunctions:GetHeight()
+	return SharedVariables[self].Height;
 end
 
 return cAppbarInstance; -- I don't return userdata because the thing is only used in AppbarModule
