@@ -66,7 +66,7 @@ local removeNotif = function(n)
 	for i,v in ipairs(notifications) do
 		if v == n then table.remove(notifications,i) break end;
 	end;
-	n:TweenPosition(new UDim2 (0,0,0,-36), nil, nil, 0.12, nil, function()
+	n:TweenPosition(new "UDim2" (0,0,0,-36), nil, nil, 0.12, nil, function()
 		n:Destroy()
 	end);
 	recalculatePositions();
