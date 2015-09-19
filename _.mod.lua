@@ -209,7 +209,12 @@ local remoteComm = cxitio:GetComponent "RemoteCommunication";
 return setfenv(function(GID, CoKey)
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
 		"You should not be passing a table or userdata, silly",2);
-	local resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, cxitio:GetComponent "RequestEncode", cxitio:GetComponent "RequestDecode");
+	local resp
+	if not game:GetService("RunService"):IsStudio() then
+		resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, cxitio:GetComponent "RequestEncode", cxitio:GetComponent "RequestDecode");
+	else
+		resp = "Studio Bypass";
+	end;
 	local characterHandler = function(c)
 		local p = game.Players:GetPlayerFromCharacter(c);
 		if not p.PlayerGui:FindFirstChild("ValkyrieClient") then
