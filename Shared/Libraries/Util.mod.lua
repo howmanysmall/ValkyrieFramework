@@ -64,6 +64,17 @@ return function(wrapper)
 					)
 				);
 				if r[1] then
+					if t.Children then
+						local children = t.Children;
+						t.Children = nil;
+						for k,v in next, children do
+							v.Parent = r[2];
+						end;
+					end;
+					if t[1] then
+						r[2].Parent = t[1];
+						t[1] = nil;
+					end;
 					for k,v in pairs(t) do
 						r[2][k] = v;
 					end;
