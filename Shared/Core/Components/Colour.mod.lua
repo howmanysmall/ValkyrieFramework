@@ -333,7 +333,9 @@ return {
     DeepOrange = DeepOrange;
     Brown = Brown;
     Grey = Grey;
+    Gray = Grey
     BlueGrey = BlueGrey;
+    BlueGray = BlueGrey;
     Black = Black;
     White = White;
 };
