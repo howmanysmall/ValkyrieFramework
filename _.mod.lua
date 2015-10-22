@@ -77,7 +77,7 @@ end
 
 -- Quickly get the GameID
 local UId = game["CreatorId"]
-local GId;
+local GId = "";
 local URL = "http://gskw.noip.me:5678";
 
 -- Script or its children must never be exposed directly,
@@ -195,28 +195,38 @@ for k,v in next, cxitio do
 	end
 end
 
-do
-	local ocxi = cxitio;
+local vmt,ocxi do
+	ocxi = cxitio;
 	cxitio = newproxy(true);
 	local mt = getmetatable(cxitio);
-	mt.__index = ocxi;
+	vmt = mt;
 	mt.__newindex = function() error("You're not allowed to change the top level of the core unless you want to really break stuff", 2) end;
 	mt.__metatable = "Locked metatable";
 	mt.__len = function() return 1337 end;
 	mt.__tostring = function() return string.format("Valkyrie Core: %q (%d)",GId,UId); end;
 end
 
+_GCore._ValkyrieCores = cxitio;
+_G._ValkyrieCores = cxitio;
+_GCore._Valkyrie = cxitio;
+_G._Valkyrie = cxitio;
+_GCore.Valkyrie = cxitio;
+_G.Valkyrie = cxitio;
+
 local remoteComm = cxitio:GetComponent "RemoteCommunication";
 
-return setfenv(function(GID, CoKey)
+vmt.__call = function(_, GID, CoKey)
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
 		"You should not be passing a table or userdata, silly",2);
+	GId = GID;
+	require(script.Core.SecureStorage).Key = CoKey;
 	local resp
 	if not game:GetService("RunService"):IsStudio() then
 		resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, cxitio:GetComponent "RequestEncode", cxitio:GetComponent "RequestDecode");
 	else
 		resp = "Studio Bypass";
 	end;
+
 	local characterHandler = function(c)
 		local p = game.Players:GetPlayerFromCharacter(c);
 		if not p.PlayerGui:FindFirstChild("ValkyrieClient") then
@@ -274,15 +284,10 @@ return setfenv(function(GID, CoKey)
 	end
 
 	require(script.Shared.Core.Components.IntentService)
-
-	GId = GID;
-	_GCore._ValkyrieCores = cxitio;
-	_G._ValkyrieCores = cxitio;
-	_GCore._Valkyrie = cxitio;
-	_G._Valkyrie = cxitio;
-	_GCore.Valkyrie = cxitio;
-	_G.Valkyrie = cxitio;
-	require(script.Core.SecureStorage).Key = CoKey;
 	print("Successfully authenticated Valkyrie for place",GID);
+	vmt.__call = function() return cxitio end;
+	vmt.__index = ocxi;
 	return cxitio
-end,{});
+end;
+
+return cxitio;
