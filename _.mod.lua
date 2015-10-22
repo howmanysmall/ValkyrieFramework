@@ -91,6 +91,7 @@ cxitio.GetComponent = function(...)
 	assert(script.Core.Components:FindFirstChild(c) or repSpace.Core.Components:FindFirstChild(c) or Components[c], c.." is not a valid component!", 2);
 	return script.Core.Components:FindFirstChild(c) and require(script.Core.Components[c]) or (repSpace.Core.Components:FindFirstChild(c) and require(repSpace.Core.Components[c]) or Components[c]);
 end
+cxitio.GetService = cxitio.GetComponent;
 
 cxitio.SetComponent = function(...)
 	local c,l = extract(...);
@@ -98,6 +99,7 @@ cxitio.SetComponent = function(...)
 	assert(l, "You must supply a name to set the component as", 2);
 	Components[l] = Components[l] or c;
 end
+cxitio.SetService = cxitio.SetComponent;
 
 cxitio.GetSettings = function(...)
 	local component = extract(...);
