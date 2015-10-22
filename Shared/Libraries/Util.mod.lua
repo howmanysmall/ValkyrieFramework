@@ -86,8 +86,9 @@ return function(wrapper)
 						if type(...) == 'table' then
 							local connections = ...;
 							for k,v in next, connections do
-								t[k]:connect(v);
+								t[k]:connect(function(...) v(t,...) end);
 							end;
+							tmt.__call = oca;
 							return t;
 						else
 							return oca(t,...);
