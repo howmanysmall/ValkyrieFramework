@@ -227,6 +227,12 @@ vmt.__call = function(_, GID, CoKey)
 		resp = "Studio Bypass";
 	end;
 
+	if resp then
+		print("Valkyrie Auth success: "..(resp == true and "Correct keypair" or resp));
+	else
+		return error("Valkyrie Auth failure!");
+	end;
+
 	local characterHandler = function(c)
 		local p = game.Players:GetPlayerFromCharacter(c);
 		if not p.PlayerGui:FindFirstChild("ValkyrieClient") then
