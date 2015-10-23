@@ -213,7 +213,7 @@ _G._Valkyrie = cxitio;
 _GCore.Valkyrie = cxitio;
 _G.Valkyrie = cxitio;
 
-local remoteComm = cxitio:GetComponent "RemoteCommunication";
+local remoteComm = ocxi.GetComponent "RemoteCommunication";
 
 vmt.__call = function(_, GID, CoKey)
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
@@ -222,7 +222,7 @@ vmt.__call = function(_, GID, CoKey)
 	require(script.Core.SecureStorage).Key = CoKey;
 	local resp
 	if not game:GetService("RunService"):IsStudio() then
-		resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, cxitio:GetComponent "RequestEncode", cxitio:GetComponent "RequestDecode");
+		resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
 	else
 		resp = "Studio Bypass";
 	end;
