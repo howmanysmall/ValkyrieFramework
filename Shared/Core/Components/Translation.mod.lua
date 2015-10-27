@@ -48,7 +48,7 @@ function ControllerClass.CreateNode(...)
     or _translations.en_us
     or _translations.en_uk
     or _translations.en_en
-    or next(_translations);
+    or select(2,next(_translations));
     return newTranslationNode;
   end;
 end;
