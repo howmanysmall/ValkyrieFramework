@@ -70,11 +70,15 @@ Settings:RegisterSetting("Language", {
     return TargetLanguage;
   end;
   set = function(v)
+    if type(v) ~= 'string' then
+      return error("[Error][Translation] (in Settings.Language): A string was not supplied!", 2);
+    end;
     if #v == 2 then
       -- We have no locale :S
       -- Assume repeated
       v = v..'_'..v;
     end;
+    v = v:gsub('-','_');
     if #v ~= 5 or v:sub(3,3) ~= "_" then
       return error("[Error][Translation] (in Settings.Language): "..v.." doesn't appear to be a valid format :(", 2);
     else
@@ -82,6 +86,13 @@ Settings:RegisterSetting("Language", {
     end;
   end;
 });
+
+-- Make locale aliases; valid translation fallbacks
+local aliases = {
+  en_uk = {"en_en","en_us"};
+  en_us = {"en_en","en_uk"};
+  en_en = {"en_us","en_uk"};
+}
 
 -- Connect our Translation Node class
 TranslationNodeMt.__tostring = function(this)
@@ -91,7 +102,17 @@ end;
 TranslationNodeMt.__metatable = "Valkyrie Translation Node Metatable";
 TranslationNodeMt.__index = function(this,k)
   local translations = TranslationNodeLinks[this];
-  return translations[k] or translations.default;
+  local translation = translations[k] or translations.default;
+  if not translation then
+    for k,v in ipairs(aliases[TargetLanguage]) do
+      translation = translations[v];
+      if translation then break end;
+    end;
+  end;
+  if not translation then
+    translation = "##INVALID TRANSLATION: REPORT TO GAME OWNER##";
+  end;
+  return translation;
 end;
 
 -- Connect our Translation Controller
