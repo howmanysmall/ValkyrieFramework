@@ -29,7 +29,7 @@ do
 			func_mt.__len		= function() return 117; end;
 			func_mt.__newindex	= function() warn "This time I don't even want to think of what's going inside your head!"; end;
 			func_mt.__metatable	= "HAHAHAHA NOPE";
-			
+
 			func_mt.__index		= function(t, rem_function)
 				return setfenv(function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
 					if ENABLE then
@@ -48,15 +48,15 @@ do
 						local ret		= decoder(HS:PostAsync(req_url, encoder(args)));
 						assert(ret.success, ret.error, 3);
 						return ret.result;
-					else 
+					else
 						return true;
 					end
 				end, {});
 			end
 		end
-		
+
 		return func_proxy;
-	end};
+	end});
 	mt.__tostring	= "Valkyrie RemoteCommunication Component";
 	mt.__len		= function() return 117 end;
 	mt.__newindex	= function() error("What are you even trying to do?!",2) end;
