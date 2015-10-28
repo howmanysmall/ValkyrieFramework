@@ -56,7 +56,7 @@ do
 		end
 		
 		return func_proxy;
-	end};
+	end});
 	mt.__tostring	= "Valkyrie RemoteCommunication Component";
 	mt.__len		= function() return 117 end;
 	mt.__newindex	= function() error("What are you even trying to do?!",2) end;
