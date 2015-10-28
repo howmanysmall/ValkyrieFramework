@@ -17,7 +17,7 @@ do
 	proxy			= newproxy(true);
 	local mt		= getmetatable(proxy);
 	mt.__index		= setmetatable({
-        GiveDepedencies         = function(...)
+        GiveDependencies         = function(...)
             GID, URL, Key, encoder, decoder = ...;
         end
     }, {__index = function(t, rem_module)
