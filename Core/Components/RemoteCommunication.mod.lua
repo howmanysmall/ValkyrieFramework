@@ -16,7 +16,11 @@ local HS			= game:GetService("HttpService");
 do
 	proxy			= newproxy(true);
 	local mt		= getmetatable(proxy);
-	mt.__index		= function(t, rem_module)
+	mt.__index		= setmetatable({
+        GiveDepedencies         = function(...)
+            GID, URL, Key, encoder, decoder = ...;
+        end
+    }, {__index = function(t, rem_module)
 		local func_proxy;
 		do
 			func_proxy 			= newproxy(true);
@@ -52,7 +56,7 @@ do
 		end
 		
 		return func_proxy;
-	end
+	end};
 	mt.__tostring	= "Valkyrie RemoteCommunication Component";
 	mt.__len		= function() return 117 end;
 	mt.__newindex	= function() error("What are you even trying to do?!",2) end;

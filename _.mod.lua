@@ -220,9 +220,10 @@ vmt.__call = function(_, GID, CoKey)
 		"You should not be passing a table or userdata, silly",2);
 	GId = GID;
 	require(script.Core.SecureStorage).Key = CoKey;
+    remoteComm.GiveDependencies(GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
 	local resp
 	if not game:GetService("RunService"):IsStudio() then
-		resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
+		resp = remoteComm.auth:check({uid = UId});
 	else
 		resp = "Studio Bypass";
 	end;
