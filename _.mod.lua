@@ -232,6 +232,9 @@ vmt.__call = function(_, GID, CoKey)
 	else
 		return error("Valkyrie Auth failure!");
 	end;
+	
+	vmt.__call = function() return cxitio end;
+	vmt.__index = ocxi;
 
 	local characterHandler = function(c)
 		local p = game.Players:GetPlayerFromCharacter(c);
@@ -291,8 +294,6 @@ vmt.__call = function(_, GID, CoKey)
 
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
-	vmt.__call = function() return cxitio end;
-	vmt.__index = ocxi;
 	return cxitio
 end;
 
