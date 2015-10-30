@@ -1,4 +1,4 @@
-local ENABLE 		= true;
+local ENABLE 		= false;
 
 local module		= {};
 local encoder;
