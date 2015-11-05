@@ -37,6 +37,15 @@ local ActionMt = {
 };
 local UserActions = setmetatable({},{__mode = 'v'});
 
+local InputSources do
+	local UIS = game:GetService("UserInputService");
+	local CAS = game:GetService("ContextActionService");
+	local Mouse = game.Players.LocalPlayer:GetMouse();
+	-- How do I determine how to bind a certain source .-.
+	-- wtf ηττημένος xaxa
+	InputSources = {};
+end;
+
 function Controller.CreateAction(...)
 	local actionname,defaultaction = extract(...);
 	assert(
@@ -71,7 +80,8 @@ function Controller.CreateAction(...)
 end;
 
 function ActionClass:Unbind()
-	
+	ActionBinds[self]:disconnect();
+	ActionBinds[self] = nil;
 end;
 
 function ActionClass:SetFlag(flag, value)
