@@ -3,6 +3,7 @@
 
 local Controller = {};
 local this = newproxy(true);
+local IntentService = _G.Valkyrie:GetComponent "IntentService";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
@@ -34,6 +35,7 @@ local ActionMt = {
 		ActionBinds[this]:disconnect();
 	end;
 };
+local UserActions = setmetatable({},{__mode = 'v'});
 
 function Controller.CreateAction(...)
 	local actionname,defaultaction = extract(...);
@@ -67,6 +69,25 @@ function Controller.CreateAction(...)
 	ActionLinks[newAction] = newContent;
 	return newAction;
 end;
+
+function ActionClass:Unbind()
+	
+end;
+
+function ActionClass:SetFlag(flag, value)
+	if flag == 'User' then
+		value = (not not value) or nil;
+		IntentService:FireIntent("SetUserAction", self, value or false);
+		UserActions[self] = value;
+	else
+		return error(
+			"[Error][Valkyrie Input] (in Action:SetFlag()): "..flag.." is not a valid flag.",
+			2
+		);
+	end;
+end;
+
+
 
 do
 	local mt = getmetatable(this);
