@@ -37,13 +37,70 @@ local ActionMt = {
 };
 local UserActions = setmetatable({},{__mode = 'v'});
 
-local InputSources do
+local InputSources, LinkedTypes, LinkedNames do
 	local UIS = game:GetService("UserInputService");
 	local CAS = game:GetService("ContextActionService");
 	local Mouse = game.Players.LocalPlayer:GetMouse();
 	-- How do I determine how to bind a certain source .-.
 	-- wtf ηττημένος xaxa
-	InputSources = {};
+	LinkedTypes = {};
+	LinkedNames = {};
+	local function make(sourceType, BindingName)
+		local nop = newproxy(false);
+		LinkedTypes[nop] = sourceType;
+		LinkedNames[nop] = BindingName;
+	end;
+	InputSources = {
+		Mouse = {
+			Mouse1 = make("Mouse1", "Mouse1");
+			Mouse2 = make("Mouse2", "Mouse2");
+			Moved = make("MouseMoved", "Moved");
+			Scrolled = make("MouseScrolled", "Scrolled");
+		};
+		Keyboard = {
+			-- There's got to be a better way of doing this, surely
+			A = make("Keyboard", "A");
+			B = make("Keyboard", "B");
+			C = make("Keyboard", "C");
+			D = make("Keyboard", "D");
+			E = make("Keyboard", "E");
+			F = make("Keyboard", "F");
+			G = make("Keyboard", "G");
+			H = make("Keyboard", "H");
+			I = make("Keyboard", "I");
+			J = make("Keyboard", "J");
+			K = make("Keyboard", "K");
+			L = make("Keyboard", "L");
+			M = make("Keyboard", "M");
+			N = make("Keyboard", "N");
+			O = make("Keyboard", "O");
+			P = make("Keyboard", "P");
+			Q = make("Keyboard", "Q");
+			R = make("Keyboard", "R");
+			S = make("Keyboard", "S");
+			T = make("Keyboard", "T");
+			U = make("Keyboard", "U");
+			V = make("Keyboard", "V");
+			W = make("Keyboard", "W");
+			X = make("Keyboard", "X");
+			Y = make("Keyboard", "Y");
+			Z = make("Keyboard", "Z");
+			make("Keyboard", "One");
+			make("Keyboard", "Two");
+			make("Keyboard", "Three");
+			make("Keyboard", "Four");
+			make("Keyboard", "Five");
+			make("Keyboard", "Six");
+			make("Keyboard", "Seven");
+			make("Keyboard", "Eight");
+			make("Keyboard", "Nine");
+			[0] = make("Keyboard", "Zero");
+			Shift = make("Keyboard", "Shift");
+			Tab = make("Keyboard", "Tab");
+			Esc = make("Keyboard", "Escape");
+			Space = make("Keyboard", "Space");
+		}
+	};
 end;
 
 function Controller.CreateAction(...)
