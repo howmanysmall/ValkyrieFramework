@@ -58,7 +58,7 @@ local InputSources, LinkedTypes, LinkedNames do
 			Scrolled = make("MouseScrolled", "Scrolled");
 		};
 		Keyboard = {
-			-- There's got to be a better way of doing this, surely
+			-- There's got to be a better way of doing this, surely.
 			A = make("Keyboard", "A");
 			B = make("Keyboard", "B");
 			C = make("Keyboard", "C");
@@ -99,8 +99,24 @@ local InputSources, LinkedTypes, LinkedNames do
 			Tab = make("Keyboard", "Tab");
 			Esc = make("Keyboard", "Escape");
 			Space = make("Keyboard", "Space");
-		}
+			
+		};
+		
 	};
+	for k,v in next, InputSources do
+		local np = newproxy(true);
+		local mt = getmetatable(np);
+		mt.__index = v;
+		mt.__tostring = function()return k end;
+		mt.__metatable = "Locked metatable: Valkyrie";
+		InputSources[k] = np;
+	end;
+	local ni = InputSources;
+	InputSources = newproxy(true);
+	local mt = getmetatable(InputSources);
+	mt.__index = ni;
+	mt.__metatable = "Locked metatable: Valkyrie";
+	mt.__tostring = function() return "Valkyrie Input Sources" end;
 end;
 
 function Controller.CreateAction(...)
@@ -154,6 +170,12 @@ function ActionClass:SetFlag(flag, value)
 	end;
 end;
 
+function ActionClass:Bind(source, dir, func)
+	-- @source: Valkyrie Input type
+	-- @dir: Input direction (Up, Down, UpDown/Click)
+	-- @func: Binding function
+	
+end;
 
 
 do
