@@ -38,11 +38,6 @@ local ActionMt = {
 local UserActions = setmetatable({},{__mode = 'v'});
 
 local InputSources, LinkedTypes, LinkedNames do
-	local UIS = game:GetService("UserInputService");
-	local CAS = game:GetService("ContextActionService");
-	local Mouse = game.Players.LocalPlayer:GetMouse();
-	-- How do I determine how to bind a certain source .-.
-	-- wtf ηττημένος xaxa
 	LinkedTypes = {};
 	LinkedNames = {};
 	local function make(sourceType, BindingName)
@@ -95,14 +90,61 @@ local InputSources, LinkedTypes, LinkedNames do
 			make("Keyboard", "Eight");
 			make("Keyboard", "Nine");
 			[0] = make("Keyboard", "Zero");
-			Shift = make("Keyboard", "Shift");
+			Shift = make("Keyboard", "LeftShift");
 			Tab = make("Keyboard", "Tab");
 			Esc = make("Keyboard", "Escape");
 			Space = make("Keyboard", "Space");
-			
+			Ctrl = make("Keyboard", "LeftControl");
+			Alt = make("Keyboard", "LeftAlt");
+			Super = make("Keyboard", "LeftMeta");
 		};
-		
+		Controller = {
+			A = make("ControllerButton", "ButtonA");
+			B = make("ControllerButton", "ButtonB");
+			X = make("ControllerButton", "ButtonX");
+			Y = make("ControllerButton", "ButtonY");
+			L1 = make("ControllerButton", "ButtonL1");
+			R1 = make("ControllerButton", "ButtonR1");
+			L2 = make("ControllerTrigger", "ButtonL2");
+			R2 = make("ControllerTrigger", "ButtonR2");
+			L3 = make("ControllerButton", "ButtonL3");
+			R3 = make("ControllerButton", "ButtonR3");
+			Start = make("ControllerButton", "ButtonStart");
+			Select = make("ControllerButton", "ButtonSelect");
+			Up = make("ControllerButton", "DPadUp");
+			Down = make("ControllerButton", "DPadDown");
+			Left = make("ControllerButton", "DPadLeft");
+			Right = make("ControllerButton", "DPadRight");
+		};
+		TouchScreen = {
+
+		};
 	};
+	do
+		-- ~ Keyboard input aliases
+		local Keyboard = InputSources.Keyboard;
+		Keyboard.One = Keyboard[1];
+		Keyboard.Two = Keyboard[2];
+		Keyboard.Three = Keyboard[3];
+		Keyboard.Four = Keyboard[4];
+		Keyboard.Five = Keyboard[5];
+		Keyboard.Six = Keyboard[6];
+		Keyboard.Seven = Keyboard[7];
+		Keyboard.Eight = Keyboard[8];
+		Keyboard.Nine = Keyboard[9];
+		Keyboard.Zero = Keyboard[0];
+		Keyboard.Control = Keyboard.Ctrl;
+		Keyboard.LeftControl = Keyboard.Ctrl;
+		Keyboard.LCtrl = Keyboard.Ctrl;
+		Keyboard.LControl = Keyboard.Ctrl;
+		Keyboard.Win = Keyboard.Super;
+		Keyboard.LeftSuper = Keyboard.Super;
+		Keyboard.LSuper = Keyboard.Super;
+		Keyboard.LWin = Keyboard.Super;
+		Keyboard.LeftWin = Keyboard.Super;
+		Keyboard.WindowsKey = Keyboard.Super;
+		Keyboard.Windows = Keyboard.Super;
+	end;
 	for k,v in next, InputSources do
 		local np = newproxy(true);
 		local mt = getmetatable(np);
@@ -111,12 +153,32 @@ local InputSources, LinkedTypes, LinkedNames do
 		mt.__metatable = "Locked metatable: Valkyrie";
 		InputSources[k] = np;
 	end;
+	InputSources.Touchscreen = InputSources.TouchScreen;
 	local ni = InputSources;
 	InputSources = newproxy(true);
 	local mt = getmetatable(InputSources);
 	mt.__index = ni;
 	mt.__metatable = "Locked metatable: Valkyrie";
 	mt.__tostring = function() return "Valkyrie Input Sources" end;
+end;
+local InputDirections = {
+	Up = newproxy(false);
+	Down = newproxy(false);
+	DownUp = newproxy(false);
+};
+InputDirections.Click = InputDirections.DownUp;
+InputDirections.Tap = InputDirections.DownUp;
+InputDirections.Start = InputDirections.Down;
+InputDirections.Begin = InputDirections.Down;
+InputDirections.Finish = InputDirections.Up;
+InputDirections.End = InputDirections.Up;
+do
+	local id = InputDirections;
+	InputDirections = newproxy(true);
+	local mt = getmetatable(InputDirections);
+	mt.__index = id;
+	mt.__metatable = "Locked metatable: Valkyrie";
+	mt.__tostring = function() return "Valkyrie Input Directions" end;
 end;
 
 function Controller.CreateAction(...)
@@ -174,9 +236,9 @@ function ActionClass:SetFlag(flag, value)
 end;
 do
 	local UIS = game:GetService("UserInputService");
-	local Mouse = game:GetService("Players").LocalPlayer;
+	local Mouse = game:GetService("Players").LocalPlayer:GetMouse();
 	local CAS = game:GetService("ContextActionService");
-	
+
 	local CustomConnection do
 		-- Constructor for custom Connection objects
 		local finishers = setmetatable({},{__mode = 'k'});
@@ -217,32 +279,36 @@ do
 		assert(source, "You need to supply an Input source as #1", 2);
 		local Type, Name = LinkedTypes[source],LinkedNames[source];
 		assert(
-			Type and Name, 
+			Type and Name,
 			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
 			2
 		);
 		if Type == 'Keyboard' then
-			
+
 		elseif Type == 'Mouse1' then
-			
+
 		elseif Type == 'Mouse2' then
-			
+
 		elseif Type == 'MouseMoved' then
-			
+
 		elseif Type == 'MouseScrolled' then
-			
+
 		elseif Type == 'ControllerButton' then
-			
+
+		elseif Type == 'ControllerTrigger' then
+
+		elseif Type == 'ControllerAxis' then
+
 		elseif Type == 'TouchScreen' then
-			
+
 		end;
-		
+
 		--> Connection
 	end;
 	function ActionClass:BindSource(source, dir, object, func)
 		-- ~ Binding actions for Instances with input sources
 		-- @object: Binding target
-		
+
 		--> Connection
 	end;
 	function ActionClass:BindContext(keyboard, controller, touchscreen, dir, makebutton, func)
@@ -252,7 +318,7 @@ do
 		-- @touchscreen: Touchscreen input type
 		-- @dir: ::@dir
 		-- @makebutton: Create an onscreen button for this input source?
-		
+
 		--> Connection, ?Button
 	end;
 	function ActionClass:CreateButton(source, dir, name, color, position, func)
@@ -260,19 +326,19 @@ do
 		-- @color: Color3 of the button. Can be nil.
 		-- | Color can also be a name of a Material Color for a [500] Color
 		-- @position: UDim2 of the button Position. Can be nil (automatic positioning)
-		
+
 		--> Connection, Button
 	end;
 	function ActionClass:BindCombo(sources, func)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | Sources are to be checked with a DownUp/Click
-		
+
 		--> Connection
 	end;
 	function ActionClass:BindSequence(sources, func)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | Sources are to be checked in order. No tree building here.
-		
+
 		--> Connection
 end;
 
