@@ -37,6 +37,13 @@ local ActionMt = {
 };
 local UserActions = setmetatable({},{__mode = 'v'});
 
+local InputTracker = {};
+local InputCache = ({},{__mode = 'v'});
+local function CreateInputState(source, prop)
+	
+		
+end;
+
 local InputSources, LinkedTypes, LinkedNames do
 	LinkedTypes = {};
 	LinkedNames = {};
