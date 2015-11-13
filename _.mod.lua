@@ -233,7 +233,7 @@ vmt.__call = function(_, GID, CoKey)
 	else
 		return error("Valkyrie Auth failure!");
 	end;
-	
+
 	vmt.__call = function() return cxitio end;
 	vmt.__index = ocxi;
 
@@ -297,5 +297,8 @@ vmt.__call = function(_, GID, CoKey)
 	print("Successfully authenticated Valkyrie for place",GID);
 	return cxitio
 end;
+
+print("Welcome to Valkyrie git-" .. script:WaitForChild("GitMeta"):WaitForChild("BranchID").Value .. "-" .. script.GitMeta:WaitForChild("HeadCommitID"):sub(1, 8));
+print("Last updated by " .. script.GitMeta:WaitForChild("Author").Value .. ":\n" .. script.GitMeta:WaitForChild("HeadCommitText").Value);
 
 return cxitio;
