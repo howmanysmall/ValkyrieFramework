@@ -298,7 +298,7 @@ vmt.__call = function(_, GID, CoKey)
 	return cxitio
 end;
 
-print("Welcome to Valkyrie git-" .. script:WaitForChild("GitMeta"):WaitForChild("BranchID").Value .. "-" .. script.GitMeta:WaitForChild("HeadCommitID"):sub(1, 8));
+print("Welcome to Valkyrie git-" .. script:WaitForChild("GitMeta"):WaitForChild("BranchID").Value .. "-" .. script.GitMeta:WaitForChild("HeadCommitID").Value:sub(1, 8));
 print("Last updated by " .. script.GitMeta:WaitForChild("Author").Value .. ":\n" .. script.GitMeta:WaitForChild("HeadCommitText").Value);
 
 return cxitio;
