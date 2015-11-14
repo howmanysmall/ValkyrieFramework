@@ -124,7 +124,14 @@ local InputSources, LinkedTypes, LinkedNames do
 			Right = make("ControllerButton", "DPadRight");
 		};
 		TouchScreen = {
-
+            Tapped = make("TouchScreen", "Tapped");
+            LongPressed = make("TouchScreen", "LongPressed");
+            Moved = make("TouchScreen", "Moved");
+            Panned = make("TouchScreen", "Panned");
+            Pinched = make("TouchScreen", "Pinched");
+            Rotated = make("TouchScreen", "Rotated");
+            Started = make("TouchScreen", "Started");
+            Swiped = make("TouchScreen", "Swiped");
 		};
 	};
 	do
