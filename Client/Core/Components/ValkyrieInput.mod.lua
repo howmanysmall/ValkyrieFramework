@@ -123,15 +123,24 @@ local InputSources, LinkedTypes, LinkedNames do
 			Left = make("ControllerButton", "DPadLeft");
 			Right = make("ControllerButton", "DPadRight");
 		};
+		TouchActions = {
+      Tapped = make("TouchAction", "Tapped");
+      LongPressed = make("TouchAction", "LongPressed");
+      Moved = make("TouchAction", "Moved");
+      Panned = make("TouchAction", "Panned");
+      Pinched = make("TouchAction", "Pinched");
+      Rotated = make("TouchAction", "Rotated");
+      Started = make("TouchAction", "Started");
+      Swiped = make("TouchAction", "Swiped");
+		};
 		TouchScreen = {
-            Tapped = make("TouchScreen", "Tapped");
-            LongPressed = make("TouchScreen", "LongPressed");
-            Moved = make("TouchScreen", "Moved");
-            Panned = make("TouchScreen", "Panned");
-            Pinched = make("TouchScreen", "Pinched");
-            Rotated = make("TouchScreen", "Rotated");
-            Started = make("TouchScreen", "Started");
-            Swiped = make("TouchScreen", "Swiped");
+			-- Generic touch input
+			-- 1 finger down
+			-- 2 fingers down
+			-- Doesn't have to come directly from an input source; just has to be a valid input.
+			-- TouchPoint1
+			-- TouchPoint2
+			-- etc.
 		};
 	};
 	do
@@ -354,6 +363,10 @@ do
 		-- | Sources are to be checked in order. No tree building here.
 
 		--> Connection
+	end;
+	function ActionClass:BindTouchAction(source, func)
+		-- ~ Specific touch events like tapping, pinching, scrolling etc
+	end;
 end;
 
 
