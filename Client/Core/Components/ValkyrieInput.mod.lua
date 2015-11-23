@@ -37,13 +37,6 @@ local ActionMt = {
 };
 local UserActions = setmetatable({},{__mode = 'v'});
 
-local InputTracker = {};
-local InputCache = ({},{__mode = 'v'});
-local function CreateInputState(source, prop)
-	
-		
-end;
-
 local InputSources, LinkedTypes, LinkedNames do
 	LinkedTypes = {};
 	LinkedNames = {};
@@ -204,6 +197,45 @@ do
 	mt.__tostring = function() return "Valkyrie Input Directions" end;
 end;
 
+-- Make input objects and bind at the same time if the input is not already bound.
+-- If the input is bound, then that's all fine.
+local UIS = game:GetService("UserInputService");
+local Mouse = game:GetService("Players").LocalPlayer:GetMouse();
+local CAS = game:GetService("ContextActionService");
+local InputTracker = {};
+local InputCache = {};
+local BoundUnique = {};
+local function CreateInputState(source)
+	-- Create a generic input object for the target Source
+	if InputCache[source] then return InputCache[source] end;
+	local iType = LinkedTypes[source];
+	local iName = LinkedNames[source];
+	local ni = newproxy(true);
+	local 
+	if Type == 'Keyboard' then
+
+	elseif Type == 'Mouse1' then
+
+	elseif Type == 'Mouse2' then
+
+	elseif Type == 'MouseMoved' then
+
+	elseif Type == 'MouseScrolled' then
+
+	elseif Type == 'ControllerButton' then
+
+	elseif Type == 'ControllerTrigger' then
+
+	elseif Type == 'ControllerAxis' then
+
+	elseif Type == 'TouchScreen' then
+
+	end;
+end;
+-- Bind UIS outside of the function because of how it works
+-- TODO
+
+-- Create actions
 function Controller.CreateAction(...)
 	local actionname,defaultaction = extract(...);
 	assert(
@@ -258,10 +290,6 @@ function ActionClass:SetFlag(flag, value)
 	end;
 end;
 do
-	local UIS = game:GetService("UserInputService");
-	local Mouse = game:GetService("Players").LocalPlayer:GetMouse();
-	local CAS = game:GetService("ContextActionService");
-
 	local CustomConnection do
 		-- Constructor for custom Connection objects
 		local finishers = setmetatable({},{__mode = 'k'});
@@ -306,25 +334,6 @@ do
 			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
 			2
 		);
-		if Type == 'Keyboard' then
-
-		elseif Type == 'Mouse1' then
-
-		elseif Type == 'Mouse2' then
-
-		elseif Type == 'MouseMoved' then
-
-		elseif Type == 'MouseScrolled' then
-
-		elseif Type == 'ControllerButton' then
-
-		elseif Type == 'ControllerTrigger' then
-
-		elseif Type == 'ControllerAxis' then
-
-		elseif Type == 'TouchScreen' then
-
-		end;
 
 		--> Connection
 	end;
