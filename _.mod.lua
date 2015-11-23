@@ -27,11 +27,11 @@ local select = select;
 local rawget, rawset = rawget, rawset;
 local ipairs = ipairs;
 local cwrap = coroutine.wrap;
-setfenv(0,{})
-setfenv(1,{})
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
 local wviis = setmetatable({},{__mode = 'k'});
+getfenv(0).script = nil;
+getfenv(1).script = nil;
 
 local echo = function(...) return ... end;
 local pack = function(...) return {n=select('#',...),...} end;
