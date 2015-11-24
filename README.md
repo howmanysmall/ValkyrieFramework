@@ -1,5 +1,5 @@
 # Valkyrie Framework
-Please read [.CONTRIBUTING.md](https://github.com/ValkyrieRBXL/ValkyrieFramework/blob/bleeding-edge/.CONTRIBUTING.md) if you want to contribute.
+Please read [CONTRIBUTING.md](https://github.com/ValkyrieRBXL/ValkyrieFramework/blob/bleeding-edge/CONTRIBUTING.md) if you want to contribute.
 
 This project uses the Font Rendering Module by [EgoMoose](http://www.roblox.com/users/2155311/profile) as a base for its. (on the font-rendering branch)
 
