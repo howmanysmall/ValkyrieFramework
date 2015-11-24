@@ -211,7 +211,14 @@ local function CreateInputState(source)
 	local iType = LinkedTypes[source];
 	local iName = LinkedNames[source];
 	local ni = newproxy(true);
-	local 
+	local mt = getmetatable(ni);
+	local Props = {};
+	mt.__index = Props;
+	InputTracker[ni] = Props;
+	mt.__tostring = function()
+		return "Valkyrie Input: "..iName.." ("..iType..")";
+	end;
+	
 	if Type == 'Keyboard' then
 
 	elseif Type == 'Mouse1' then
@@ -233,7 +240,19 @@ local function CreateInputState(source)
 	end;
 end;
 -- Bind UIS outside of the function because of how it works
--- TODO
+local UISEdge = function(i,p)
+	local sType = i.UserInputType;
+	if sType ~= 'Keyboard' then
+		if 
+		
+		else
+			return;
+		end;
+	end;
+	local sName = i.KeyCode;
+end;
+UIS.InputBegan:connect(UISEdge);
+UIS.InputEnded:connect(UISEdge);
 
 -- Create actions
 function Controller.CreateAction(...)
