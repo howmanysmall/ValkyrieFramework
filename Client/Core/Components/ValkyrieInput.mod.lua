@@ -242,14 +242,27 @@ end;
 -- Bind UIS outside of the function because of how it works
 local UISEdge = function(i,p)
 	local sType = i.UserInputType;
-	if sType ~= 'Keyboard' then
-		if 
-		
-		else
-			return;
-		end;
+	local sName;
+	if sType == 'Keyboard' then
+		sName = i.KeyCode;
+	elseif sType == 'Touchscreen' then
+		-- Etc
 	end;
-	local sName = i.KeyCode;
+	local source = InputSources[sType][sName];
+	local iobj = CreateInputStats(source);
+	local iprops = InputTracker[iobj];
+	iprops.InputName = sName;
+	iprops.InputType = sType;
+	if sType == 'MouseMoved' then
+		
+	elseif sType == 'MouseScrolled' then
+		
+	elseif sType == 'ControllerTrigger' then
+		
+	else
+		
+	end;
+	
 end;
 UIS.InputBegan:connect(UISEdge);
 UIS.InputEnded:connect(UISEdge);
