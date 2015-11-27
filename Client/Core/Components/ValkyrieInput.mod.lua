@@ -49,6 +49,7 @@ local InputSources, LinkedTypes, LinkedNames do
 		Mouse = {
 			Mouse1 = make("Mouse1", "Mouse1");
 			Mouse2 = make("Mouse2", "Mouse2");
+			Mouse3 = make("Mouse3", "Mouse3");
 			Moved = make("MouseMoved", "Moved");
 			Scrolled = make("MouseScrolled", "Scrolled");
 		};
@@ -115,6 +116,8 @@ local InputSources, LinkedTypes, LinkedNames do
 			Down = make("ControllerButton", "DPadDown");
 			Left = make("ControllerButton", "DPadLeft");
 			Right = make("ControllerButton", "DPadRight");
+			Analogue1 = make("ControllerAxis", "Thumbstick1");
+			Analogue2 = make("ControllerAxis", "Thumbstick2");
 		};
 		TouchActions = {
       Tapped = make("TouchAction", "Tapped");
@@ -161,6 +164,32 @@ local InputSources, LinkedTypes, LinkedNames do
 		Keyboard.WindowsKey = Keyboard.Super;
 		Keyboard.Windows = Keyboard.Super;
 	end;
+	do
+		-- ~ Gamepad input aliases
+		local Controller = InputSources.Controller;
+		Controller.ButtonA = Controller.A;
+		Controller.ButtonB = Controller.B;
+		Controller.ButtonX = Controller.X;
+		Controller.ButtonY = Controller.Y;
+		Controller.ButtonL1 = Controller.L1;
+		Controller.ButtonL2 = Controller.L2;
+		Controller.ButtonR1 = Controller.R1;
+		Controller.ButtonR2 = Controller.R2;
+		Controller.ButtonL3 = Controller.L3;
+		Controller.ButtonR3 = Controller.R3;
+		Controller.ButtonStart = Controller.Start;
+		Controller.ButtonSelect = Controller.Select;
+		Controller.Thumbstick1 = Controller.Analogue1;
+		Controller.Thumbstick2 = Controller.Analogue2;
+		Controller.Analog1 = Controller.Analogue1;
+		Controller.Analog2 = Controller.Analogue2;
+		Controller.DPadLeft = Controller.Left;
+		Controller.DPadRight = Controller.Right;
+		Controller.DPadUp = Controller.Up;
+		Controller.DPadDown = Controller.Down;
+		Controller.ThumbStick1 = Controller.Analogue1;
+		Controller.ThumbStick2 = Controller.Analogue2;
+	end;
 	for k,v in next, InputSources do
 		local np = newproxy(true);
 		local mt = getmetatable(np);
@@ -170,6 +199,9 @@ local InputSources, LinkedTypes, LinkedNames do
 		InputSources[k] = np;
 	end;
 	InputSources.Touchscreen = InputSources.TouchScreen;
+	InputSources.Touch = InputSources.TouchScreen;
+	InputSources.Gamepad = InputSources.Controller;
+	InputSources.GamePad = InputSources.Controller;
 	local ni = InputSources;
 	InputSources = newproxy(true);
 	local mt = getmetatable(InputSources);
@@ -181,6 +213,7 @@ local InputDirections = {
 	Up = newproxy(false);
 	Down = newproxy(false);
 	DownUp = newproxy(false);
+	Change = newproxy(false);
 };
 InputDirections.Click = InputDirections.DownUp;
 InputDirections.Tap = InputDirections.DownUp;
@@ -188,6 +221,8 @@ InputDirections.Start = InputDirections.Down;
 InputDirections.Begin = InputDirections.Down;
 InputDirections.Finish = InputDirections.Up;
 InputDirections.End = InputDirections.Up;
+InputDirections.Changed = InputDirections.Change;
+InputDirections.Update = InputDirections.Update;
 do
 	local id = InputDirections;
 	InputDirections = newproxy(true);
@@ -218,15 +253,20 @@ local function CreateInputState(source)
 	mt.__tostring = function()
 		return "Valkyrie Input: "..iName.." ("..iType..")";
 	end;
-	
 	if Type == 'Keyboard' then
-
+		Props.Key = iName;
+		-- Bound already
 	elseif Type == 'Mouse1' then
-
+		Props.Key = "Mouse1";
+		Props.Target = Mouse.Target;
 	elseif Type == 'Mouse2' then
-
+		Props.Target = Mouse.Target;
+		Props.Key = "Mouse2";
+	elseif Type == 'Mouse3' then
+		Props.Target = Mouse.Target;
+		Props.Key = "Mouse3"
 	elseif Type == 'MouseMoved' then
-
+		Props.Target = Mouse.Target;
 	elseif Type == 'MouseScrolled' then
 
 	elseif Type == 'ControllerButton' then
@@ -241,31 +281,56 @@ local function CreateInputState(source)
 end;
 -- Bind UIS outside of the function because of how it works
 local UISEdge = function(i,p)
-	local sType = i.UserInputType;
+	local iType = i.UserInputType.Name;
+	local sType = iType;		Props.Target = Mouse.Target;
 	local sName;
 	if sType == 'Keyboard' then
 		sName = i.KeyCode;
-	elseif sType == 'Touchscreen' then
+	elseif sType == 'Touch' then
 		-- Etc
+	elseif sType == 'MouseButton0' then
+		sType = 'Mouse';
+		sName = 'Mouse1';
+	elseif sType == 'MouseButton1' then
+		sType = 'Mouse';
+		sName = 'Mouse2';
+	elseif sType == 'MouseButton2' then
+		sType = 'Mouse';
+		sName = 'Mouse3';
+	elseif sType == 'MouseMovement' then
+		sType = 'Mouse';
+		sName = 'Moved';
+	elseif sType:sub(1,-2) == 'Gamepad' then
+		sType = 'Controller'
+		sName = i.KeyCode;
 	end;
 	local source = InputSources[sType][sName];
-	local iobj = CreateInputStats(source);
+	local dir = i.UserInputState == Enum.UserInputState.Begin and InputDirections.Up or InputDirections.Down;
+	if i.UserInputState == Enum.UserInputState.Changed then
+		dir = InputDirections.Change;
+	end;
+	local iobj = CreateInputState(source);
 	local iprops = InputTracker[iobj];
 	iprops.InputName = sName;
 	iprops.InputType = sType;
-	if sType == 'MouseMoved' then
-		
-	elseif sType == 'MouseScrolled' then
-		
-	elseif sType == 'ControllerTrigger' then
-		
-	else
-		
+	if sType == 'Mouse' and props.Target ~= Mouse.Target then
+		props.OldTarget = props.Target;
+		props.Target = Mouse.Target;
 	end;
-	
+	if iType == 'MouseMovement' then
+		iprops.Position = i.Position;
+	elseif sType == 'MouseScrolled' then
+		dir = i.Delta.Y > 0 and InputDirections.Up or InputDirections.Down;
+	elseif sType == 'ControllerTrigger' then
+
+	else
+
+	end;
+	IntentService:FireIntent("VInputEdge", source, dir, i, p);
 end;
 UIS.InputBegan:connect(UISEdge);
 UIS.InputEnded:connect(UISEdge);
+UIS.InputChanged:connect(UISEdge);
 
 -- Create actions
 function Controller.CreateAction(...)
@@ -300,6 +365,10 @@ function Controller.CreateAction(...)
 	ActionLinks[newAction] = newContent;
 	return newAction;
 end;
+
+Controller.Mouse = Mouse;
+Controller.CAS = CAS;
+Controller.UIS = UIS;
 
 function ActionClass:UnbindAll()
 	local binds = ActionBinds[self];
