@@ -486,7 +486,18 @@ function Controller.CreateAction(...)
 	end;
 	Actions[actionname] = newAction;
 	ActionLinks[newAction] = newContent;
+	ActionBinds[newAction] = {};
 	return newAction;
+end;
+
+function Controller.GetAction(...)
+	local actionname = extract(...);
+	assert(
+		type(actionname) == 'string',
+		"[Error][Valkyrie Input] (in GetAction): Supplied action name was not a string",
+		2
+	);
+	return Actions[actionname];
 end;
 
 Controller.Mouse = Mouse;
