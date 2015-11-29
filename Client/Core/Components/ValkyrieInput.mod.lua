@@ -37,6 +37,7 @@ local ActionMt = {
 };
 local UserActions = setmetatable({},{__mode = 'v'});
 
+local iBinds = {};
 local InputSources, LinkedTypes, LinkedNames do
 	LinkedTypes = {};
 	LinkedNames = {};
@@ -99,7 +100,67 @@ local InputSources, LinkedTypes, LinkedNames do
 			Alt = make("Keyboard", "LeftAlt");
 			Super = make("Keyboard", "LeftMeta");
 		};
-		Controller = {
+		Controller1 = {
+			A = make("ControllerButton", "ButtonA");
+			B = make("ControllerButton", "ButtonB");
+			X = make("ControllerButton", "ButtonX");
+			Y = make("ControllerButton", "ButtonY");
+			L1 = make("ControllerButton", "ButtonL1");
+			R1 = make("ControllerButton", "ButtonR1");
+			L2 = make("ControllerTrigger", "ButtonL2");
+			R2 = make("ControllerTrigger", "ButtonR2");
+			L3 = make("ControllerButton", "ButtonL3");
+			R3 = make("ControllerButton", "ButtonR3");
+			Start = make("ControllerButton", "ButtonStart");
+			Select = make("ControllerButton", "ButtonSelect");
+			Up = make("ControllerButton", "DPadUp");
+			Down = make("ControllerButton", "DPadDown");
+			Left = make("ControllerButton", "DPadLeft");
+			Right = make("ControllerButton", "DPadRight");
+			Analogue1 = make("ControllerAxis", "Thumbstick1");
+			Analogue2 = make("ControllerAxis", "Thumbstick2");
+		};
+		Controller2 = {
+			A = make("ControllerButton", "ButtonA");
+			B = make("ControllerButton", "ButtonB");
+			X = make("ControllerButton", "ButtonX");
+			Y = make("ControllerButton", "ButtonY");
+			L1 = make("ControllerButton", "ButtonL1");
+			R1 = make("ControllerButton", "ButtonR1");
+			L2 = make("ControllerTrigger", "ButtonL2");
+			R2 = make("ControllerTrigger", "ButtonR2");
+			L3 = make("ControllerButton", "ButtonL3");
+			R3 = make("ControllerButton", "ButtonR3");
+			Start = make("ControllerButton", "ButtonStart");
+			Select = make("ControllerButton", "ButtonSelect");
+			Up = make("ControllerButton", "DPadUp");
+			Down = make("ControllerButton", "DPadDown");
+			Left = make("ControllerButton", "DPadLeft");
+			Right = make("ControllerButton", "DPadRight");
+			Analogue1 = make("ControllerAxis", "Thumbstick1");
+			Analogue2 = make("ControllerAxis", "Thumbstick2");
+		};
+		Controller3 = {
+			A = make("ControllerButton", "ButtonA");
+			B = make("ControllerButton", "ButtonB");
+			X = make("ControllerButton", "ButtonX");
+			Y = make("ControllerButton", "ButtonY");
+			L1 = make("ControllerButton", "ButtonL1");
+			R1 = make("ControllerButton", "ButtonR1");
+			L2 = make("ControllerTrigger", "ButtonL2");
+			R2 = make("ControllerTrigger", "ButtonR2");
+			L3 = make("ControllerButton", "ButtonL3");
+			R3 = make("ControllerButton", "ButtonR3");
+			Start = make("ControllerButton", "ButtonStart");
+			Select = make("ControllerButton", "ButtonSelect");
+			Up = make("ControllerButton", "DPadUp");
+			Down = make("ControllerButton", "DPadDown");
+			Left = make("ControllerButton", "DPadLeft");
+			Right = make("ControllerButton", "DPadRight");
+			Analogue1 = make("ControllerAxis", "Thumbstick1");
+			Analogue2 = make("ControllerAxis", "Thumbstick2");
+		};
+		Controller4 = {
 			A = make("ControllerButton", "ButtonA");
 			B = make("ControllerButton", "ButtonB");
 			X = make("ControllerButton", "ButtonX");
@@ -138,6 +199,13 @@ local InputSources, LinkedTypes, LinkedNames do
 			-- TouchPoint2
 			-- etc.
 		};
+		Application = {
+			Focus = make("ApplicationFocus", "Focus");
+		};
+		ClickDetector = {
+			Click = make("ClickDetector", "Click");
+			Hover = make("ClickDetector", "Hover");
+		};
 	};
 	do
 		-- ~ Keyboard input aliases
@@ -166,29 +234,31 @@ local InputSources, LinkedTypes, LinkedNames do
 	end;
 	do
 		-- ~ Gamepad input aliases
-		local Controller = InputSources.Controller;
-		Controller.ButtonA = Controller.A;
-		Controller.ButtonB = Controller.B;
-		Controller.ButtonX = Controller.X;
-		Controller.ButtonY = Controller.Y;
-		Controller.ButtonL1 = Controller.L1;
-		Controller.ButtonL2 = Controller.L2;
-		Controller.ButtonR1 = Controller.R1;
-		Controller.ButtonR2 = Controller.R2;
-		Controller.ButtonL3 = Controller.L3;
-		Controller.ButtonR3 = Controller.R3;
-		Controller.ButtonStart = Controller.Start;
-		Controller.ButtonSelect = Controller.Select;
-		Controller.Thumbstick1 = Controller.Analogue1;
-		Controller.Thumbstick2 = Controller.Analogue2;
-		Controller.Analog1 = Controller.Analogue1;
-		Controller.Analog2 = Controller.Analogue2;
-		Controller.DPadLeft = Controller.Left;
-		Controller.DPadRight = Controller.Right;
-		Controller.DPadUp = Controller.Up;
-		Controller.DPadDown = Controller.Down;
-		Controller.ThumbStick1 = Controller.Analogue1;
-		Controller.ThumbStick2 = Controller.Analogue2;
+		for i=1,4 do
+			local Controller = InputSources["Controller"..tostring(i)];
+			Controller.ButtonA = Controller.A;
+			Controller.ButtonB = Controller.B;
+			Controller.ButtonX = Controller.X;
+			Controller.ButtonY = Controller.Y;
+			Controller.ButtonL1 = Controller.L1;
+			Controller.ButtonL2 = Controller.L2;
+			Controller.ButtonR1 = Controller.R1;
+			Controller.ButtonR2 = Controller.R2;
+			Controller.ButtonL3 = Controller.L3;
+			Controller.ButtonR3 = Controller.R3;
+			Controller.ButtonStart = Controller.Start;
+			Controller.ButtonSelect = Controller.Select;
+			Controller.Thumbstick1 = Controller.Analogue1;
+			Controller.Thumbstick2 = Controller.Analogue2;
+			Controller.Analog1 = Controller.Analogue1;
+			Controller.Analog2 = Controller.Analogue2;
+			Controller.DPadLeft = Controller.Left;
+			Controller.DPadRight = Controller.Right;
+			Controller.DPadUp = Controller.Up;
+			Controller.DPadDown = Controller.Down;
+			Controller.ThumbStick1 = Controller.Analogue1;
+			Controller.ThumbStick2 = Controller.Analogue2;
+		end;
 	end;
 	for k,v in next, InputSources do
 		local np = newproxy(true);
@@ -240,9 +310,14 @@ local CAS = game:GetService("ContextActionService");
 local InputTracker = {};
 local InputCache = {};
 local BoundUnique = {};
-local function CreateInputState(source)
+local CreateInputState, UISEdge;
+CreateInputState = function(source, meta)
 	-- Create a generic input object for the target Source
-	if InputCache[source] then return InputCache[source] end;
+	if not meta then
+		if InputCache[source] then return InputCache[source] end;
+	else
+		if InputCache[meta][source] then return InputCache[meta][source] end;
+	end;
 	local iType = LinkedTypes[source];
 	local iName = LinkedNames[source];
 	local ni = newproxy(true);
@@ -253,39 +328,76 @@ local function CreateInputState(source)
 	mt.__tostring = function()
 		return "Valkyrie Input: "..iName.." ("..iType..")";
 	end;
-	if Type == 'Keyboard' then
+	if iType == 'Keyboard' then
 		Props.Key = iName;
 		-- Bound already
-	elseif Type == 'Mouse1' then
+	elseif iType == 'Mouse1' then
 		Props.Key = "Mouse1";
 		Props.Target = Mouse.Target;
-	elseif Type == 'Mouse2' then
+	elseif iType == 'Mouse2' then
 		Props.Target = Mouse.Target;
 		Props.Key = "Mouse2";
-	elseif Type == 'Mouse3' then
+	elseif iType == 'Mouse3' then
 		Props.Target = Mouse.Target;
 		Props.Key = "Mouse3"
-	elseif Type == 'MouseMoved' then
+	elseif iType == 'MouseMoved' then
 		Props.Target = Mouse.Target;
-	elseif Type == 'MouseScrolled' then
-
-	elseif Type == 'ControllerButton' then
-
-	elseif Type == 'ControllerTrigger' then
-
-	elseif Type == 'ControllerAxis' then
-
-	elseif Type == 'TouchScreen' then
-
+	elseif iType == 'MouseScrolled' then
+		Props.ScrollY = 0;
+	elseif iType == 'ControllerButton' then
+		Props.Key = iName;
+		Props.Button = iName;
+		for i=1,4 do
+			if InputSources["Controller"..tostring(i)][iName] == source then
+				Props.Controller = i;
+				break;
+			end;
+		end;
+	elseif iType == 'ControllerTrigger' then
+		Props.Key = iName;
+		Props.Button = iName;
+		Props.Trigger = iName;
+		for i=1,4 do
+			if InputSources["Controller"..tostring(i)][iName] == source then
+				Props.Controller = i;
+				break;
+			end;
+		end;
+		-- It's happening.
+	elseif iType == 'ControllerAxis' then
+		for i=1,4 do
+			if InputSources["Controller"..tostring(i)][iName] == source then
+				Props.Controller = i;
+				break;
+			end;
+		end;
+		Props.Key = iName;
+		Props.Stick = iName;
+		Props.Analogue = iName;
+	elseif iType == 'TouchScreen' then
+		-- No idea how to configure this one.
+		-- Location::Position
+	end;
+	if meta:IsA("GuiObject") then
+		BoundUnique[meta] = true;
+		meta.InputBegan:connect(UISEdge);
+		meta.InputEnded:connect(UISEdge);
+		meta.InputChanged:connect(UISEdge);
+	end;
+	local iBind = Instance.new("BindableEvent");
+	if not meta then
+		iBinds[source] = iBind;
+	else
+		iBinds[meta] = {[source] = iBind};
 	end;
 end;
 -- Bind UIS outside of the function because of how it works
-local UISEdge = function(i,p)
+UISEdge = function(i,p)
 	local iType = i.UserInputType.Name;
-	local sType = iType;		Props.Target = Mouse.Target;
+	local sType = iType;
 	local sName;
 	if sType == 'Keyboard' then
-		sName = i.KeyCode;
+		sName = i.KeyCode.Name;
 	elseif sType == 'Touch' then
 		-- Etc
 	elseif sType == 'MouseButton0' then
@@ -302,9 +414,14 @@ local UISEdge = function(i,p)
 		sName = 'Moved';
 	elseif sType:sub(1,-2) == 'Gamepad' then
 		sType = 'Controller'
-		sName = i.KeyCode;
+		sName = i.KeyCode.Name;
+	elseif sType == 'Focus' then
+		sType = 'Application';
+		sName = 'Focus';
 	end;
 	local source = InputSources[sType][sName];
+	if not source then return end;
+	local vType = LinkedTypes[source];
 	local dir = i.UserInputState == Enum.UserInputState.Begin and InputDirections.Up or InputDirections.Down;
 	if i.UserInputState == Enum.UserInputState.Changed then
 		dir = InputDirections.Change;
@@ -313,20 +430,26 @@ local UISEdge = function(i,p)
 	local iprops = InputTracker[iobj];
 	iprops.InputName = sName;
 	iprops.InputType = sType;
-	if sType == 'Mouse' and props.Target ~= Mouse.Target then
-		props.OldTarget = props.Target;
-		props.Target = Mouse.Target;
+	if sType == 'Mouse' and iprops.Target ~= Mouse.Target then
+		iprops.OldTarget = iprops.Target;
+		iprops.Target = Mouse.Target;
+		iprops.Hit = Mouse.Hit;
 	end;
 	if iType == 'MouseMovement' then
 		iprops.Position = i.Position;
 	elseif sType == 'MouseScrolled' then
 		dir = i.Delta.Y > 0 and InputDirections.Up or InputDirections.Down;
-	elseif sType == 'ControllerTrigger' then
-
+		iprops.ScrollY = iprops.ScrollY + i.Delta.Y; -- Not sure about Pos
+	elseif vType == 'ControllerTrigger' then
+		iprops.Position = i.Position;
+		iprops.Axis = i.Position.Y;
+		iprops.Var = i.Position.Y;
+	elseif vType == 'ApplicationFocus' then
+		iprops.Focused = dir == InputDirections.Down;
 	else
-
+		iprops.Down = dir == InputDirections.Down
 	end;
-	IntentService:FireIntent("VInputEdge", source, dir, i, p);
+	iBinds[source]:Fire();
 end;
 UIS.InputBegan:connect(UISEdge);
 UIS.InputEnded:connect(UISEdge);
