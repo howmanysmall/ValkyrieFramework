@@ -42,6 +42,7 @@ the same)
 
 How do I test my changes?
 ---
+**Note: This system is no longer supported and will be replaced by a better system soon.**  
 Windows users: Install MSysGit and clone this repository in `Git Bash`.  
 OS X users: The script is untested on OS X. Please open an issue if it doesn't
 work.  
