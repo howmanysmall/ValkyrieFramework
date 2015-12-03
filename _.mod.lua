@@ -150,7 +150,7 @@ do
 		wviis[Wrapper(cxitio)] = true;
 		local newEnv = setmetatable({},{
 			__index = function(_,k)
-				local v = Wrapper.Overrides.Glob[k] or _ENV[k];
+				local v = Wrapper.Overrides.Globals[k] or _ENV[k];
 				if v then return v end;
 				local s,v = pcall(game.GetService,game,k);
 				if s then return v end;
