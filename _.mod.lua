@@ -78,7 +78,7 @@ end
 -- Quickly get the GameID
 local UId = game["CreatorId"]
 local GId = "";
-local URL = "http://gskw.noip.me:5678";
+local URL = "https://gskw.dedyn.io";
 
 -- Script or its children must never be exposed directly,
 -- as a result, they must be proxied.
