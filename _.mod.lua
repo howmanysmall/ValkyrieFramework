@@ -189,11 +189,6 @@ do
 		return newWrapper(type(private) == 'bool' and private or false);
 	end;
 end;
-for k,v in next, cxitio do
-	if type(v) == 'function' then
-		setfenv(v,{})
-	end
-end
 
 local vmt,ocxi do
 	ocxi = cxitio;
