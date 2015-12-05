@@ -20,7 +20,7 @@ local function echo(...) return ... end;
 script.Parent:WaitForChild("Core"):WaitForChild("Components");
 script.Parent.Core.Parent = script;
 script.Parent:WaitForChild("Libraries").Parent = script;
-local coreSettings = require(script.Core.Settings).Core;
+local coreSettings = require(script.Core:WaitForChild("Settings")).Core;
 
 do
 	local useGlobalLib = true;
