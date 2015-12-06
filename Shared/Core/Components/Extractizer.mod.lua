@@ -49,7 +49,7 @@ return function(Component)
     };
 
     for Metaname, Metamethod in next, ProxyMetatable do
-        Metatable[Metaname] = Metamethod;
+        Metatable[Metaname] = WrapMetamethod(Metamethod);
     end
 
     return Proxy;
