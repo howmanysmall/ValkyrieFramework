@@ -82,7 +82,7 @@ return function(wrapper)
 					local target = wrapper(retn);
 					local tmt = getmetatable(target);
 					local oca = tmt.__call;
-					tmt.__call = function(t,...)
+					tmt.__call = wrapper(function(t,...)
 						if type(...) == 'table' then
 							local connections = ...;
 							for k,v in next, connections do
@@ -93,7 +93,7 @@ return function(wrapper)
 						else
 							return oca(t,...);
 						end;
-					end;
+					end);
 					return retn;
 				else
 					error(r[2],2);
