@@ -2,10 +2,11 @@ local Proxies           = setmetatable({}, {__mode = "v"});
 local Components        = setmetatable({}, {__mode = "k"});
 
 local function WrapMetamethod(Metamethod)
-    return function(a, b)
-        a               = Components[a] or a;
-        b               = Components[b] or b;
-        return Metamethod(a, b);
+    return function(a, b, c)
+        a               = a and Components[a] or a;
+        b               = b and Components[b] or b;
+        c               = c and Components[c] or c;
+        return Metamethod(a, b, c);
     end;
 end;
 
