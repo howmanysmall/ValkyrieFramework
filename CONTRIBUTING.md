@@ -42,17 +42,14 @@ the same)
 
 How do I test my changes?
 ---
-**Note: This system is no longer supported and will be replaced by a better system soon.**  
-Windows users: Install MSysGit and clone this repository in `Git Bash`.  
-OS X users: The script is untested on OS X. Please open an issue if it doesn't
-work.  
-First, commit and push your changes onto your fork.  
-Next, install [`curl`](http://curl.haxx.se/) if you didn't already.  
-Then, run `./.build.sh GitHubUsername [RepositoryName]` in command line to
-upload your model to Roblox, onto the ValkyrieBot account.  
-After the command has finished, you should see the model's ID in the output.  
-Take that ID and go to http://roblox.com/item.aspx?ID=MODELID.  
-Take the model. You should now be able to `require()` the model.
+Create a pull request on this repository. Put "[WIP]" in the title to inform that it is not ready to merged.  
+Go to the pull request's page. You should see that the CI has started to build it.  
+After a few seconds you should see it finish and display either an error or success icon.  
+If it's an error icon, click "Show all checks" and then "Details" and you should see what went wrong.  
+If it's a success icon, go to [the list of models](https://gskw.dedyn.io:444/models) and pick the one that is yours.
+Take the model. You should now be able to `require()` the model.  
+
+If you want to update it, don't create a new pull request, but add commits to the already existing one instead.
 
 How do I contribute?
 ---
