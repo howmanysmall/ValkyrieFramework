@@ -19,7 +19,7 @@ return function(Component)
     Metatable.__index   = function(_, Key)
         if type(Component[Key]) == "function" then
             return function(...)
-                if ...  = Component then
+                if ...  == Component then
                     return Component[Key](select(2, ...));
                 else
                     return Component[Key](...);
