@@ -310,13 +310,13 @@ local CAS = game:GetService("ContextActionService");
 local InputTracker = {};
 local InputCache = {};
 local BoundUnique = {};
-local CreateInputState, UISEdge;
+local CreateInputState, UISEdge, UISProxy;
 CreateInputState = function(source, meta)
 	-- Create a generic input object for the target Source
 	if not meta then
 		if InputCache[source] then return InputCache[source] end;
 	else
-		if InputCache[meta][source] then return InputCache[meta][source] end;
+		if InputCache[meta] and InputCache[meta][source] then return InputCache[meta][source] end;
 	end;
 	local iType = LinkedTypes[source];
 	local iName = LinkedNames[source];
@@ -380,19 +380,21 @@ CreateInputState = function(source, meta)
 	end;
 	if meta:IsA("GuiObject") then
 		BoundUnique[meta] = true;
-		meta.InputBegan:connect(UISEdge);
-		meta.InputEnded:connect(UISEdge);
-		meta.InputChanged:connect(UISEdge);
+		meta.InputBegan:connect(UISProxy(meta));
+		meta.InputEnded:connect(UISProxy(meta));
+		meta.InputChanged:connect(UISProxy(meta));
 	end;
 	local iBind = Instance.new("BindableEvent");
 	if not meta then
-		iBinds[source] = iBind;
+		InputCache[source] = ni;
 	else
-		iBinds[meta] = {[source] = iBind};
+		InputCache[meta] = InputCache[meta] or {};
+		InputCache[meta][source] = ni;
 	end;
+	iBinds[ni] = iBind;
 end;
 -- Bind UIS outside of the function because of how it works
-UISEdge = function(i,p)
+UISEdge = function(i,p,m)
 	local iType = i.UserInputType.Name;
 	local sType = iType;
 	local sName;
@@ -426,7 +428,7 @@ UISEdge = function(i,p)
 	if i.UserInputState == Enum.UserInputState.Changed then
 		dir = InputDirections.Change;
 	end;
-	local iobj = CreateInputState(source);
+	local iobj = CreateInputState(source, m);
 	local iprops = InputTracker[iobj];
 	iprops.InputName = sName;
 	iprops.InputType = sType;
@@ -449,11 +451,16 @@ UISEdge = function(i,p)
 	else
 		iprops.Down = dir == InputDirections.Down
 	end;
-	iBinds[source]:Fire();
+	iBinds[iobj]:Fire(iobj, dir, p, i);
 end;
 UIS.InputBegan:connect(UISEdge);
 UIS.InputEnded:connect(UISEdge);
 UIS.InputChanged:connect(UISEdge);
+UISProxy = function(m)
+	return function(i,p)
+		return UISEdge(i,p,m);
+	end;
+end;
 
 -- Create actions
 function Controller.CreateAction(...)
@@ -559,8 +566,7 @@ do
 	end;
 	-- @source: Valkyrie Input type
 	-- @dir: Input direction (Up, Down, UpDown/Click)
-	-- @func: Binding function
-	function ActionClass:BindControl(source, dir, func)
+	function ActionClass:BindControl(source, dir)
 		-- ~ UIS/Mouse style input sources to bind from
 		assert(source, "You need to supply an Input source as #1", 2);
 		local Type, Name = LinkedTypes[source],LinkedNames[source];
@@ -569,16 +575,73 @@ do
 			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
 			2
 		);
-
+		assert(dir, "You need to supply an Input direction as #2", 2);
+		do local suc = false;
+			for k,v in next, InputDirections do
+				if v == dir then
+					suc = true;
+					break;
+				end;
+			end;
+			if not suc then
+				error("You need to supply a valid Valkyrie Input direction object as #2", 2);
+			end;
+		end;
+		
+		-- Grab the input object for the source
+		local iobj = CreateInputState(source);
+		
+		-- Wrap the function in a binding
+		local func = self.Action
+		local bfunc = function(i,d,p,r)
+			if d == dir then
+				return func(i,p,r);
+			end;
+		end;
+		
 		--> Connection
+		return iBinds[iobj].Event:connect(bfunc);
 	end;
-	function ActionClass:BindSource(source, dir, object, func)
+	function ActionClass:BindSource(source, dir, object)
 		-- ~ Binding actions for Instances with input sources
+		-- ~ Similar to BindControl
 		-- @object: Binding target
-
+		assert(source, "You need to supply an Input source as #1", 2);
+		local Type, Name = LinkedTypes[source],LinkedNames[source];
+		assert(
+			Type and Name,
+			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+			2
+		);
+		assert(dir, "You need to supply an Input direction as #2", 2);
+		do local suc = false;
+			for k,v in next, InputDirections do
+				if v == dir then
+					suc = true;
+					break;
+				end;
+			end;
+			if not suc then
+				error("You need to supply a valid Valkyrie Input direction object as #2", 2);
+			end;
+		end;
+		assert(object, "You need to supply a valid source as #3", 2);
+		assert(type(func) == 'function', "You need to supply a function to bind as #4", 2);
+		
+		-- Grab the input object for the source
+		local iobj = CreateInputState(source, object);
+		
+		-- Wrap the function in a binding
+		local bfunc = function(i,d,p,r)
+			if d == dir then
+				return func(i,p,r);
+			end;
+		end;
+		
 		--> Connection
+		return iBinds[iobj].Event:connect(bfunc);
 	end;
-	function ActionClass:BindContext(keyboard, controller, touchscreen, dir, makebutton, func)
+	function ActionClass:BindContext(keyboard, controller, touchscreen, dir, makebutton)
 		-- ~ Extra content binding, CAS style
 		-- @keyboard: Keyboard input type
 		-- @controller: Controller input type
@@ -588,28 +651,31 @@ do
 
 		--> Connection, ?Button
 	end;
-	function ActionClass:CreateButton(source, dir, name, color, position, func)
+	function ActionClass:CreateButton(name, color, position)
 		-- @name: Name of the button, and the text displayed. Can be nil.
 		-- @color: Color3 of the button. Can be nil.
 		-- | Color can also be a name of a Material Color for a [500] Color
 		-- @position: UDim2 of the button Position. Can be nil (automatic positioning)
+		-- ~ Redirects a button press (From any input that can provide it) to the action
 
 		--> Connection, Button
 	end;
-	function ActionClass:BindCombo(sources, func)
+	function ActionClass:BindCombo(sources)
 		-- @sources: Table array of Valkyrie Input Sources
-		-- | Sources are to be checked with a DownUp/Click
+		-- | When they're all down, it fires. Once.
 
 		--> Connection
 	end;
-	function ActionClass:BindSequence(sources, func)
+	function ActionClass:BindSequence(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | Sources are to be checked in order. No tree building here.
 
 		--> Connection
 	end;
-	function ActionClass:BindTouchAction(source, func)
+	function ActionClass:BindTouchAction(source)
 		-- ~ Specific touch events like tapping, pinching, scrolling etc
+		
+		--> Connection
 	end;
 end;
 
