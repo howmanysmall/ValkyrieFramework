@@ -16,7 +16,7 @@ local function extract(...)
 end;
 
 -- Quickly test to see if we're on the client Valkyrie
-if pcall(function() game.Players.LocalPlayer:GetMouse() end) then
+if game:GetService("RunService"):IsClient() then
 	client = true;
 	-- Success: You're on the client Valkyrie
 	-- Register intent from the server, and to the server

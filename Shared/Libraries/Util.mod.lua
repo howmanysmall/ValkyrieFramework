@@ -64,10 +64,37 @@ return function(wrapper)
 					)
 				);
 				if r[1] then
-					for k,v in pairs(t) do
-						r[2][k] = v;
+					local retn = r[2]
+					if t.Children then
+						local children = t.Children;
+						t.Children = nil;
+						for k,v in next, children do
+							v.Parent = retn;
+						end;
 					end;
-					return r[2];
+					if t[1] then
+						retn.Parent = t[1];
+						t[1] = nil;
+					end;
+					for k,v in pairs(t) do
+						retn[k] = v;
+					end;
+					local target = wrapper(retn);
+					local tmt = getmetatable(target);
+					local oca = tmt.__call;
+					tmt.__call = wrapper(function(t,...)
+						if type(...) == 'table' then
+							local connections = ...;
+							for k,v in next, connections do
+								t[k]:connect(function(...) v(t,...) end);
+							end;
+							tmt.__call = oca;
+							return t;
+						else
+							return oca(t,...);
+						end;
+					end);
+					return retn;
 				else
 					error(r[2],2);
 				end;

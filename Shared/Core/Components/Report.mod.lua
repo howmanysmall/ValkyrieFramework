@@ -29,7 +29,11 @@ do
 			unpack(reportBufferProxy,5);
 		};
 		setmetatable(r,{
-			__tostring = function() return r.message end
+			__tostring = r.success
+			and function() return r.message end
+			or function()
+				return string.format("[Error][%s] (in %s): %s", r.source, r.tag, r.message);
+			end;
 		});
 		for k in next, reportBufferProxy do
 			rawset(reportBufferProxy,k,nil);

@@ -434,18 +434,20 @@ local function newWrapper(private)
 	end;
 
 	local e = getfenv(2);
-	self:mod(e.getfenv, function(f)
-		f = f or 1;
-		if type(f) == "number" and f > 0  then
-			f = f + 1;
-		end
-		local s, r = xpcall(function() return getfenv(f) end, echo);
-		if not s then
-			error(r, 2);
-		else
-			return r
-		end
-	end);
+	if e.getfenv then
+		self:mod(e.getfenv, function(f)
+			f = f or 1;
+			if type(f) == "number" and f > 0  then
+				f = f + 1;
+			end
+			local s, r = xpcall(function() return getfenv(f) end, echo);
+			if not s then
+				error(r, 2);
+			else
+				return r
+			end
+		end);
+	end;
 
 	for _, f in pairs({e.table.insert, e.table.remove, e.table.sort, e.rawset}) do
 		self:mod(f, function(...)
