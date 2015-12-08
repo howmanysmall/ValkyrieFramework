@@ -32,7 +32,10 @@ local ActionMt = {
 		return ActionLinks[this].FireCount;
 	end;
 	__gc = function(this) -- Is __gc enabled in Roblox?
-		ActionBinds[this]:disconnect();
+		local binds = ActionBinds[this];
+		for i=1,#binds do
+			binds[i]:disconnect();
+		end;
 	end;
 };
 local UserActions = setmetatable({},{__mode = 'v'});
@@ -313,6 +316,7 @@ local BoundUnique = {};
 local CreateInputState, UISEdge, UISProxy;
 CreateInputState = function(source, meta)
 	-- Create a generic input object for the target Source
+	if not source then return end;
 	if not meta then
 		if InputCache[source] then return InputCache[source] end;
 	else
@@ -320,6 +324,7 @@ CreateInputState = function(source, meta)
 	end;
 	local iType = LinkedTypes[source];
 	local iName = LinkedNames[source];
+	if not (iType or iName) then return end;
 	local ni = newproxy(true);
 	local mt = getmetatable(ni);
 	local Props = {};
@@ -511,11 +516,17 @@ Controller.Mouse = Mouse;
 Controller.CAS = CAS;
 Controller.UIS = UIS;
 
+Controller.InputDirections = InputDirections;
+Controller.InputSources = InputSources;
+Controller.GetInputState = CreateInputState;
+
 function ActionClass:UnbindAll()
 	local binds = ActionBinds[self];
 	for i=#binds,1,-1 do
-		binds[i]:disconnect();
-		binds[i] = nil;
+		if binds[i] then
+			binds[i]:disconnect();
+			binds[i] = nil;
+		end;
 	end;
 end;
 
@@ -592,15 +603,32 @@ do
 		local iobj = CreateInputState(source);
 		
 		-- Wrap the function in a binding
-		local func = self.Action
-		local bfunc = function(i,d,p,r)
-			if d == dir then
-				return func(i,p,r);
+		local func,bfunc = self.Action
+		if d == InputDirections.UpDown then
+			local down = false;
+			bfunc = function(i,d,p,r)
+				if d == InputDirections.Up then
+					if down then
+						down = false;
+						return func(i,p,r);
+					end;
+					down = false
+				elseif d == InputDirections.Down then
+					down = true;
+				end;
+			end;
+		else
+			bfunc = function(i,d,p,r)
+				if d == dir then
+					return func(i,p,r);
+				end;
 			end;
 		end;
 		
 		--> Connection
-		return iBinds[iobj].Event:connect(bfunc);
+		local bind = iBinds[iobj].Event:connect(bfunc);
+		ActionBinds[self][#ActionBinds[self]+1] = bind;
+		return bind;
 	end;
 	function ActionClass:BindSource(source, dir, object)
 		-- ~ Binding actions for Instances with input sources
@@ -632,16 +660,35 @@ do
 		local iobj = CreateInputState(source, object);
 		
 		-- Wrap the function in a binding
-		local bfunc = function(i,d,p,r)
-			if d == dir then
-				return func(i,p,r);
+		local func,bfunc = self.Action
+		if d == InputDirections.UpDown then
+			local down = false;
+			bfunc = function(i,d,p,r)
+				if d == InputDirections.Up then
+					if down then
+						down = false;
+						return func(i,p,r);
+					end;
+					down = false
+				elseif d == InputDirections.Down then
+					down = true;
+				end;
+			end;
+		else
+			bfunc = function(i,d,p,r)
+				if d == dir then
+					return func(i,p,r);
+				end;
 			end;
 		end;
 		
 		--> Connection
-		return iBinds[iobj].Event:connect(bfunc);
+		local bind = iBinds[iobj].Event:connect(bfunc);
+		ActionBinds[self][#ActionBinds[self]+1] = bind;
+		return bind;
 	end;
 	function ActionClass:BindContext(keyboard, controller, touchscreen, dir, makebutton)
+		-- ! Look at the CAS API and change the order of arguments around.
 		-- ~ Extra content binding, CAS style
 		-- @keyboard: Keyboard input type
 		-- @controller: Controller input type
@@ -663,8 +710,31 @@ do
 	function ActionClass:BindCombo(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | When they're all down, it fires. Once.
-
+		
+		local BindCollection = {};
+		local errmsg;
+		for i=1,#sources do
+			local v = sources[i];
+			if not source then
+				errmsg = "The source table is not an array";
+				break;
+			end;
+			local Type, Name = LinkedTypes[source],LinkedNames[source];
+			if not (Type and Name) then
+				errmsg = "The source table contains an invalid source at ["..tostring(i).."]";
+				break;
+			end;
+			-- Fill later
+		end;
+		if errmsg then
+			for i=1, #BindCollection do
+				BindCollection[i]:disconnect();
+			end;
+			error(errmsg, 2);
+		end;
+		
 		--> Connection
+		-- Create a CustomConnection Object to disconnect all of the connections stored inside of BindCollection
 	end;
 	function ActionClass:BindSequence(sources)
 		-- @sources: Table array of Valkyrie Input Sources
