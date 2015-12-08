@@ -571,7 +571,7 @@ do
 			for e,m in next, cmt do
 				newMt[e] = m;
 			end;
-			finishers[newConnection] = disconnecFunc;
+			finishers[newConnection] = disconnectFunc;
 			return newConnection;
 		end;
 	end;
@@ -654,7 +654,6 @@ do
 			end;
 		end;
 		assert(object, "You need to supply a valid source as #3", 2);
-		assert(type(func) == 'function', "You need to supply a function to bind as #4", 2);
 		
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source, object);
@@ -715,11 +714,11 @@ do
 		local errmsg;
 		for i=1,#sources do
 			local v = sources[i];
-			if not source then
+			if not v then
 				errmsg = "The source table is not an array";
 				break;
 			end;
-			local Type, Name = LinkedTypes[source],LinkedNames[source];
+			local Type, Name = LinkedTypes[v],LinkedNames[v];
 			if not (Type and Name) then
 				errmsg = "The source table contains an invalid source at ["..tostring(i).."]";
 				break;
