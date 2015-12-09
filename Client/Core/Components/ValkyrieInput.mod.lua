@@ -551,7 +551,7 @@ do
 				finishers[self](self);
 				finishers[self] = nil;
 			else
-				warn("Unable to disconnect disconnected action for ValkyrieInput");
+				warn("[Warn][Valkyrie Input] (in connection:disconnect()): Unable to disconnect disconnected action for ValkyrieInput");
 			end;
 		end;
 		local cmt = {
@@ -579,14 +579,14 @@ do
 	-- @dir: Input direction (Up, Down, UpDown/Click)
 	function ActionClass:BindControl(source, dir)
 		-- ~ UIS/Mouse style input sources to bind from
-		assert(source, "You need to supply an Input source as #1", 2);
+		assert(source, "[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply an Input source as #1", 2);
 		local Type, Name = LinkedTypes[source],LinkedNames[source];
 		assert(
 			Type and Name,
-			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+			"[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
 			2
 		);
-		assert(dir, "You need to supply an Input direction as #2", 2);
+		assert(dir, "[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply an Input direction as #2", 2);
 		do local suc = false;
 			for k,v in next, InputDirections do
 				if v == dir then
@@ -595,7 +595,7 @@ do
 				end;
 			end;
 			if not suc then
-				error("You need to supply a valid Valkyrie Input direction object as #2", 2);
+				error("[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply a valid Valkyrie Input direction object as #2", 2);
 			end;
 		end;
 		
@@ -634,14 +634,14 @@ do
 		-- ~ Binding actions for Instances with input sources
 		-- ~ Similar to BindControl
 		-- @object: Binding target
-		assert(source, "You need to supply an Input source as #1", 2);
+		assert(source, "[Error][Valkyrie Input] (in ActionClass:BindSource()): You need to supply an Input source as #1", 2);
 		local Type, Name = LinkedTypes[source],LinkedNames[source];
 		assert(
 			Type and Name,
-			"You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+			"[Error][Valkyrie Input] (in ActionClass:BindSource()): You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
 			2
 		);
-		assert(dir, "You need to supply an Input direction as #2", 2);
+		assert(dir, "[Error][Valkyrie Input] (in ActionClass:BindSource()): You need to supply an Input direction as #2", 2);
 		do local suc = false;
 			for k,v in next, InputDirections do
 				if v == dir then
@@ -650,10 +650,10 @@ do
 				end;
 			end;
 			if not suc then
-				error("You need to supply a valid Valkyrie Input direction object as #2", 2);
+				error("[Error][Valkyrie Input] (in ActionClass:BindSource()): You need to supply a valid Valkyrie Input direction object as #2", 2);
 			end;
 		end;
-		assert(object, "You need to supply a valid source as #3", 2);
+		assert(object, "[Error][ValkyrieInput] (in ActionClass:BindSource()): You need to supply a valid source as #3", 2);
 		
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source, object);
@@ -729,7 +729,7 @@ do
 			for i=1, #BindCollection do
 				BindCollection[i]:disconnect();
 			end;
-			error(errmsg, 2);
+			error("[Error][Valkyrie Input] (in ActionClass:BindCombo()): "..errmsg, 2);
 		end;
 		
 		--> Connection
