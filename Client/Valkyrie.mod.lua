@@ -65,8 +65,16 @@ cxitio.GetSettings = function(...)
 	return require(script.Core.Settings).Custom;
 end;
 
-local overlay = script.Parent.ValkyrieOverlay;
-overlay.Parent = script.Parent.Parent;
+local _overlay,overlay = script.Parent.ValkyrieOverlay;
+overlay = _overlay:Clone();
+local Player = game.Players.LocalPlayer;
+overlay.Parent = Player:WaitForChild("PlayerGui");
+Player.CharacterAdded:connect(function(c)
+	if not Player.PlayerGui:FindFirstChild("ValkyrieOverlay") then
+		overlay = _overlay:Clone();
+		overlay.Parent = Player.PlayerGui;
+	end;
+end);
 cxitio.GetOverlay = function() return overlay	end;
 
 local CurrentContentFrame = nil;
