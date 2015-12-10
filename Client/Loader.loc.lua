@@ -1,5 +1,4 @@
 --game.Players.LocalPlayer.PlayerGui:SetTopbarTransparency(0);
-warn("Alright.");
 require(script.Parent:WaitForChild("Valkyrie"));
 
 --[[_G.ValkyrieC:LoadLibrary "Design";
