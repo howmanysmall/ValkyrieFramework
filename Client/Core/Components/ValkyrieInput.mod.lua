@@ -547,6 +547,8 @@ do
 		-- Constructor for custom Connection objects
 		local finishers = setmetatable({},{__mode = 'k'});
 		local disconnectAction = function(self)
+			if not self then
+				error("[Error][Valkyrie Input] (in connection:disconnect()): No connection given. Did you forget to call this as a method?", 2);
 			if finishers[self] then
 				finishers[self](self);
 				finishers[self] = nil;
@@ -711,7 +713,10 @@ do
 		-- | When they're all down, it fires. Once.
 		
 		local BindCollection = {};
+		local Totals = {};
+		local ilist = {};
 		local errmsg;
+		local func = self.Action;
 		for i=1,#sources do
 			local v = sources[i];
 			if not v then
@@ -723,7 +728,27 @@ do
 				errmsg = "The source table contains an invalid source at ["..tostring(i).."]";
 				break;
 			end;
-			-- Fill later
+			local iobj = CreateInputState(v);
+			ilist[i] = iobj;
+			Totals[i] = false;
+			local Bind = iBinds[iobj].Event:connect(function(q,d,p,r)
+				if d == InputDirections.Up then
+					Totals[i] = false;
+				elseif d == InputDirections.Down then
+					local isDown = true;
+					Totals[i] = true;
+					for n=1,#Totals do
+						if not Totals[i] then
+							isDown = false;
+							break;
+						end;
+					end;
+					if isDown then
+						return func(ilist,p,r);
+					end;
+				end;
+			end);
+			BindCollection[#BindCollection+1] = Bind;
 		end;
 		if errmsg then
 			for i=1, #BindCollection do
@@ -734,6 +759,12 @@ do
 		
 		--> Connection
 		-- Create a CustomConnection Object to disconnect all of the connections stored inside of BindCollection
+		return CustomConnection(function()
+			for i=#BindCollection, 1, -1 do
+				BindCollection[i]:disconnect();
+				BindCollection[i] = nil;
+			end;
+		end);
 	end;
 	function ActionClass:BindSequence(sources)
 		-- @sources: Table array of Valkyrie Input Sources
