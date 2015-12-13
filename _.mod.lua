@@ -232,26 +232,6 @@ vmt.__call = function(_, GID, CoKey)
 	vmt.__call = function() return cxitio end;
 	vmt.__index = ocxi;
 
-	local characterHandler = function(c)
-		local p = game.Players:GetPlayerFromCharacter(c);
-		if not p.PlayerGui:FindFirstChild("ValkyrieClient") then
-			local vc = script.Client:Clone();
-			vc.Name = "ValkyrieClient";
-			for _,v in ipairs(repSpace.Core:GetChildren()) do
-				if v ~= repSpace.Core.Components then
-					v:Clone().Parent = vc.Core;
-				end
-			end
-			for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
-				v:Clone().Parent = vc.Core.Components
-			end
-			for _,v in ipairs(repSpace.Libraries:GetChildren()) do
-				v:Clone().Parent = vc.Libraries;
-			end
-			script.Server.ActivePlayers[c.Name].Overlay.Value = vc.ValkyrieOverlay;
-			vc.Parent = p.PlayerGui;
-		end
-	end;
 	local playerHandler = function(p)
 		remoteComm.friends:setOnlineGame({id = p.userId, game = GID});
 		local np = script.Server.Template:Clone();
@@ -262,12 +242,22 @@ vmt.__call = function(_, GID, CoKey)
 		for k,v in next, np:GetChildren() do
 			if v:IsA("ModuleScript") then cwrap(function(...) return require(...) end)(v) end;
 		end
-		p.CharacterAdded:connect(characterHandler);
-		if p.Character then
-			characterHandler(p.Character);
+		local vc = script.Client:Clone();
+		vc.Name = "ValkyrieClient";
+		for _,v in ipairs(repSpace.Core:GetChildren()) do
+			if v ~= repSpace.Core.Components then
+				v:Clone().Parent = vc.Core;
+			end
 		end
+		for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
+			v:Clone().Parent = vc.Core.Components
+		end
+		for _,v in ipairs(repSpace.Libraries:GetChildren()) do
+			v:Clone().Parent = vc.Libraries;
+		end
+		script.Server.ActivePlayers[c.Name].Overlay.Value = vc.ValkyrieOverlay;
+		vc.Parent = p.PlayerScripts;
 	end;
-
 	game.Players.PlayerAdded:connect(playerHandler)
 
 	for k,p in next, game.Players:GetPlayers() do
