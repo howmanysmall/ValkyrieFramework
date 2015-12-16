@@ -295,7 +295,8 @@ InputDirections.Begin = InputDirections.Down;
 InputDirections.Finish = InputDirections.Up;
 InputDirections.End = InputDirections.Up;
 InputDirections.Changed = InputDirections.Change;
-InputDirections.Update = InputDirections.Update;
+InputDirections.Update = InputDirections.Change;
+InputDirections.Updated = InputDirections.Change;
 do
 	local id = InputDirections;
 	InputDirections = newproxy(true);
@@ -769,6 +770,9 @@ do
 	function ActionClass:BindSequence(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | Sources are to be checked in order. No tree building here.
+		local BindCollection = {};
+		local curr = 1;
+		
 
 		--> Connection
 	end;
