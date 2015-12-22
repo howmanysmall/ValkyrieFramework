@@ -302,7 +302,7 @@ InputDirections.Update = InputDirections.Change;
 InputDirections.Updated = InputDirections.Change;
 do
 	local id = InputDirections;
-	InputDirections = newproxy(true);
+	Controller.InputDirections = newproxy(true);
 	local mt = getmetatable(InputDirections);
 	mt.__index = id;
 	mt.__metatable = "Locked metatable: Valkyrie";
@@ -520,7 +520,7 @@ UISEdge = function(i,p,m)
 	if not source then return end;
 	local vType = LinkedTypes[source];
 	local dir = i.UserInputState == Enum.UserInputState.Begin and InputDirections.Up or InputDirections.Down;
-	if i.UserInputState == Enum.UserInputState.Changed then
+	if i.UserInputState == Enum.UserInputState.Change then
 		dir = InputDirections.Change;
 	end;
 	local iobj = CreateInputState(source, m);
@@ -608,7 +608,6 @@ Controller.Mouse = Mouse;
 Controller.CAS = CAS;
 Controller.UIS = UIS;
 
-Controller.InputDirections = InputDirections;
 Controller.InputSources = InputSources;
 Controller.GetInputState = CreateInputState;
 
@@ -644,6 +643,7 @@ do
 		local disconnectAction = function(self)
 			if not self then
 				error("[Error][Valkyrie Input] (in connection:disconnect()): No connection given. Did you forget to call this as a method?", 2);
+			end;
 			if finishers[self] then
 				finishers[self](self);
 				finishers[self] = nil;
