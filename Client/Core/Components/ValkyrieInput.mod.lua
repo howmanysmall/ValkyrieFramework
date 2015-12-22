@@ -48,6 +48,7 @@ local InputSources, LinkedTypes, LinkedNames do
 		local nop = newproxy(false);
 		LinkedTypes[nop] = sourceType;
 		LinkedNames[nop] = BindingName;
+		return nop;
 	end;
 	InputSources = {
 		Mouse = {
@@ -184,23 +185,16 @@ local InputSources, LinkedTypes, LinkedNames do
 			Analogue2 = make("ControllerAxis", "Thumbstick2");
 		};
 		TouchActions = {
-      Tapped = make("TouchAction", "Tapped");
-      LongPressed = make("TouchAction", "LongPressed");
-      Moved = make("TouchAction", "Moved");
-      Panned = make("TouchAction", "Panned");
-      Pinched = make("TouchAction", "Pinched");
-      Rotated = make("TouchAction", "Rotated");
-      Started = make("TouchAction", "Started");
-      Swiped = make("TouchAction", "Swiped");
-		};
-		TouchScreen = {
-			-- Generic touch input
-			-- 1 finger down
-			-- 2 fingers down
-			-- Doesn't have to come directly from an input source; just has to be a valid input.
-			-- TouchPoint1
-			-- TouchPoint2
-			-- etc.
+			Tapped = make("TouchAction", "Tapped");
+			LongPressed = make("TouchAction", "TouchLongPress");
+			Moved = make("TouchAction", "Moved");
+			Panned = make("TouchAction", "Panned");
+			Pinched = make("TouchAction", "Pinched");
+			Rotated = make("TouchAction", "Rotated");
+			Started = make("TouchAction", "Started");
+			Ended = make("TouchAction", "TouchEnded");
+			Swiped = make("TouchAction", "Swiped");
+			Raw = make("TouchInput", "Raw");
 		};
 		Application = {
 			Focus = make("ApplicationFocus", "Focus");
@@ -263,6 +257,14 @@ local InputSources, LinkedTypes, LinkedNames do
 			Controller.ThumbStick2 = Controller.Analogue2;
 		end;
 	end;
+	do
+		local Touch = InputSources.TouchActions;
+		InputSources.Touch = Touch;
+		Touch.Tap = Touch.Tapped;
+		Touch.LongPress = Touch.LongPress;
+		Touch.Move = Touch.Moved;
+		Touch.Pan = Touch.Panned;
+	end
 	for k,v in next, InputSources do
 		local np = newproxy(true);
 		local mt = getmetatable(np);
@@ -287,6 +289,7 @@ local InputDirections = {
 	Down = newproxy(false);
 	DownUp = newproxy(false);
 	Change = newproxy(false);
+	Action = newproxy(false);
 };
 InputDirections.Click = InputDirections.DownUp;
 InputDirections.Tap = InputDirections.DownUp;
@@ -315,6 +318,64 @@ local InputTracker = {};
 local InputCache = {};
 local BoundUnique = {};
 local CreateInputState, UISEdge, UISProxy;
+local Edge = {
+	TouchLongPress = function(a,i,p,m)
+		-- The InputState for Touch is only for references :c
+		local state = CreateInputState(InputSources.Touch.LongPressed, m);
+		local source = InputTracker[state];
+		source.TouchArray = a;
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchMoved = function(i,p,m)
+		local state = CreateInputState(InputSources.Touch.Moved, m);
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchPan = function(a,t,v,i,p,m) -- Damn man
+		local state = CreateInputState(InputSources.Touch.Pan, m);
+		local source = InputTracker[state];
+		source.TouchArray = a;
+		source.Translation = t;
+		source.Velocity = v;
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchPinch = function(a,s,v,i,p,m)
+		local state = CreateInputState(InputSources.Touch.Pinch, m);
+		local source = InputTracker[state];
+		source.TouchArray = a;
+		source.Scale = s;
+		source.Velocity = v;
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchRotate = function(a,r,v,i,p,m)
+		local state = CreateInputState(InputSources.Touch.Rotate, m);
+		local source = InputTracker[state];
+		source.TouchArray = a;
+		source.Rotation = r;
+		source.Velocity = v;
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchStarted = function(i,p,m)
+		local state = CreateInputState(InputSources.Touch.Started, m);
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchEnded = function(i,p,m)
+		local state = CreateInputState(InputSources.Touch.Ended, m);
+		iBinds[state]:Fire(state, InputDirections.Action, p, i);
+	end;
+	TouchSwipe = function(d,i,p,m)
+		local state = CreateInputState(InputSources.Touch.Swipe, m);
+		local source = InputTracker[state];
+		source.Direction = d;
+		source.Amount = i;
+		iBinds[state]:Fire(state, InputDirections.Action, p, {d,i});
+	end;
+	TouchTap = function(a,p,m)
+		local state = CreateInputState(InputSources.Touch.Tap, m)
+		local source = InputTracker[state];
+		source.TouchArray = a;
+		iBinds[state]:Fire(state, InputDirections.Action, p, {a,p});
+	end;
+};
 CreateInputState = function(source, meta)
 	-- Create a generic input object for the target Source
 	if not source then return end;
@@ -389,6 +450,33 @@ CreateInputState = function(source, meta)
 		meta.InputBegan:connect(UISProxy(meta));
 		meta.InputEnded:connect(UISProxy(meta));
 		meta.InputChanged:connect(UISProxy(meta));
+		meta.TouchLongPress:connect(function(a,i,p)
+			return Edge.TouchLongPress(a,i,p,meta);
+		end);
+		meta.TouchMoved:connect(function(i,p)
+			return Edge.TouchMoved(i,p,meta);
+		end);
+		meta.TouchPan:connect(function(a,t,v,i,p)
+			return Edge.TouchPan(a,t,v,i,p,meta);
+		end);
+		meta.TouchPinch:connect(function(a,s,v,i,p)
+			return Edge.TouchPan(a,s,v,i,p,meta);
+		end);
+		meta.TouchRotate:connect(function(a,r,v,i,p)
+			return Edge.TouchRotate(a,r,v,i,p,meta);
+		end);
+		meta.TouchStarted:connect(function(i,p)
+			return Edge.TouchStarted(i,p,meta);
+		end);
+		meta.TouchEnded:connect(function(i,p)
+			return Edge.TouchEnded(i,p,meta);
+		end)
+		meta.TouchSwipe:connect(function(d,i,p)
+			return Edge.TouchSwipe(d,i,p,meta);
+		end);
+		meta.TouchTap:connect(function(a,p)
+			return Edge.TouchTap(a,p,meta);
+		end);
 	end;
 	local iBind = Instance.new("BindableEvent");
 	if not meta then
@@ -407,7 +495,8 @@ UISEdge = function(i,p,m)
 	if sType == 'Keyboard' then
 		sName = i.KeyCode.Name;
 	elseif sType == 'Touch' then
-		-- Etc
+		sType = 'TouchInput';
+		sName = 'Raw';
 	elseif sType == 'MouseButton0' then
 		sType = 'Mouse';
 		sName = 'Mouse1';
@@ -462,11 +551,13 @@ end;
 UIS.InputBegan:connect(UISEdge);
 UIS.InputEnded:connect(UISEdge);
 UIS.InputChanged:connect(UISEdge);
+UIS.TouchLongPress:connect(Edge.TouchLongPress);
 UISProxy = function(m)
 	return function(i,p)
 		return UISEdge(i,p,m);
 	end;
 end;
+Edge.UIS = UISEdge;
 
 -- Create actions
 function Controller.CreateAction(...)
@@ -543,7 +634,10 @@ function ActionClass:SetFlag(flag, value)
 		);
 	end;
 end;
-do
+do	
+	local utilIsTouch = function(s)
+		return LinkedTypes[s] == 'TouchAction'
+	end
 	local CustomConnection do
 		-- Constructor for custom Connection objects
 		local finishers = setmetatable({},{__mode = 'k'});
@@ -689,25 +783,92 @@ do
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
 		return bind;
 	end;
-	function ActionClass:BindContext(keyboard, controller, touchscreen, dir, makebutton)
+	function ActionClass:BindContext(makebutton, ...)
 		-- ! Look at the CAS API and change the order of arguments around.
 		-- ~ Extra content binding, CAS style
-		-- @keyboard: Keyboard input type
-		-- @controller: Controller input type
-		-- @touchscreen: Touchscreen input type
-		-- @dir: ::@dir
 		-- @makebutton: Create an onscreen button for this input source?
-
+		-- @[...]: Alternating source, dir
+		local tempsources, sources = {...},{};
+		local errmsg;
+		for i=1,#tempsources,2 do
+			-- Sanity check
+			local v,d = tempsources[i], tempsources[i+1];
+			if not (v and d) then
+				errmsg = "Malformed array of inputs";
+				break;
+			end
+			if not (LinkedTypes[v] and LinkedTypes[d]) then
+				errmsg = "Bad input source at argument #"..tostring(i+1);
+			end
+			sources[math.ceil(i*0.5)] = {tempsources[i], tempsources[i+1]}
+		end
+		tempsources = nil;
+		if errmsg then
+			error("[Error][Valkyrie Input] (in ActionClass:BindContext()): "..errmsg, 2);
+			return;
+		end
+		
+		local Connections = {};
+		
+		for i=1,#sources do
+			local v = sources[i];
+			local state = CreateInputState(v[1]);
+			local func,bfunc = self.Action
+			local d = v[2];
+			if d == InputDirections.UpDown then
+				local down = false;
+				bfunc = function(i,d,p,r)
+					if d == InputDirections.Up then
+						if down then
+							down = false;
+							return func(i,p,r);
+						end;
+						down = false
+					elseif d == InputDirections.Down then
+						down = true;
+					end;
+				end;
+			else
+				bfunc = function(i,d,p,r)
+					if d == dir then
+						return func(i,p,r);
+					end;
+				end;
+			end;
+			Connections[#Connections+1] = iBinds[state].Event:connect(bfunc);
+		end;
+		
+		local Button;
+		if makebutton then
+			Button = Instance.new("TextButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
+			Connections[#Connections+1] = self:BindButtonPress(newButton);
+			Connections[#Connections+1] = CustomConnection(function() Button:Destroy() end);
+		end
+		
 		--> Connection, ?Button
+		local bind = CustomConnection(function()
+			for i=1,#Connections do
+				Connections[i]:disconnect();
+			end
+		end)
+		ActionBinds[self][#ActionBinds[self]] = bind;
+		return bind, Button
 	end;
-	function ActionClass:CreateButton(name, color, position)
-		-- @name: Name of the button, and the text displayed. Can be nil.
-		-- @color: Color3 of the button. Can be nil.
-		-- | Color can also be a name of a Material Color for a [500] Color
-		-- @position: UDim2 of the button Position. Can be nil (automatic positioning)
+	function ActionClass:BindButtonPress(button)
 		-- ~ Redirects a button press (From any input that can provide it) to the action
-
-		--> Connection, Button
+		
+		local TouchState = CreateInputState(InputSources.Touch.TouchTap, button);
+		local tBind = iBinds[TouchState].Event:connect(function(i,d,p,r) self.Action(i,p,r) end);
+		local mBind = button.MouseButton1Click:connect(self.Action);
+		-- Not sure how the Controller is supposed to select things?
+		
+		--> Connection
+		local bind = CustomConnection(function()
+			tBind:disconnect();
+			mBind:disconnect();
+		end)
+		ActionBinds[self][#ActionBinds[self]] = bind;
+		return bind;
 	end;
 	function ActionClass:BindCombo(sources)
 		-- @sources: Table array of Valkyrie Input Sources
@@ -745,7 +906,7 @@ do
 						end;
 					end;
 					if isDown then
-						return func(ilist,p,r);
+						return func(ilist,p);
 					end;
 				end;
 			end);
@@ -760,26 +921,62 @@ do
 		
 		--> Connection
 		-- Create a CustomConnection Object to disconnect all of the connections stored inside of BindCollection
-		return CustomConnection(function()
+		local bind = CustomConnection(function()
 			for i=#BindCollection, 1, -1 do
 				BindCollection[i]:disconnect();
 				BindCollection[i] = nil;
 			end;
 		end);
+		ActionBinds[self][#ActionBinds[self]] = bind;
+		return bind;
 	end;
 	function ActionClass:BindSequence(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | Sources are to be checked in order. No tree building here.
 		local BindCollection = {};
 		local curr = 1;
-		
+		for i=1,#sources do
+			local state = CreateInputState(sources[i]);
+			local down = false;
+			local func = self.Action;
+			BindCollection[#BindCollection+1] = iBinds[state].Event:connect(function(q,d,p,r)
+				if curr ~= i then curr = 1 return end;
+				if d == InputDirections.Up then
+					if down then
+						down = false;
+						curr = curr + 1;
+						return func(q,p,r);
+					end;
+					down = false
+				elseif d == InputDirections.Down then
+					down = true;
+				elseif d == InputDirections.Action then
+					curr = curr + 1;
+					return func(q,p,r);
+				end;
+			end);
+		end;
 
 		--> Connection
+		local bind = CustomConnection(function()
+			for i=1,#BindCollection do
+				BindCollection[i]:disconnect();
+			end
+		end);
+		ActionBinds[self][#ActionBinds[self]] = bind;
+		return bind;
 	end;
-	function ActionClass:BindTouchAction(source)
+	function ActionClass:BindTouchAction(source, object)
 		-- ~ Specific touch events like tapping, pinching, scrolling etc
+		assert(utilIsTouch(source), "[Error][Valkyrie Input] (in ActionClass:BindTouchAction()): Supplied input source was not a TouchAction", 2);
+		local state = CreateInputState(source, object);		
 		
 		--> Connection
+		local bind = iBinds[state].Event:connect(function(i,d,p,r)
+			return self.Action(i,p,r);
+		end)
+		ActionBinds[self][#ActionBinds[self]] = bind;
+		return bind;
 	end;
 end;
 
