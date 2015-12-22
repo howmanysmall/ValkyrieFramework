@@ -141,6 +141,25 @@ return function(wrapper)
 		Require = require;
 	};
 
+	wrapper:Override "Instance":Instance {
+		GetDescendants = function(i)
+    		local queue = {};
+    		local returns = {};
+    		local v = i;
+    		while v do
+        		local t = v:GetChildren();
+        		for i = 1, #t do
+            		local v = t[i]
+            		returns[#returns+1] = v;
+            		queue[#queue+1] = v;
+        		end;
+        		v = queue[#queue];
+        		queue[#queue] = nil;
+    		end;
+    		return returns;
+		end;
+	};
+
 	wrapper:Override "UDim2" {
 		__mul = function(a, b)
 			if type(b) == "UDim2" then
