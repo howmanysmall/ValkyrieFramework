@@ -57,7 +57,7 @@ local eClass = {
 		return connection(function()
 			local didfind = false;
 			for i=1, #e do
-				if e[i] = f then
+				if e[i] == f then
 					e[i] = nil;
 					didfind = true;
 				elseif didfind then
@@ -94,7 +94,7 @@ local ieClass = {
 		return connection(function()
 			local didfind = false;
 			for i=1, #e do
-				if e[i] = f then
+				if e[i] == f then
 					e[i] = nil;
 					didfind = true;
 				elseif didfind then
