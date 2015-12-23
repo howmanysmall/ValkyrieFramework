@@ -255,7 +255,7 @@ vmt.__call = function(_, GID, CoKey)
 		for _,v in ipairs(repSpace.Libraries:GetChildren()) do
 			v:Clone().Parent = vc.Libraries;
 		end
-		script.Server.ActivePlayers[c.Name].Overlay.Value = vc.ValkyrieOverlay;
+		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
 		vc.Parent = p.PlayerScripts;
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
