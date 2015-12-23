@@ -10,6 +10,7 @@ local gs = game.GetService;
 local pcall = pcall;
 local newproxy = newproxy;
 local rawget, rawset = rawget, rawset;
+local http = game:GetService("HttpService");
 
 -- Global tables for global identities.
 local GlobalUnwrapper = {unwrapper = true; pairs = setmetatable({},{__mode = 'k'})};
@@ -348,6 +349,8 @@ local TypeChecks do
 	};
 end;
 
+local instancetable = http:JSONDecode(http:GetAsync("http://jacob.easleycompany.com/api/apidump")).Class;
+
 local function newWrapper(private)
 	local self = {};
 
@@ -368,6 +371,12 @@ local function newWrapper(private)
 		Instance = {};
 		Types = {};
 	}
+	
+	do local iOverrides = self.Overrides.Instance;
+		for k,v in next, instancetable do
+			iOverrides[k] = setmetatable({},{__index = iOverrides[v.BaseClassName]});
+		end;
+	end;
 
 	self.useStackedWrappers = false;
 	self.useFullConversion = false;
