@@ -73,7 +73,7 @@ local eClass = {
 			done = true;
 			ret = {...};
 		end);
-		repeat wait() until done end;
+		repeat wait() until done;
 		c:disconnect();
 		return unpack(ret);
 	end;
@@ -110,7 +110,7 @@ local ieClass = {
 			done = true;
 			ret = {...};
 		end);
-		repeat wait() until done end;
+		repeat wait() until done;
 		c:disconnect();
 		return unpack(ret);
 	end;
@@ -167,3 +167,4 @@ mt.__tostring = function()
   return "Valkyrie event controller";
 end;
 return ni;
+
