@@ -1,4 +1,4 @@
--- Load and inject me woo
+-- Load and inject
 -- Also auth.
 local script = script;
 local wait = wait;
@@ -240,7 +240,7 @@ vmt.__call = function(_, GID, CoKey)
 		np.Name = p.Name;
 		np.Joined.Value = os.time();
 		for k,v in next, np:GetChildren() do
-			if v:IsA("ModuleScript") then cwrap(function(...) return require(...) end)(v) end;
+			if v:IsA("ModuleScript") then assert(pcall(require,v), "Failed to load "..v.Name) end;
 		end
 		local vc = script.Client:Clone();
 		vc.Name = "ValkyrieClient";
