@@ -107,7 +107,7 @@ end)
 local addCommand = function(name, command)
   assert(type(name) == 'string' and type(command) == 'function', "You need to supply (name, command)", 2);
   local newPermission = Permissions:CreatePermission("Admin.Command."..name);
-  commands[name] = command;
+  CommandList[name] = command;
   return newPermission;
 end;
 
