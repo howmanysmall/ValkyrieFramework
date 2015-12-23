@@ -40,7 +40,8 @@ local map = function(f,t)
 	return t;
 end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
-local QueryImmediate = _G.Valkyrie:GetComponent "Query".Direct
+local QueryImmediate = print--_G.Valkyrie:GetComponent "Query".Direct
+local newInst = Instance.new;
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
@@ -58,15 +59,42 @@ return function(wrapper)
 			Instance = function(_,t)
 				local r = pack(
 					pcall(
-						Instance.new,
+						newInst,
 						thing
 					)
 				);
 				if r[1] then
-					for k,v in pairs(t) do
-						r[2][k] = v;
+					local retn = r[2]
+					if t.Children then
+						local children = t.Children;
+						t.Children = nil;
+						for k,v in next, children do
+							v.Parent = retn;
+						end;
 					end;
-					return r[2];
+					if t[1] then
+						retn.Parent = t[1];
+						t[1] = nil;
+					end;
+					for k,v in pairs(t) do
+						retn[k] = v;
+					end;
+					local target = wrapper(retn);
+					local tmt = getmetatable(target);
+					local oca = tmt.__call;
+					tmt.__call = wrapper(function(t,...)
+						if type(...) == 'table' then
+							local connections = ...;
+							for k,v in next, connections do
+								t[k]:connect(function(...) v(t,...) end);
+							end;
+							tmt.__call = oca;
+							return t;
+						else
+							return oca(t,...);
+						end;
+					end);
+					return retn;
 				else
 					error(r[2],2);
 				end;
@@ -111,6 +139,25 @@ return function(wrapper)
 	wrapper:Override "ModuleScript":Instance {
 		require = require;
 		Require = require;
+	};
+
+	wrapper:Override "Instance":Instance {
+		GetDescendants = function(i)
+    		local queue = {};
+    		local returns = {};
+    		local v = i;
+    		while v do
+        		local t = v:GetChildren();
+        		for i = 1, #t do
+            		local v = t[i]
+            		returns[#returns+1] = v;
+            		queue[#queue+1] = v;
+        		end;
+        		v = queue[#queue];
+        		queue[#queue] = nil;
+    		end;
+    		return returns;
+		end;
 	};
 
 	wrapper:Override "UDim2" {

@@ -27,11 +27,11 @@ local select = select;
 local rawget, rawset = rawget, rawset;
 local ipairs = ipairs;
 local cwrap = coroutine.wrap;
-setfenv(0,{})
-setfenv(1,{})
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
 local wviis = setmetatable({},{__mode = 'k'});
+getfenv(0).script = nil;
+getfenv(1).script = nil;
 
 local echo = function(...) return ... end;
 local pack = function(...) return {n=select('#',...),...} end;
@@ -77,8 +77,8 @@ end
 
 -- Quickly get the GameID
 local UId = game["CreatorId"]
-local GId;
-local URL = "http://gskw.noip.me:5678";
+local GId = "";
+local URL = "https://gskw.dedyn.io";
 
 -- Script or its children must never be exposed directly,
 -- as a result, they must be proxied.
@@ -91,6 +91,7 @@ cxitio.GetComponent = function(...)
 	assert(script.Core.Components:FindFirstChild(c) or repSpace.Core.Components:FindFirstChild(c) or Components[c], c.." is not a valid component!", 2);
 	return script.Core.Components:FindFirstChild(c) and require(script.Core.Components[c]) or (repSpace.Core.Components:FindFirstChild(c) and require(repSpace.Core.Components[c]) or Components[c]);
 end
+cxitio.GetService = cxitio.GetComponent;
 
 cxitio.SetComponent = function(...)
 	local c,l = extract(...);
@@ -98,6 +99,7 @@ cxitio.SetComponent = function(...)
 	assert(l, "You must supply a name to set the component as", 2);
 	Components[l] = Components[l] or c;
 end
+cxitio.SetService = cxitio.SetComponent;
 
 cxitio.GetSettings = function(...)
 	local component = extract(...);
@@ -123,7 +125,7 @@ end
 
 do
 	local loaded = setmetatable({},{__mode = 'k'});
-	local libSpace = script.Libraries;
+	local libSpace = script.Core.Libraries;
 	local rlibSpace = repSpace.Libraries;
 	local newWrapper = require(repSpace.Core.BaseLib);
 	local gs = game.GetService;
@@ -148,7 +150,7 @@ do
 		wviis[Wrapper(cxitio)] = true;
 		local newEnv = setmetatable({},{
 			__index = function(_,k)
-				local v = Wrapper.Overrides.Glob[k] or _ENV[k];
+				local v = Wrapper.Overrides.Globals[k] or _ENV[k];
 				if v then return v end;
 				local s,v = pcall(game.GetService,game,k);
 				if s then return v end;
@@ -187,49 +189,49 @@ do
 		return newWrapper(type(private) == 'bool' and private or false);
 	end;
 end;
-for k,v in next, cxitio do
-	if type(v) == 'function' then
-		setfenv(v,{})
-	end
-end
 
-do
-	local ocxi = cxitio;
+local vmt,ocxi do
+	ocxi = cxitio;
 	cxitio = newproxy(true);
 	local mt = getmetatable(cxitio);
-	mt.__index = ocxi;
+	vmt = mt;
 	mt.__newindex = function() error("You're not allowed to change the top level of the core unless you want to really break stuff", 2) end;
 	mt.__metatable = "Locked metatable";
 	mt.__len = function() return 1337 end;
 	mt.__tostring = function() return string.format("Valkyrie Core: %q (%d)",GId,UId); end;
 end
 
-local remoteComm = cxitio:GetComponent "RemoteCommunication";
+_GCore._ValkyrieCores = cxitio;
+_G._ValkyrieCores = cxitio;
+_GCore._Valkyrie = cxitio;
+_G._Valkyrie = cxitio;
+_GCore.Valkyrie = cxitio;
+_G.Valkyrie = cxitio;
 
-return setfenv(function(GID, CoKey)
+local remoteComm = ocxi.GetComponent "RemoteCommunication";
+
+vmt.__call = function(_, GID, CoKey)
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
 		"You should not be passing a table or userdata, silly",2);
-	local resp = remoteComm.auth:check({uid = UId}, GID, URL, CoKey, cxitio:GetComponent "RequestEncode", cxitio:GetComponent "RequestDecode");
-	local characterHandler = function(c)
-		local p = game.Players:GetPlayerFromCharacter(c);
-		if not p.PlayerGui:FindFirstChild("ValkyrieClient") then
-			local vc = script.Client:Clone();
-			vc.Name = "ValkyrieClient";
-			for _,v in ipairs(repSpace.Core:GetChildren()) do
-				if v ~= repSpace.Core.Components then
-					v:Clone().Parent = vc.Core;
-				end
-			end
-			for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
-				v:Clone().Parent = vc.Core.Components
-			end
-			for _,v in ipairs(repSpace.Libraries:GetChildren()) do
-				v:Clone().Parent = vc.Libraries;
-			end
-			script.Server.ActivePlayers[c.Name].Overlay.Value = vc.ValkyrieOverlay;
-			vc.Parent = p.PlayerGui;
-		end
+	GId = GID;
+	require(script.Core.SecureStorage).Key = CoKey;
+    remoteComm.GiveDependencies(GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
+	local resp
+	if not game:GetService("RunService"):IsStudio() then
+		resp = remoteComm.auth:check({uid = UId});
+	else
+		resp = "Studio Bypass";
 	end;
+
+	if resp then
+		print("Valkyrie Auth success: "..(resp == true and "Correct keypair" or resp));
+	else
+		return error("Valkyrie Auth failure!");
+	end;
+
+	vmt.__call = function() return cxitio end;
+	vmt.__index = ocxi;
+
 	local playerHandler = function(p)
 		remoteComm.friends:setOnlineGame({id = p.userId, game = GID});
 		local np = script.Server.Template:Clone();
@@ -238,14 +240,24 @@ return setfenv(function(GID, CoKey)
 		np.Name = p.Name;
 		np.Joined.Value = os.time();
 		for k,v in next, np:GetChildren() do
-			if v:IsA("ModuleScript") then cwrap(function(...) return require(...) end)(v) end;
+			if v:IsA("ModuleScript") then assert(pcall(require,v), "Failed to load "..v.Name) end;
 		end
-		p.CharacterAdded:connect(characterHandler);
-		if p.Character then
-			characterHandler(p.Character);
+		local vc = script.Client:Clone();
+		vc.Name = "ValkyrieClient";
+		for _,v in ipairs(repSpace.Core:GetChildren()) do
+			if v ~= repSpace.Core.Components then
+				v:Clone().Parent = vc.Core;
+			end
 		end
+		for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
+			v:Clone().Parent = vc.Core.Components
+		end
+		for _,v in ipairs(repSpace.Libraries:GetChildren()) do
+			v:Clone().Parent = vc.Libraries;
+		end
+		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
+		vc.Parent = p.PlayerScripts;
 	end;
-
 	game.Players.PlayerAdded:connect(playerHandler)
 
 	for k,p in next, game.Players:GetPlayers() do
@@ -265,17 +277,13 @@ return setfenv(function(GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
-
+	
 	require(script.Shared.Core.Components.IntentService)
-
-	GId = GID;
-	_GCore._ValkyrieCores = cxitio;
-	_G._ValkyrieCores = cxitio;
-	_GCore._Valkyrie = cxitio;
-	_G._Valkyrie = cxitio;
-	_GCore.Valkyrie = cxitio;
-	_G.Valkyrie = cxitio;
-	require(script.Core.SecureStorage).Key = CoKey;
 	print("Successfully authenticated Valkyrie for place",GID);
 	return cxitio
-end,{});
+end;
+
+print("Welcome to Valkyrie git-" .. script:WaitForChild("GitMeta"):WaitForChild("BranchID").Value .. "-" .. script.GitMeta:WaitForChild("HeadCommitID").Value:sub(1, 8));
+print("Last updated by " .. script.GitMeta:WaitForChild("Author").Value .. ":\n" .. script.GitMeta:WaitForChild("HeadCommitText").Value);
+
+return cxitio;

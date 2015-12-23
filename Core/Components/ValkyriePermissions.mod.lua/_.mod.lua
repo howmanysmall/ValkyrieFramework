@@ -1,6 +1,5 @@
 -- Valkyrie-based permissions control
 -- Provides group permissions and user permissions, with inheritence
-local report = _G.Valkyrie:GetComponent("Report");
 
 -- Permission objects are userdata. Love the things.
 local Permissions = {};
@@ -10,7 +9,7 @@ local PermissionLinks = {};
 -- Make something to actually generate Permissions
 local function createPermission(name)
 	-- Check people aren't being stupid
-	assert(type(name)=='string', "Give a permission name as #1");
+	assert(type(name)=='string', "[Error][Valkyrie Permissions] (in createPermission()): Give a permission name as #1");
 
 	-- Work out what this permission is
 	local start = Permissions;
@@ -23,10 +22,7 @@ local function createPermission(name)
 			local v = subsets[i];
 			if not start[v] then start[v] = {} end;
 			if type(start[v]) ~= 'table' then
-				error(
-					report.Error.Permissions.Create
-					[name.." overrites existing permission"]
-				(),2);
+				error("[Error][Valkyrie Permissions] (in createPermission()): "..v.." overwrites an existing permission",2);
 			end;
 			start = start[v];
 		end;
@@ -153,10 +149,7 @@ function gclass:AddPermission(permission)
 	local target = getPermission(permission)
 	if not target then
 		-- Not a valid permission? Shameful.
-		return error(
-			report.Error.Permissions.AddPermission
-			["A valid permission was not supplied to be added."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in AddPermission()): A valid permission was not supplied", 2);
 	end;
 	plist[target] = true;
 end;
@@ -165,10 +158,7 @@ function gclass:BlockPermission(permission)
 	local plist = glinks[self][1];
 	local target = getPermission(permission)
 	if not target then
-		return error(
-			report.Error.Permissions.BlockPermission
-			["A valid permission was not supplied to be blocked."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in BlockPermission()): A valid permission was not supplied", 2);
 	end;
 	plist[target] = false;
 end;
@@ -177,10 +167,7 @@ function gclass:RemovePermission(permission)
 	local plist = glinks[self][1];
 	local target = getPermission(permission);
 	if not target then
-		return error(
-			report.Error.Permissions.RemovePermission
-			["A valid permission was not supplied to be removed/defaulted."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in RemovePermission()): A valid permission was not supplied", 2);
 	end;
 	plist[target] = nil;
 end;
@@ -249,10 +236,7 @@ function controllerclass.AddUserPermission(...)
 	assert(user and permission, "You need to supply (user, permission)", 2);
 	local target = getPermission(permission);
 	if not target then
-		return error(
-			report.Error.Permissions.AddUserPermission
-			["A valid permission was not supplied to be added."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in AddUserPermission()): A valid permission was not supplied", 2);
 	end;
 	if not users[user] then users[user] = {} end;
 	users[user][target] = true;
@@ -263,10 +247,7 @@ function controllerclass.RemoveUserPermission(...)
 	assert(user and permission, "You need to supply (user, permission)", 2);
 	local target = getPermission(permission);
 	if not target then
-		return error(
-			report.Error.Permissions.RemoveUserPermission
-			["A valid permission was not supplied to be removed/defaulted."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in RemoveUserPermission()): A valid permission was not supplied", 2);
 	end;
 	if not users[user] then users[user] = {} end;
 	users[user][target] = nil;
@@ -277,10 +258,7 @@ function controllerclass.BlockUserPermission(...)
 	assert(user and permission, "You need to supply (user, permission)", 2);
 	local target = getPermission(permission);
 	if not target then
-		return error(
-			report.Error.Permissions.BlockUserPermission
-			["A valid permission was not supplied to be blocked."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in BlockUserPermission()): A valid permission was not supplied", 2);
 	end;
 	if not users[user] then users[user] = {} end;
 	users[user][target] = false;
@@ -291,10 +269,7 @@ function controllerclass.GetUserPermission(...)
 	assert(user and permission, "You need to supply (user, permission)", 2);
 	local target = getPermission(permission);
 	if not target then
-		return error(
-			report.Error.Permissions.GetUserPermission
-			["A valid permission was not supplied to be checked."]
-		(), 2);
+		return error("[Error][Valkyrie Permissions] (in GetUserPermission()): A valid permission was not supplied", 2);
 	end;
 	if not users[user] then users[user] = {} end;
 	return users[user][target] or (usergroups[user] and usergroups[user].Permissions[target] or nil);
@@ -333,5 +308,14 @@ end;
 controllermt.__index = controllerclass;
 controllermt.__tostring = function() return "Permissions controller" end;
 controllermt.__metatable = "Locked metatable: Valkyrie";
+
+game:GetService"Players".PlayerRemoving:connect(function(p)
+	users[p] = nil;
+	if usergroups[p] then
+		local g = usergroups[p];
+		usergroups[p] = nil;
+		g:RemoveUser(p);
+	end;
+end);
 
 return controller
