@@ -3,9 +3,11 @@ local r = newproxy(true);
 local client;
 local type = type;
 
-local LocalIntent = Instance.new("BindableEvent");
+local ValkyrieEvents;
+
+local LocalIntent;
 local RemoteIntent;
-local RemoteIntentBind = Instance.new("BindableEvent");
+local RemoteIntentBind;
 
 local function extract(...)
 	if (...) == r then
@@ -53,7 +55,7 @@ end;
 cxitio.RegisterRPCIntent = function(...)
 	local Intent,f = extract(...);
 	assert(Intent and type(f) == 'function', "Invalid arguments", 2);
-	return RemoteIntentBind.Event:connect(function(i,...)
+	return RemoteIntentBind:connect(function(i,...)
 		if i == Intent then f(...) end;
 	end);
 end;
@@ -61,7 +63,7 @@ end;
 cxitio.RegisterIntent = function(...)
 	local Intent,f = extract(...);
 	assert(Intent and type(f) == 'function', "Invalid arguments", 2);
-	return LocalIntent.Event:connect(function(i,...)
+	return LocalIntent:connect(function(i,...)
 		if i == Intent then f(...) end;
 	end);
 end;
@@ -70,10 +72,20 @@ cxitio.BroadcastIntent = function(...)
 	LocalIntent:Fire(extract(...));
 end;
 
+cxitio.FireIntent = cxitio.BroadcastIntent;
+cxitio.InvokeIntent = function(...)
+	return error("[Error][Valkyrie Intents] (in IntentService:InvokeIntent()): Invoke is not yet implemented");
+end;
+
 local mt = getmetatable(r);
 mt.__index = cxitio;
 mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
 end;
 mt.__metatable = "Locked metatable: Valkyrie";
+spawn(function()
+	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
+	LocalIntent = ValkyrieEvents.new "Event"
+	RemoteIntentBind = ValkyrieEvents.new "Event"
+end);
 return r;

@@ -125,7 +125,7 @@ end
 
 do
 	local loaded = setmetatable({},{__mode = 'k'});
-	local libSpace = script.Libraries;
+	local libSpace = script.Core.Libraries;
 	local rlibSpace = repSpace.Libraries;
 	local newWrapper = require(repSpace.Core.BaseLib);
 	local gs = game.GetService;
