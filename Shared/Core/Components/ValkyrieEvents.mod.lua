@@ -12,6 +12,7 @@ local connection do
 	local disconnectAction = function(self)
 		if not self then
 			error("[Error][Valkyrie Events] (in connection:disconnect()): No connection given. Did you forget to call this as a method?", 2);
+		end
 		if finishers[self] then
 			finishers[self](self);
 			finishers[self] = nil;
