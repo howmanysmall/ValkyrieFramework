@@ -4,6 +4,7 @@
 local Controller = {};
 local this = newproxy(true);
 local IntentService = _G.Valkyrie:GetComponent "IntentService";
+local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
@@ -478,7 +479,7 @@ CreateInputState = function(source, meta)
 			return Edge.TouchTap(a,p,meta);
 		end);
 	end;
-	local iBind = Instance.new("BindableEvent");
+	local iBind = Event.new "InstantEvent"
 	if not meta then
 		InputCache[source] = ni;
 	else
@@ -723,7 +724,7 @@ do
 		end;
 		
 		--> Connection
-		local bind = iBinds[iobj].Event:connect(bfunc);
+		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
 		return bind;
 	end;
@@ -779,7 +780,7 @@ do
 		end;
 		
 		--> Connection
-		local bind = iBinds[iobj].Event:connect(bfunc);
+		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
 		return bind;
 	end;
@@ -835,7 +836,7 @@ do
 					end;
 				end;
 			end;
-			Connections[#Connections+1] = iBinds[state].Event:connect(bfunc);
+			Connections[#Connections+1] = iBinds[state]:connect(bfunc);
 		end;
 		
 		local Button;
@@ -858,7 +859,7 @@ do
 		-- ~ Redirects a button press (From any input that can provide it) to the action
 		
 		local TouchState = CreateInputState(InputSources.Touch.TouchTap, button);
-		local tBind = iBinds[TouchState].Event:connect(function(i,d,p,r) self.Action(i,p,r) end);
+		local tBind = iBinds[TouchState]:connect(function(i,d,p,r) self.Action(i,p,r) end);
 		local mBind = button.MouseButton1Click:connect(self.Action);
 		-- Not sure how the Controller is supposed to select things?
 		
@@ -893,7 +894,7 @@ do
 			local iobj = CreateInputState(v);
 			ilist[i] = iobj;
 			Totals[i] = false;
-			local Bind = iBinds[iobj].Event:connect(function(q,d,p,r)
+			local Bind = iBinds[iobj]:connect(function(q,d,p,r)
 				if d == InputDirections.Up then
 					Totals[i] = false;
 				elseif d == InputDirections.Down then
@@ -939,7 +940,7 @@ do
 			local state = CreateInputState(sources[i]);
 			local down = false;
 			local func = self.Action;
-			BindCollection[#BindCollection+1] = iBinds[state].Event:connect(function(q,d,p,r)
+			BindCollection[#BindCollection+1] = iBinds[state]:connect(function(q,d,p,r)
 				if curr ~= i then curr = 1 return end;
 				if d == InputDirections.Up then
 					if down then
@@ -972,7 +973,7 @@ do
 		local state = CreateInputState(source, object);		
 		
 		--> Connection
-		local bind = iBinds[state].Event:connect(function(i,d,p,r)
+		local bind = iBinds[state]:connect(function(i,d,p,r)
 			return self.Action(i,p,r);
 		end)
 		ActionBinds[self][#ActionBinds[self]] = bind;
