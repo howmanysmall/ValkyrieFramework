@@ -66,7 +66,7 @@ local eClass = {
 				end;
 			end;
 		end);
-	end);
+	end;
 	wait = function(self)
 		local done,ret = false;
 		local c = self:connect(function(...)
@@ -103,7 +103,7 @@ local ieClass = {
 				end;
 			end;
 		end);
-	end);
+	end;
 	wait = function(self)
 		local done,ret = false;
 		local c = self:connect(function(...)
