@@ -19,7 +19,7 @@ end;
 
 -- Quickly test to see if we're on the client Valkyrie
 if game:GetService("RunService"):IsStudio() then
-	if script:IsA("LocalScript") then
+	if script:IsDescendantOf(game.Players) then
 		client = true;
 		-- Success: You're on the client Valkyrie
 		-- Register intent from the server, and to the server
