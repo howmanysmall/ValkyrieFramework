@@ -278,7 +278,6 @@ vmt.__call = function(_, GID, CoKey)
 		gpn.Parent = game.ReplicatedStorage;
 	end
 	
-	print("Getting IntentService");
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
 	return cxitio
