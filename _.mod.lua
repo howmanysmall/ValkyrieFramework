@@ -125,7 +125,7 @@ end
 
 do
 	local loaded = setmetatable({},{__mode = 'k'});
-	local libSpace = script.Libraries;
+	local libSpace = script.Core.Libraries;
 	local rlibSpace = repSpace.Libraries;
 	local newWrapper = require(repSpace.Core.BaseLib);
 	local gs = game.GetService;
@@ -255,7 +255,7 @@ vmt.__call = function(_, GID, CoKey)
 		for _,v in ipairs(repSpace.Libraries:GetChildren()) do
 			v:Clone().Parent = vc.Libraries;
 		end
-		script.Server.ActivePlayers[c.Name].Overlay.Value = vc.ValkyrieOverlay;
+		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
 		vc.Parent = p.PlayerScripts;
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
@@ -277,7 +277,7 @@ vmt.__call = function(_, GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
-
+	
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
 	return cxitio

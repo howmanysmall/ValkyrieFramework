@@ -1,5 +1,5 @@
 local Util 					= {};
-local Core 					= _G.ValkyrieC;
+local Core 					= _G.Valkyrie;
 local GetType				= Core:GetComponent "DataTypes";
 local isLocal 				= pcall(function() return assert(game.Players.LocalPlayer,'') end);
 
