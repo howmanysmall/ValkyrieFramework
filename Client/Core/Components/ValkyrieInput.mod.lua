@@ -446,7 +446,7 @@ CreateInputState = function(source, meta)
 		-- No idea how to configure this one.
 		-- Location::Position
 	end;
-	if meta:IsA("GuiObject") then
+	if meta and meta:IsA("GuiObject") then
 		BoundUnique[meta] = true;
 		meta.InputBegan:connect(UISProxy(meta));
 		meta.InputEnded:connect(UISProxy(meta));
