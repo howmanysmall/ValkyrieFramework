@@ -487,6 +487,7 @@ CreateInputState = function(source, meta)
 		InputCache[meta][source] = ni;
 	end;
 	iBinds[ni] = iBind;
+	return ni;
 end;
 -- Bind UIS outside of the function because of how it works
 UISEdge = function(i,p,m)
