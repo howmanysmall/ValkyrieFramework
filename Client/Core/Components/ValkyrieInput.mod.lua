@@ -304,7 +304,7 @@ InputDirections.Updated = InputDirections.Change;
 do
 	local id = InputDirections;
 	Controller.InputDirections = newproxy(true);
-	local mt = getmetatable(InputDirections);
+	local mt = getmetatable(Controller.InputDirections);
 	mt.__index = id;
 	mt.__metatable = "Locked metatable: Valkyrie";
 	mt.__tostring = function() return "Valkyrie Input Directions" end;
