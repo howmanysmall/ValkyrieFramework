@@ -18,7 +18,41 @@ local function extract(...)
 end;
 
 -- Quickly test to see if we're on the client Valkyrie
-if game:GetService("RunService"):IsClient() then
+if game:GetService("RunService"):IsStudio() then
+	if script:IsDescendantOf(game.Players) then
+		client = true;
+		-- Success: You're on the client Valkyrie
+		-- Register intent from the server, and to the server
+		RemoteIntent = game.ReplicatedStorage:WaitForChild("ValkyrieIntent");
+		RemoteIntent.OnClientEvent:connect(function(Intent,...)
+			RemoteIntentBind:Fire(Intent,...);
+		end);
+		cxitio.BroadcastRPCIntent = function(...)
+			RemoteIntent:FireServer(extract(...));
+		end;
+	else
+		client = false;
+		-- On the server Valkyrie
+		-- Register intent from the client, and to the client
+		RemoteIntent = game.ReplicatedStorage:FindFirstChild("ValkyrieIntent")
+		if not RemoteIntent then
+			RemoteIntent = Instance.new("RemoteEvent");
+			RemoteIntent.Name = "ValkyrieIntent";
+			RemoteIntent.Parent = game.ReplicatedStorage;
+		end;
+		RemoteIntent.OnServerEvent:connect(function(p,Intent,...)
+			RemoteIntentBind:Fire(Intent,p,...);
+		end);
+		cxitio.BroadcastRPCIntent = function(...)
+			local args = {n=select('#',extract(...)),extract(...)};
+			if args[2] == 'All' then
+				RemoteIntent:FireAllClients(args[1], unpack(args,3,args.n));
+			else
+				RemoteIntent:Fire(args[2],args[1],unpack(args,3,args.n));
+			end;
+		end;
+	end;
+elseif game:GetService("RunService"):IsClient() then
 	client = true;
 	-- Success: You're on the client Valkyrie
 	-- Register intent from the server, and to the server

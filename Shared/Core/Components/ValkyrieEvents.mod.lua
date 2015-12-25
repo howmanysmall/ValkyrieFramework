@@ -12,6 +12,7 @@ local connection do
 	local disconnectAction = function(self)
 		if not self then
 			error("[Error][Valkyrie Events] (in connection:disconnect()): No connection given. Did you forget to call this as a method?", 2);
+		end
 		if finishers[self] then
 			finishers[self](self);
 			finishers[self] = nil;
@@ -44,10 +45,11 @@ end;
 local eClass = {
 	fire = function(self, ...)
 		local e = Events[self];
+		local ar = {...};
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			spawn(function() f(...) end);
+			spawn(function() f(unpack(ar)) end);
 		end;
 	end;
 	connect = function(self, f)
@@ -56,7 +58,7 @@ local eClass = {
 		return connection(function()
 			local didfind = false;
 			for i=1, #e do
-				if e[i] = f then
+				if e[i] == f then
 					e[i] = nil;
 					didfind = true;
 				elseif didfind then
@@ -65,14 +67,14 @@ local eClass = {
 				end;
 			end;
 		end);
-	end);
+	end;
 	wait = function(self)
 		local done,ret = false;
 		local c = self:connect(function(...)
 			done = true;
 			ret = {...};
 		end);
-		repeat wait() until done end;
+		repeat wait() until done;
 		c:disconnect();
 		return unpack(ret);
 	end;
@@ -93,7 +95,7 @@ local ieClass = {
 		return connection(function()
 			local didfind = false;
 			for i=1, #e do
-				if e[i] = f then
+				if e[i] == f then
 					e[i] = nil;
 					didfind = true;
 				elseif didfind then
@@ -102,14 +104,14 @@ local ieClass = {
 				end;
 			end;
 		end);
-	end);
+	end;
 	wait = function(self)
 		local done,ret = false;
 		local c = self:connect(function(...)
 			done = true;
 			ret = {...};
 		end);
-		repeat wait() until done end;
+		repeat wait() until done;
 		c:disconnect();
 		return unpack(ret);
 	end;
@@ -166,3 +168,4 @@ mt.__tostring = function()
   return "Valkyrie event controller";
 end;
 return ni;
+
