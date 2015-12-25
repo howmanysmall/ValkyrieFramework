@@ -26,7 +26,7 @@ local ActionMt = {
 		return ActionLinks[this].Action(...);
 	end;
 	__index = function(this,k)
-		return ActionClass[k];
+		return ActionClass[k] or ActionLinks[this][k];
 	end;
 	__metatable = "Locked metatable: Valkyrie";
 	__len = function(this)
