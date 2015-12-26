@@ -70,6 +70,9 @@ return function(wrapper)
 						t.Children = nil;
 						for k,v in next, children do
 							v.Parent = retn;
+							if type(k) == 'string' then
+								v.Name = k;
+							end;
 						end;
 					end;
 					if t[1] then
