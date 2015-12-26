@@ -56,6 +56,23 @@ function Util.GetScreenResolution()
 	return Size;
 end
 
+local chainmeta; chainmeta = {
+	__newindex = function(t,k,v) t._obj[k] = v; end;
+	__index = function(t,k)
+		return function(v)
+			if v then
+				t._obj[k] = v;
+				return t;
+			else
+				return t._obj;
+			end;
+		end;
+	end;
+}
+function Util.Chain(obj)
+	return setmetatable({_obj = obj},chainmeta);
+end;
+
 Util.isLocal = isLocal;
 
 Util.wait = wait;
