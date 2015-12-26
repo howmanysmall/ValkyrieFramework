@@ -1,4 +1,4 @@
--- Load and inject me woo
+-- Load and inject
 -- Also auth.
 local script = script;
 local wait = wait;
