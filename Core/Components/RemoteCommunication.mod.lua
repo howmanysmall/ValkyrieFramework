@@ -1,4 +1,4 @@
-local ENABLE 		= false;
+local ENABLE 		= true;
 
 local module		= {};
 local encoder;
@@ -44,7 +44,7 @@ do
 						-- Just because.
 						rem_module		= HS:UrlEncode(rem_module);
 						rem_function	= HS:UrlEncode(rem_function);
-						local req_url	= format("%s/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
+						local req_url	= format("%s/api/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
 						local ret		= decoder(HS:PostAsync(req_url, encoder(args)));
 						assert(ret.success, ret.error, 3);
 						return ret.result;
