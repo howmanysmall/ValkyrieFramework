@@ -56,7 +56,7 @@ function Util.GetScreenResolution()
 	return Size;
 end
 
-local chainmeta; chainmeta = {
+local chainmeta = {
 	__newindex = function(t,k,v) t._obj[k] = v; end;
 	__index = function(t,k)
 		return function(v)
