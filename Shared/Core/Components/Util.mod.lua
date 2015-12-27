@@ -80,6 +80,7 @@ if isLocal then
 	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
+		n = n or 0.29
 		local now = tick();
 		local later = now+n;
 		while tick() < later do
