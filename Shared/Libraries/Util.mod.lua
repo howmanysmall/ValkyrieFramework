@@ -15,6 +15,7 @@ local V3O = {
 	left = Vector3.new(-1,0,0);
 	right = Vector3.new(1,0,0);
 };
+
 local CFO = {
 	fromDirection = function(v3dir)
 		return CFrame.new(V3Zero, v3dir);
@@ -171,5 +172,10 @@ return function(wrapper)
 				return UDim2.new(a.X.Scale * b, a.X.Offset * b, a.Y.Scale * b, a.Y.Offset * b);
 			end
 		end
+	};
+	wrapper:Override "Vector3" {
+		__len = function(s)
+			return s.magnitude;
+		end;
 	};
 end;
