@@ -31,7 +31,7 @@ do
 			func_mt.__metatable	= "HAHAHAHA NOPE";
 
 			func_mt.__index		= function(t, rem_function)
-				return setfenv(function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
+				return function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
 					if ENABLE then
 						if _GID then
 							encoder 	= _encoder;
@@ -52,7 +52,7 @@ do
 					else
 						return true;
 					end
-				end, {});
+				end;
 			end
 		end
 
