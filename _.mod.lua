@@ -78,7 +78,7 @@ end
 -- Quickly get the GameID
 local UId = game["CreatorId"]
 local GId = "";
-local URL = "http://valkyrie.crescentcode.net";
+local URL = "https://valkyrie.crescentcode.net";
 
 -- Script or its children must never be exposed directly,
 -- as a result, they must be proxied.
@@ -277,7 +277,7 @@ vmt.__call = function(_, GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
-	
+
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
 	return cxitio
