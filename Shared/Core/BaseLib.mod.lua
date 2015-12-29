@@ -349,7 +349,7 @@ local TypeChecks do
 	};
 end;
 
-local instancetable = http:JSONDecode(http:GetAsync("http://jacob.easleycompany.com/api/apidump")).Class;
+local instancetable = http:JSONDecode(game.ReplicatedStorage:WaitForChild("ValkyrieInheritReplicator").Value);
 
 local function newWrapper(private)
 	local self = {};
@@ -374,7 +374,7 @@ local function newWrapper(private)
 	
 	do local iOverrides = self.Overrides.Instance;
 		for k,v in next, instancetable do
-			iOverrides[k] = setmetatable({},{__index = iOverrides[v.BaseClassName]});
+			iOverrides[k] = setmetatable({},{__index = iOverrides[v]});
 		end;
 	end;
 

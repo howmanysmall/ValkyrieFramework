@@ -29,6 +29,7 @@ local ipairs = ipairs;
 local cwrap = coroutine.wrap;
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
+local http = game:GetService("HttpService");
 local wviis = {}
 getfenv(0).script = nil;
 getfenv(1).script = nil;
@@ -79,6 +80,18 @@ end
 local UId = game["CreatorId"]
 local GId = "";
 local URL = "https://valkyrie.crescentcode.net";
+
+-- Quickly fetch the Class inherit table for BaseLib
+do local ctab = http:JSONDecode(http:GetAsync("http://jacob.easleycompany.com/api/apidump")).Class;
+	local itab = {};
+	for k,v in next, ctab do
+		itab[k] = v.BaseClass;
+	end;
+	local newstrinst = Instance.new("StringValue");
+	newstrinst.Name = "ValkyrieInheritReplicator";
+	newstrinst.Value = http:JSONEncode(itab);
+	newstrinst.Parent = game.ReplicatedStorage
+end
 
 -- Script or its children must never be exposed directly,
 -- as a result, they must be proxied.
