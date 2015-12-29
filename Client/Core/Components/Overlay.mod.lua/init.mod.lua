@@ -1,5 +1,7 @@
 -- Init
 
+local wait = wait;
+
 _G.ValkyrieC:LoadLibrary("Util");
 _G.ValkyrieC.LoadLibrary("Design");
 
