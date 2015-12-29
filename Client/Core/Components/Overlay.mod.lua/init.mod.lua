@@ -7,7 +7,7 @@ local GUI = _G.ValkyrieC:GetOverlay();
 local FontRender = _G.ValkyrieC:GetComponent("Fonts");
 local ContentProvider = ContentProvider;
 
-return function()
+return function(OverlayController)
 	local SplashFrame = new "Frame":Instance {
 		Name = "SplashFrame";
 		ZIndex = 9;
