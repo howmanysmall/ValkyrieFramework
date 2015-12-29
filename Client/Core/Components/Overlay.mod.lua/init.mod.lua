@@ -39,7 +39,6 @@ return function(OverlayController)
 		while i < 1 do
 			i = i + wait()/0.6
 			SplashFrame.BackgroundTransparency = 1+i*(i-2);
-			print(i*(i-2));
 		end;
 		SplashFrame.BackgroundTransparency = 0;
 	end)();
