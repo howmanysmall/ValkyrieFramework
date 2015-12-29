@@ -241,6 +241,21 @@ vmt.__call = function(_, GID, CoKey)
 	else
 		return error("Valkyrie Auth failure!");
 	end;
+	
+	local vc = script.Client:Clone();
+	vc.Name = "ValkyrieClient";
+	for _,v in ipairs(repSpace.Core:GetChildren()) do
+		if v ~= repSpace.Core.Components then
+			v:Clone().Parent = vc.Core;
+		end
+	end
+	for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
+		v:Clone().Parent = vc.Core.Components
+	end
+	for _,v in ipairs(repSpace.Libraries:GetChildren()) do
+		v:Clone().Parent = vc.Libraries;
+	end
+	vc.Parent = game.StarterPlayer.StarterPlayerScripts;
 
 	vmt.__call = function() return cxitio end;
 	vmt.__index = ocxi;
@@ -255,24 +270,6 @@ vmt.__call = function(_, GID, CoKey)
 		for k,v in next, np:GetChildren() do
 			if v:IsA("ModuleScript") then assert(pcall(require,v), "Failed to load "..v.Name) end;
 		end
-		local vc = script.Client:Clone();
-		vc.Name = "ValkyrieClient";
-		for _,v in ipairs(repSpace.Core:GetChildren()) do
-			if v ~= repSpace.Core.Components then
-				v:Clone().Parent = vc.Core;
-			end
-		end
-		for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
-			v:Clone().Parent = vc.Core.Components
-		end
-		for _,v in ipairs(repSpace.Libraries:GetChildren()) do
-			v:Clone().Parent = vc.Libraries;
-		end
-		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
-		local loader = vc.Loader;
-		loader.Parent = nil;
-		vc.Parent = p;
-		loader.Parent = p:WaitForChild("PlayerGui");
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
 
