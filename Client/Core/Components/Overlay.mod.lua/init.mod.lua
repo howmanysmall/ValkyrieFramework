@@ -91,6 +91,7 @@ return function()
 					.Text("Friends")
 					.BorderSizePixel(0)
 					.FontSize(7)
+					.BackgroundTransparency(1)
 					._obj;
 				};
 			};
@@ -114,6 +115,7 @@ return function()
 					.Text("Games")
 					.BorderSizePixel(0)
 					.FontSize(7)
+					.BackgroundTransparency(1)
 					._obj;
 				};
 			};
@@ -137,6 +139,7 @@ return function()
 					.Text("Profile")
 					.BorderSizePixel(0)
 					.FontSize(7)
+					.BackgroundTransparency(1)
 					._obj;
 				};
 			};
@@ -160,6 +163,7 @@ return function()
 					.Text("Stats")
 					.BorderSizePixel(0)
 					.FontSize(7)
+					.BackgroundTransparency(1)
 					._obj;
 				};
 			};
@@ -183,6 +187,7 @@ return function()
 					.Text("Preferences")
 					.BorderSizePixel(0)
 					.FontSize(7)
+					.BackgroundTransparency(1)
 					._obj;
 				};
 			};
