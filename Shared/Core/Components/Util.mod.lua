@@ -80,12 +80,15 @@ if isLocal then
 	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
-		n = n or 0.01;
-		local i = 0;
-		while i < n do
-			i = i + ewait(RenderStepped);
-		end;
-		return i;
+		if n then
+			local i = 0;
+			while i < n do
+				i = i + ewait(RenderStepped);
+			end;
+			return i;
+		else
+			return ewait(RenderStepped);
+		end
 	end;
 end;
 Util.ewait = ewait;
