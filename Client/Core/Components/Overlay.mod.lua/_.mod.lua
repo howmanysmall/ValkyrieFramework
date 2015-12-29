@@ -3,11 +3,12 @@ local OverlayController = {};
 local extract;
 
 local didInit = false;
+local Init = require(script.init);
 local isOpen = false;
 OverlayController.Open = function(...)
 	isOpen = true;
 	if not didInit then
-		require(script.init);
+		Init();
 		didInit = true;
 	else
 	
