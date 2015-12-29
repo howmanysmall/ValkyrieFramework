@@ -200,6 +200,38 @@ return function(OverlayController)
 		};
 	};
 	
+	ButtonsContainerFrame.Friends.Img:LoadIcon("Social", "People");
+	ButtonsContainerFrame.Game.Img:LoadIcon("Hardware", "Gamepad");
+	ButtonsContainerFrame.Profile.Img:LoadIcon("Action1","Account_box");
+	ButtonsContainerFrame.Preferences.Img:LoadIcon("Action2", "Settings");
+	ButtonsContainerFrame.Stats.Img:LoadIcon("Content", "Sort");
+	
+	local ContentContainerFrame = new "Frame":Instance {
+		BackgroundColor3 = Color3.White;
+		Size = new "UDim2" (1,0,1,-48);
+		BorderSizePixel = 0;
+		Children = {
+			Clock = Chain(FontRender.Label("Roboto"))
+			.FontSize(9)
+			.Position(new "UDim2" (0,48,0,48))
+			.Size(new "UDim2" (0.5,-48,0,96))
+			.TextXAlignment("Left")
+			.TextYAlignment("Top")
+			.BackgroundTransparency(1)
+			.BorderSizePixel(0)
+			.Text("00:00")
+			.TextColor3(Color3.Amber[400])
+			.Name("Clock")
+			._obj;
+			new "Frame":Instance {
+				Name = "NotificationContainer";
+				Size = new "UDim2" (0.5,-96,1,-96);
+				Position = new "UDim2" (0.5,48,0,48);
+				BackgroundColor3 = Color3.LightBlue[50];
+				BorderSizePixel = 0;
+			}
+		}
+	}
 	
 	repeat wait() until ContentProvider.RequestQueueSize == 0;
 	
