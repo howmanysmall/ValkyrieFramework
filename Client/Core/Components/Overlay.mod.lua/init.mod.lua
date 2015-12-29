@@ -1,7 +1,7 @@
 -- Init
 
 _G.Valkyrie:LoadLibrary("Util");
-_G.Valkyrie:LoadLibrary("Design");
+_G.Valkyrie.LoadLibrary("Design");
 
 local GUI = _G.Valkyrie:GetOverlay();
 local FontRender = _G.Valkyrie:GetComponent("Fonts");
