@@ -91,6 +91,7 @@ end;
 Util.ewait = ewait;
 local yield = coroutine.yield;
 Util.ywait = function(n)
+	n = n or 0.029;
 	local now = tick();
 	local later = now+n;
 	while tick() < later do
