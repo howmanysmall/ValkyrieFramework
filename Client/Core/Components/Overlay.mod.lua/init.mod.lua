@@ -26,7 +26,7 @@ return function(OverlayController)
 				Size = new "UDim2" (0,256,0,256);
 				Position = new "UDim2" (0.5,-128,0.5,-128);
 				ImageTransparency = 1;
-				ZIndex = 10;
+				ZIndex = 9;
 			};
 		};
 	};
@@ -38,7 +38,7 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
-			SplashFrame.BackgroundTransparency = -i*(i-2);
+			SplashFrame.BackgroundTransparency = 1-i*(i-2);
 			print(i);
 		end;
 		SplashFrame.BackgroundTransparency = 0;
@@ -86,7 +86,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -111,7 +111,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -136,7 +136,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -161,7 +161,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -186,7 +186,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -218,6 +218,13 @@ return function(OverlayController)
 		end;
 		SplashFrame.Transparency = 1;
 		SplashImage.Transparency = 1;
+	end;
+	
+	-- Set the ZIndex of everything.
+	for k,v in next, ButtonsContainerFrame:GetChildren() do
+		v.ZIndex = 10;
+		v.Label.ZIndex = 10;
+		v.Img.ZIndex = 10;
 	end;
 	return true;
 end;
