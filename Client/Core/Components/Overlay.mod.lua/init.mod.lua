@@ -1,6 +1,6 @@
 -- Init
 
-_G.ValkyrieC.LoadLibrary("Design");
+_G.ValkyrieC:LoadLibrary("Design");
 _G.ValkyrieC:LoadLibrary("Util");
 local wait = wait;
 
@@ -38,8 +38,8 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
-			SplashFrame.BackgroundTransparency = 1-i*(i-2);
-			print(i);
+			SplashFrame.BackgroundTransparency = i*(i-2);
+			print(i*(i-2));
 		end;
 		SplashFrame.BackgroundTransparency = 0;
 	end)();
