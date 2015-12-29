@@ -97,7 +97,7 @@ local CharBind = function(c)
 	overlay.Parent = script;
 end
 Player.CharacterAdded:connect(CharBind);
-if Player.Character then CharBind(Player.Character) end;
+if Player.Character then coroutine.wrap(CharBind)(Player.Character) end;
 overlay.Parent = Player:WaitForChild("PlayerGui");
 cxitio.GetOverlay = function() return overlay	end;
 
