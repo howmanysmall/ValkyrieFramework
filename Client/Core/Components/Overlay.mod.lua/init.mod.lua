@@ -59,7 +59,7 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()*2;
-			SplashImage.ImageTransparency = -i*(i-2);
+			SplashImage.ImageTransparency = 1-i*(i-2);
 		end;
 		SplashImage.ImageTransparency = 0;
 	end;
