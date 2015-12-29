@@ -192,7 +192,7 @@ return function()
 	);
 	do
 		local SplashImage = SplashFrame.SplashImage;
-		local i = 0;
+		local i = 0; 
 		while i < 1 do
 			i = i + wait()*3;
 			SplashFrame.Transparency = i;
