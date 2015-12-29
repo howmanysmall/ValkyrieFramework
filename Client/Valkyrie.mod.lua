@@ -99,7 +99,6 @@ end
 Player.CharacterAdded:connect(CharBind);
 if Player.Character then CharBind(Player.Character) end;
 overlay.Parent = Player:WaitForChild("PlayerGui");
-script.Parent = Player:WaitForChild("PlayerScripts");
 cxitio.GetOverlay = function() return overlay	end;
 
 local CurrentContentFrame = nil;
