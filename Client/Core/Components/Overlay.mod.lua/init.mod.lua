@@ -16,6 +16,7 @@ return function()
 		BorderSizePixel = 0;
 		BackgroundTransparency = 1;
 		Parent = GUI;
+		BackgroundColor3 = Color3.White;
 		Children = {
 			new "ImageLabel":Instance {
 				Name = "SplashImage";
@@ -89,7 +90,8 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Friends")
 					.BorderSizePixel(0)
-					.FontSize(7)();
+					.FontSize(7)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -111,7 +113,8 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Games")
 					.BorderSizePixel(0)
-					.FontSize(7)();
+					.FontSize(7)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -133,7 +136,8 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Profile")
 					.BorderSizePixel(0)
-					.FontSize(7)();
+					.FontSize(7)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -155,7 +159,8 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Stats")
 					.BorderSizePixel(0)
-					.FontSize(7)();
+					.FontSize(7)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -177,7 +182,8 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Preferences")
 					.BorderSizePixel(0)
-					.FontSize(7)();
+					.FontSize(7)
+					._obj;
 				};
 			};
 		};

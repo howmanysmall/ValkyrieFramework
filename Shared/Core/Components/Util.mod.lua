@@ -60,13 +60,12 @@ local chainmeta = {
 	__newindex = function(t,k,v) t._obj[k] = v; end;
 	__index = function(t,k)
 		return function(v)
-			if v then
-				t._obj[k] = v;
-				return t;
-			else
-				return t._obj;
-			end;
+			t._obj[k] = v;
+			return t;
 		end;
+	end;
+	__call = function(t)
+		return t._obj;
 	end;
 }
 function Util.Chain(obj)
