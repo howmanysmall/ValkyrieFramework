@@ -511,6 +511,9 @@ UISEdge = function(i,p,m)
 	elseif sType == 'MouseMovement' then
 		sType = 'Mouse';
 		sName = 'Moved';
+	elseif sType == 'MouseWheel' then
+		sType = 'Mouse';
+		sName = 'Scrolled';
 	elseif sType:sub(1,-2) == 'Gamepad' then
 		sType = 'Controller'
 		sName = i.KeyCode.Name;

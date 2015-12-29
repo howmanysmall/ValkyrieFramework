@@ -52,7 +52,7 @@ return function()
 		for i=1,#PreloadSet do
 			ContentProvider:Preload(PreloadSet[i]);
 		end;
-		local image = SplashFrame.SplashImage;
+		local SplashImage = SplashFrame.SplashImage;
 		local i = 0;
 		while i < 1 do
 			i = i + wait()*2;
