@@ -1,9 +1,10 @@
 local Util 					= {};
 local Core 					= _G.Valkyrie;
 local GetType				= Core:GetComponent "DataTypes";
-local isLocal 				= pcall(function() return assert(game.Players.LocalPlayer,'') end);
+local RunService = game:GetService"RunService";
+local isLocal 				= RunService:IsStudio() and script:IsDescendantOf(game.Players) or RunService:IsClient();
 
-local RenderStepped 		= game:GetService"RunService".RenderStepped;
+local RenderStepped 		= RunService.RenderStepped;
 local ewait = RenderStepped.wait;
 
 function Util.GetRealType(Value)
@@ -60,13 +61,12 @@ local chainmeta = {
 	__newindex = function(t,k,v) t._obj[k] = v; end;
 	__index = function(t,k)
 		return function(v)
-			if v then
-				t._obj[k] = v;
-				return t;
-			else
-				return t._obj;
-			end;
+			t._obj[k] = v;
+			return t;
 		end;
+	end;
+	__call = function(t)
+		return t._obj;
 	end;
 }
 function Util.Chain(obj)
@@ -80,18 +80,21 @@ if isLocal then
 	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
-		n = n or 0.29
-		local now = tick();
-		local later = now+n;
-		while tick() < later do
-			ewait(RenderStepped);
-		end;
-		return tick() - now;
+		if n then
+			local i = 0;
+			while i < n do
+				i = i + ewait(RenderStepped);
+			end;
+			return i;
+		else
+			return ewait(RenderStepped);
+		end
 	end;
 end;
 Util.ewait = ewait;
 local yield = coroutine.yield;
 Util.ywait = function(n)
+	n = n or 0.029;
 	local now = tick();
 	local later = now+n;
 	while tick() < later do

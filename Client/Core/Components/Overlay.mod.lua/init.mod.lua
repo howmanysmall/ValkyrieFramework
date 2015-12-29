@@ -1,13 +1,14 @@
 -- Init
+local import = _G.ValkyrieC.LoadLibrary;
+import("Design");
+import("Util");
+local wait = wait;
 
-_G.Valkyrie:LoadLibrary("Util");
-_G.Valkyrie:LoadLibrary("Design");
-
-local GUI = _G.Valkyrie:GetOverlay();
-local FontRender = _G.Valkyrie:GetComponent("Fonts");
+local GUI = _G.ValkyrieC:GetOverlay();
+local FontRender = _G.ValkyrieC:GetComponent("Fonts");
 local ContentProvider = ContentProvider;
 
-return function()
+return function(OverlayController)
 	local SplashFrame = new "Frame":Instance {
 		Name = "SplashFrame";
 		ZIndex = 9;
@@ -16,6 +17,7 @@ return function()
 		BorderSizePixel = 0;
 		BackgroundTransparency = 1;
 		Parent = GUI;
+		BackgroundColor3 = Color3.White;
 		Children = {
 			new "ImageLabel":Instance {
 				Name = "SplashImage";
@@ -24,7 +26,7 @@ return function()
 				Size = new "UDim2" (0,256,0,256);
 				Position = new "UDim2" (0.5,-128,0.5,-128);
 				ImageTransparency = 1;
-				ZIndex = 10;
+				ZIndex = 9;
 			};
 		};
 	};
@@ -32,14 +34,14 @@ return function()
 		new "UDim2" (0,0,0,0),
 		nil, nil, 0.6, true
 	);
-	spawn(function()
+	coroutine.wrap(function()
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
-			SplashFrame.BackgroundTransparency = 1-i^2;
+			SplashFrame.BackgroundTransparency = 1+i*(i-2);
 		end;
 		SplashFrame.BackgroundTransparency = 0;
-	end);
+	end)();
 	ContentProvider:PreloadAsync({VALKYRIEICONID});
 	do
 		local PreloadSet = {
@@ -52,11 +54,11 @@ return function()
 		for i=1,#PreloadSet do
 			ContentProvider:Preload(PreloadSet[i]);
 		end;
-		local image = SplashFrame.SplashImage;
+		local SplashImage = SplashFrame.SplashImage;
 		local i = 0;
 		while i < 1 do
 			i = i + wait()*2;
-			SplashImage.ImageTransparency = 1-i^2;
+			SplashImage.ImageTransparency = 1-i*(i-2);
 		end;
 		SplashImage.ImageTransparency = 0;
 	end;
@@ -83,13 +85,16 @@ return function()
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
 					.Text("Friends")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)
+					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -105,13 +110,16 @@ return function()
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
 					.Text("Games")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)
+					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -127,13 +135,16 @@ return function()
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
 					.Text("Profile")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)
+					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -149,13 +160,16 @@ return function()
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
 					.Text("Stats")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)
+					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
+					._obj;
 				};
 			};
 			new "Frame":Instance {
@@ -171,18 +185,63 @@ return function()
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Chain(FontRender.Label("Roboto"))
+					Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
 					.Text("Preferences")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)
+					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
+					._obj;
 				};
 			};
 		};
 	};
 	
+	ButtonsContainerFrame.Friends.Img:LoadIcon("Social", "People");
+	ButtonsContainerFrame.Games.Img:LoadIcon("Hardware", "Gamepad");
+	ButtonsContainerFrame.Profile.Img:LoadIcon("Action1","Account_box");
+	ButtonsContainerFrame.Preferences.Img:LoadIcon("Action2", "Settings");
+	ButtonsContainerFrame.Stats.Img:LoadIcon("Content", "Sort");
+	
+	local ContentContainerFrame = new "Frame":Instance {
+		BackgroundColor3 = Color3.White;
+		Size = new "UDim2" (1,0,1,-48);
+		BorderSizePixel = 0;
+		Parent = GUI;
+		Children = {
+			Clock = Chain(FontRender.Label("Roboto"))
+			.FontSize(9)
+			.Position(new "UDim2" (0,48,0,48))
+			.Size(new "UDim2" (0.5,-48,0,96))
+			.TextXAlignment("Left")
+			.TextYAlignment("Top")
+			.BackgroundTransparency(1)
+			.BorderSizePixel(0)
+			.Text("00:00")
+			.TextColor3(Color3.Amber[400])
+			._obj;
+			new "Frame":Instance {
+				Name = "NotificationSeparator";
+				Size = new "UDim2" (0.5,-96,0,2);
+				Position = new "UDim2" (0.5,48,0,96);
+				BackgroundColor3 = Color3.BlueGrey[50];
+				BorderSizePixel = 0;
+			};
+			NotificationTop = Chain(FontRender.Label("Roboto"))
+			.FontSize(9)
+			.Position(new "UDim2" (0.5,48,0,48))
+			.TextXAlignment("Left")
+			.Text("Notifications")
+			.BackgroundTransparency(1)
+			.BorderSizePixel(0)
+			.Size(new "UDim2" (0.5,-96,0,48))
+			.TextTransparency(0.14)
+			._obj;
+		}
+	}
 	
 	repeat wait() until ContentProvider.RequestQueueSize == 0;
 	
@@ -192,14 +251,21 @@ return function()
 	);
 	do
 		local SplashImage = SplashFrame.SplashImage;
-		local i = 0;
+		local i = 0; 
 		while i < 1 do
 			i = i + wait()*3;
-			SplashFrame.Transparency = i;
-			SplashImage.Transparency = i;
+			SplashFrame.Transparency = -i*(i-2);
+			SplashImage.Transparency = -i*(i-2);
 		end;
 		SplashFrame.Transparency = 1;
 		SplashImage.Transparency = 1;
+	end;
+	
+	-- Set the ZIndex of everything.
+	for k,v in next, ButtonsContainerFrame:GetChildren() do
+		v.ZIndex = 10;
+		v.Label.ZIndex = 10;
+		v.Img.ZIndex = 10;
 	end;
 	return true;
 end;

@@ -3,18 +3,19 @@ local OverlayController = {};
 local extract;
 
 local didInit = false;
+local Init = require(script.init);
 local isOpen = false;
-OverlayController.Open = function(...)
+OverlayController.Open = function()
 	isOpen = true;
 	if not didInit then
-		require(script.init);
+		Init(OverlayController);
 		didInit = true;
 	else
 	
 	end;
 end;
 
-OverlayController.Close = function(...)
+OverlayController.Close = function()
 
 end;
 
@@ -27,7 +28,7 @@ mt.__tostring = function()
 end;
 
 extract = function(...)
-	if ... == ni then
+	if (...) == ni or (...) == OverlayController then
 		return select(2,...);
 	else
 		return ...

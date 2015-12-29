@@ -29,7 +29,7 @@ local ipairs = ipairs;
 local cwrap = coroutine.wrap;
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
-local wviis = setmetatable({},{__mode = 'k'});
+local wviis = {}
 getfenv(0).script = nil;
 getfenv(1).script = nil;
 
@@ -68,10 +68,10 @@ end
 local Libraries = {};
 local cxitio = {};
 local function extract(...)
-	if (...) == cxitio or wviis[...] then
-	return select(2,...);
+	if (...) == cxitio or wviis[(...)] then
+		return select(2,...);
 	else
-	return ...
+		return ...
 	end
 end
 
@@ -131,44 +131,44 @@ do
 	local gs = game.GetService;
 	local ll;
 	cxitio.LoadLibrary = function(...)
-	local l = extract(...);
-	assert(type(l) == 'string', "You must provide a string library name", 2);
-	local lib = libSpace:FindFirstChild(l) or rlibSpace:FindFirstChild(l);
-	if lib then
-		lib = require(lib)
-	elseif Libraries[l] then
-		lib = Libraries[l];
-	else
-		error("You didn't supply a valid library to load.", 2);
-	end;
-	local _ENV = getfenv(2);
-	if loaded[_ENV] then
-		setfenv(lib, _ENV)(loaded[_ENV]);
-	else
-		local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
-		Wrapper.wlist.ref[ll] = ll;
-		wviis[Wrapper(cxitio)] = true;
-		local newEnv = setmetatable({},{
-			__index = function(_,k)
-				local v = Wrapper.Overrides.Globals[k] or _ENV[k];
-				if v then return v end;
-				local s,v = pcall(game.GetService,game,k);
-				if s then return v end;
-			end;
-			__newindex = function(_,k,v)
-				warn("Settings global",k,"as",v);
-				_ENV[k] = v;
-			end;
-			__metatable = "Locked metatable: Valkyrie Library Environment";
-		});
-		_ENV.wrapper = Wrapper;
-		newEnv = Wrapper(newEnv);
-		loaded[_ENV] = Wrapper;
-		loaded[newEnv] = Wrapper;
-		setfenv(2, newEnv);
-		setfenv(lib, newEnv)(Wrapper);
-	end
-	pcall(print,"Loaded library",l,"into",_ENV,"successfully");
+		local l = extract(...);
+		assert(type(l) == 'string', "You must provide a string library name", 2);
+		local lib = libSpace:FindFirstChild(l) or rlibSpace:FindFirstChild(l);
+		if lib then
+			lib = require(lib)
+		elseif Libraries[l] then
+			lib = Libraries[l];
+		else
+			error("You didn't supply a valid library to load.", 2);
+		end;
+		local _ENV = getfenv(2);
+		if loaded[_ENV] then
+			setfenv(lib, _ENV)(loaded[_ENV]);
+		else
+			local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
+			Wrapper.wlist.ref[ll] = ll;
+			wviis[Wrapper(cxitio)] = true;
+			local newEnv = setmetatable({},{
+				__index = function(_,k)
+					local v = Wrapper.Overrides.Globals[k] or _ENV[k];
+					if v then return v end;
+					local s,v = pcall(game.GetService,game,k);
+					if s then return v end;
+				end;
+				__newindex = function(_,k,v)
+					warn("Settings global",k,"as",v);
+					_ENV[k] = v;
+				end;
+				__metatable = "Locked metatable: Valkyrie Library Environment";
+			});
+			_ENV.wrapper = Wrapper;
+			newEnv = Wrapper(newEnv);
+			loaded[_ENV] = Wrapper;
+			loaded[newEnv] = Wrapper;
+			setfenv(2, newEnv);
+			setfenv(lib, newEnv)(Wrapper);
+		end
+		pcall(print,"Loaded library",l,"into",_ENV,"successfully");
 	end;
 	ll = cxitio.LoadLibrary;
 	cxitio.AddLibrary = function(...)
@@ -256,7 +256,7 @@ vmt.__call = function(_, GID, CoKey)
 			v:Clone().Parent = vc.Libraries;
 		end
 		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
-		vc.Parent = p.PlayerScripts;
+		vc.Parent = p:WaitForChild("PlayerGui");
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
 
