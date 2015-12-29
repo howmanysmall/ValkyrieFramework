@@ -1,9 +1,8 @@
 -- Init
 
-local wait = wait;
-
-_G.ValkyrieC:LoadLibrary("Util");
 _G.ValkyrieC.LoadLibrary("Design");
+local wait = wait;
+_G.ValkyrieC:LoadLibrary("Util");
 
 local GUI = _G.ValkyrieC:GetOverlay();
 local FontRender = _G.ValkyrieC:GetComponent("Fonts");
