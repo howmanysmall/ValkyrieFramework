@@ -6,6 +6,7 @@ local wait = wait;
 
 local GUI = _G.ValkyrieC:GetOverlay();
 local FontRender = _G.ValkyrieC:GetComponent("Fonts");
+local Input = _G.ValkyrieC:GetComponent("ValkyrieInput");
 local ContentProvider = ContentProvider;
 
 return function(OverlayController)
@@ -213,10 +214,10 @@ return function(OverlayController)
 		Parent = GUI;
 		Children = {
 			Clock = Chain(FontRender.Label("Roboto"))
-			.FontSize(9)
-			.Position(new "UDim2" (0,48,0,48))
+			.FontSize(8)
+			.Position(new "UDim2" (0.5,0,0,48))
 			.Size(new "UDim2" (0.5,-48,0,96))
-			.TextXAlignment("Left")
+			.TextXAlignment("Right")
 			.TextYAlignment("Top")
 			.BackgroundTransparency(1)
 			.BorderSizePixel(0)
@@ -225,24 +226,41 @@ return function(OverlayController)
 			._obj;
 			new "Frame":Instance {
 				Name = "NotificationSeparator";
-				Size = new "UDim2" (0.5,-96,0,2);
-				Position = new "UDim2" (0.5,48,0,96);
+				Size = new "UDim2" (1,-96,0,2);
+				Position = new "UDim2" (0,48,0,96);
 				BackgroundColor3 = Color3.BlueGrey[50];
 				BorderSizePixel = 0;
 			};
+			new "ScrollingFrame":Instance {
+				Name = "NotificationContainer";
+				Size = new "UDim2" (1,-96,1,-144);
+				Position = new "UDim2" (0,48,0,96);
+				BackgroundTransparency = 1;
+				CanvasSize = new "UDim2" (1,-6,0,0);
+				ScrollBarThickness = 5;
+				ClipsDescendants = true;
+				BorderSizePixel = 0;
+			};
 			NotificationTop = Chain(FontRender.Label("Roboto"))
-			.FontSize(9)
-			.Position(new "UDim2" (0.5,48,0,48))
+			.FontSize(8)
+			.Position(new "UDim2" (0,48,0,48))
 			.TextXAlignment("Left")
 			.Text("Notifications")
 			.BackgroundTransparency(1)
 			.BorderSizePixel(0)
-			.Size(new "UDim2" (0.5,-96,0,48))
+			.Size(new "UDim2" (0.5,-48,0,48))
 			.TextTransparency(0.14)
 			._obj;
-		}
-	}
+		};
+	};
 	
+	do local clock = ContentContainerFrame.Clock;
+		spawn(function()
+			while wait(60) do
+				clock.Text = string.format("%.2d:%.2d",(tick()/3600)%24,(tick()/60)%60);
+			end;
+		end);
+	end;
 	repeat wait() until ContentProvider.RequestQueueSize == 0;
 	
 	SplashFrame:TweenPosition(
