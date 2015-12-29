@@ -92,6 +92,7 @@ return function(OverlayController)
 					.BorderSizePixel(0)
 					.FontSize(7)
 					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
 					._obj;
 				};
 			};
@@ -116,6 +117,7 @@ return function(OverlayController)
 					.BorderSizePixel(0)
 					.FontSize(7)
 					.BackgroundTransparency(1)
+					.TextColor3(Color3.White)
 					._obj;
 				};
 			};
