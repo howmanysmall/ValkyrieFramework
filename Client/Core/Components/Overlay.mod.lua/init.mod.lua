@@ -37,7 +37,7 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
-			SplashFrame.BackgroundTransparency = 1-i^2;
+			SplashFrame.BackgroundTransparency = -i*(i-2);
 		end;
 		SplashFrame.BackgroundTransparency = 0;
 	end);
@@ -57,7 +57,7 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()*2;
-			SplashImage.ImageTransparency = 1-i^2;
+			SplashImage.ImageTransparency = -i*(i-2);
 		end;
 		SplashImage.ImageTransparency = 0;
 	end;
@@ -208,8 +208,8 @@ return function(OverlayController)
 		local i = 0; 
 		while i < 1 do
 			i = i + wait()*3;
-			SplashFrame.Transparency = i;
-			SplashImage.Transparency = i;
+			SplashFrame.Transparency = -i*(i-2);
+			SplashImage.Transparency = -i*(i-2);
 		end;
 		SplashFrame.Transparency = 1;
 		SplashImage.Transparency = 1;
