@@ -89,7 +89,7 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Friends")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)();
 				};
 			};
 			new "Frame":Instance {
@@ -111,7 +111,7 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Games")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)();
 				};
 			};
 			new "Frame":Instance {
@@ -133,7 +133,7 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Profile")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)();
 				};
 			};
 			new "Frame":Instance {
@@ -155,7 +155,7 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Stats")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)();
 				};
 			};
 			new "Frame":Instance {
@@ -177,7 +177,7 @@ return function()
 					.TextXAlignment("Left")
 					.Text("Preferences")
 					.BorderSizePixel(0)
-					.FontSize(24)();
+					.FontSize(7)();
 				};
 			};
 		};
