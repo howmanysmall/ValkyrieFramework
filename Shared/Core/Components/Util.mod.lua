@@ -2,7 +2,7 @@ local Util 					= {};
 local Core 					= _G.Valkyrie;
 local GetType				= Core:GetComponent "DataTypes";
 local RunService = game:GetService"RunService";
-local isLocal 				= RunService:IsStudio() and script:IsDescendantOf(game.Players) or RunService:IsLocal();
+local isLocal 				= RunService:IsStudio() and script:IsDescendantOf(game.Players) or RunService:IsClient();
 
 local RenderStepped 		= RunService.RenderStepped;
 local ewait = RenderStepped.wait;
