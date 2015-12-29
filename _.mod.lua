@@ -29,7 +29,7 @@ local ipairs = ipairs;
 local cwrap = coroutine.wrap;
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
-local wviis = setmetatable({},{__mode = 'k'});
+local wviis = {}
 getfenv(0).script = nil;
 getfenv(1).script = nil;
 

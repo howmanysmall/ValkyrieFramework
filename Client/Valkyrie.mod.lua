@@ -5,7 +5,7 @@ local function pack(...) return {n=select('#',...),...} end;
 
 local cxitio = {};
 local r;
-local wviis = setmetatable({},{__mode = 'k'});
+local wviis = {};
 
 local function extract(...)
 	if (...) == r or wviis[(...)] then
