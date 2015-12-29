@@ -2,7 +2,7 @@
 
 _G.ValkyrieC.LoadLibrary("Design");
 _G.ValkyrieC:LoadLibrary("Util");
-local wait = ywait;
+local wait = wait;
 
 local GUI = _G.ValkyrieC:GetOverlay();
 local FontRender = _G.ValkyrieC:GetComponent("Fonts");
