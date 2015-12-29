@@ -1,7 +1,7 @@
 -- Init
-
-_G.ValkyrieC:LoadLibrary("Design");
-_G.ValkyrieC:LoadLibrary("Util");
+local import = _G.ValkyrieC.LoadLibrary;
+import("Design");
+import("Util");
 local wait = wait;
 
 local GUI = _G.ValkyrieC:GetOverlay();
@@ -38,7 +38,7 @@ return function(OverlayController)
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
-			SplashFrame.BackgroundTransparency = i*(i-2);
+			SplashFrame.BackgroundTransparency = 1+i*(i-2);
 			print(i*(i-2));
 		end;
 		SplashFrame.BackgroundTransparency = 0;
@@ -213,8 +213,8 @@ return function(OverlayController)
 		local i = 0; 
 		while i < 1 do
 			i = i + wait()*3;
-			SplashFrame.Transparency = -i*(i-2);
-			SplashImage.Transparency = -i*(i-2);
+			SplashFrame.Transparency = -1*-i*(i-2);
+			SplashImage.Transparency = -1*-i*(i-2);
 		end;
 		SplashFrame.Transparency = 1;
 		SplashImage.Transparency = 1;
