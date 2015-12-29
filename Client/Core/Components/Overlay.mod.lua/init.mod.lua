@@ -210,6 +210,7 @@ return function(OverlayController)
 		BackgroundColor3 = Color3.White;
 		Size = new "UDim2" (1,0,1,-48);
 		BorderSizePixel = 0;
+		Parent = GUI;
 		Children = {
 			Clock = Chain(FontRender.Label("Roboto"))
 			.FontSize(9)
