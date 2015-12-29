@@ -201,7 +201,7 @@ return function(OverlayController)
 	};
 	
 	ButtonsContainerFrame.Friends.Img:LoadIcon("Social", "People");
-	ButtonsContainerFrame.Game.Img:LoadIcon("Hardware", "Gamepad");
+	ButtonsContainerFrame.Games.Img:LoadIcon("Hardware", "Gamepad");
 	ButtonsContainerFrame.Profile.Img:LoadIcon("Action1","Account_box");
 	ButtonsContainerFrame.Preferences.Img:LoadIcon("Action2", "Settings");
 	ButtonsContainerFrame.Stats.Img:LoadIcon("Content", "Sort");
