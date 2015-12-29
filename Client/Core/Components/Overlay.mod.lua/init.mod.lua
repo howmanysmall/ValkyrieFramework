@@ -222,15 +222,23 @@ return function(OverlayController)
 			.BorderSizePixel(0)
 			.Text("00:00")
 			.TextColor3(Color3.Amber[400])
-			.Name("Clock")
 			._obj;
 			new "Frame":Instance {
-				Name = "NotificationContainer";
-				Size = new "UDim2" (0.5,-96,1,-96);
-				Position = new "UDim2" (0.5,48,0,48);
-				BackgroundColor3 = Color3.LightBlue[50];
+				Name = "NotificationSeparator";
+				Size = new "UDim2" (0.5,-96,0,2);
+				Position = new "UDim2" (0.5,48,0,96);
+				BackgroundColor3 = Color3.BlueGrey[50];
 				BorderSizePixel = 0;
-			}
+			};
+			NotificationTop = Chain(FontRender.Label("Roboto"))
+			.FontSize(9)
+			.Position(new "UDim2" (0.5,48,0,48)
+			.TextXAlignment("Left")
+			.Text("Notifications")
+			.BackgroundTransparency(1)
+			.BorderSizePixel(0)
+			.Size(new "UDim2" (0.5,-96,0,48)
+			.TextTransparency(0.14)
 		}
 	}
 	
