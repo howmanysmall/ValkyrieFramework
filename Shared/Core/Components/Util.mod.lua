@@ -1,9 +1,10 @@
 local Util 					= {};
 local Core 					= _G.Valkyrie;
 local GetType				= Core:GetComponent "DataTypes";
-local isLocal 				= pcall(function() return assert(game.Players.LocalPlayer,'') end);
+local RunService = game:GetService"RunService";
+local isLocal 				= RunService:IsStudio() and script:IsDescendantOf(game.Players) or RunService:IsLocal();
 
-local RenderStepped 		= game:GetService"RunService".RenderStepped;
+local RenderStepped 		= RunService.RenderStepped;
 local ewait = RenderStepped.wait;
 
 function Util.GetRealType(Value)
@@ -79,13 +80,12 @@ if isLocal then
 	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
-		n = n or 0.29
-		local now = tick();
-		local later = now+n;
-		while tick() < later do
-			ewait(RenderStepped);
+		n = n or 0.01;
+		local i = 0;
+		while i < n do
+			i = i + ewait(RenderStepped);
 		end;
-		return tick() - now;
+		return i;
 	end;
 end;
 Util.ewait = ewait;
