@@ -8,7 +8,7 @@ local r;
 local wviis = setmetatable({},{__mode = 'k'});
 
 local function extract(...)
-	if (...) == r or wviis[...] then
+	if (...) == r or wviis[(...)] then
 		return select(2,...)
 	else
 		return ...
