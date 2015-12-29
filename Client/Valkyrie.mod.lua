@@ -68,10 +68,10 @@ end;
 local overlay = script.Parent.ValkyrieOverlay;
 overlay = overlay:Clone();
 local Player = game.Players.LocalPlayer;
-overlay.Parent = Player:WaitForChild("PlayerGui");
-Player.CharacterAdded:connect(function(c)
+local CharBind = function(c)
 	if not Player.PlayerGui:FindFirstChild("ValkyrieOverlay") then
 		overlay.Parent = Player.PlayerGui;
+		overlay.Name = "ValkyrieOverlay";
 	end;
 	local humanoid = c:FindFirstChild("Humanoid")
 	if not humanoid then
@@ -95,7 +95,11 @@ Player.CharacterAdded:connect(function(c)
 	end;
 	humanoid.Died:wait();
 	overlay.Parent = script;
-end);
+end
+Player.CharacterAdded:connect(CharBind);
+if Player.Character then CharBind(Player.Character) end;
+overlay.Parent = Player:WaitForChild("PlayerGui");
+script.Parent = Player:WaitForChild("PlayerScripts");
 cxitio.GetOverlay = function() return overlay	end;
 
 local CurrentContentFrame = nil;

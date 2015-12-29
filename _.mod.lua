@@ -256,7 +256,7 @@ vmt.__call = function(_, GID, CoKey)
 			v:Clone().Parent = vc.Libraries;
 		end
 		script.Server.ActivePlayers[p.Name].Overlay.Value = vc.ValkyrieOverlay;
-		vc.Parent = p.PlayerScripts;
+		vc.Parent = p:WaitForChild("PlayerGui");
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
 
