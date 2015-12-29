@@ -33,14 +33,15 @@ return function(OverlayController)
 		new "UDim2" (0,0,0,0),
 		nil, nil, 0.6, true
 	);
-	spawn(function()
+	coroutine.wrap(function()
 		local i = 0;
 		while i < 1 do
 			i = i + wait()/0.6
 			SplashFrame.BackgroundTransparency = -i*(i-2);
+			print(i);
 		end;
 		SplashFrame.BackgroundTransparency = 0;
-	end);
+	end)();
 	ContentProvider:PreloadAsync({VALKYRIEICONID});
 	do
 		local PreloadSet = {
