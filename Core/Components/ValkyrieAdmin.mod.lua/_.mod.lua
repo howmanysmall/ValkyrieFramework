@@ -99,7 +99,7 @@ Players.PlayerAdded:connect(function(p)
     end;
   end)
   local ca = clientAdmin:Clone();
-  ca.RPC.OnServerEvent:connect(runCommand);
+  ca.DoCommand.OnServerEvent:connect(runCommand);
   ca.Parent = p:WaitForChild("PlayerScripts");
 end)
 
