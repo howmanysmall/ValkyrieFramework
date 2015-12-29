@@ -237,8 +237,9 @@ return function(OverlayController)
 			.Text("Notifications")
 			.BackgroundTransparency(1)
 			.BorderSizePixel(0)
-			.Size(new "UDim2" (0.5,-96,0,48)
+			.Size(new "UDim2" (0.5,-96,0,48))
 			.TextTransparency(0.14)
+			._obj;
 		}
 	}
 	
