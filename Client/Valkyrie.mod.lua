@@ -65,15 +65,36 @@ cxitio.GetSettings = function(...)
 	return require(script.Core.Settings).Custom;
 end;
 
-local _overlay,overlay = script.Parent.ValkyrieOverlay;
-overlay = _overlay:Clone();
+local overlay = script.Parent.ValkyrieOverlay;
+overlay = overlay:Clone();
 local Player = game.Players.LocalPlayer;
 overlay.Parent = Player:WaitForChild("PlayerGui");
 Player.CharacterAdded:connect(function(c)
 	if not Player.PlayerGui:FindFirstChild("ValkyrieOverlay") then
-		overlay = _overlay:Clone();
 		overlay.Parent = Player.PlayerGui;
 	end;
+	local humanoid = c:FindFirstChild("Humanoid")
+	if not humanoid then
+		-- Look for a Humanoid class
+		local int = c:GetChildren();
+		for i=1,#int do
+			local v = int[i];
+			if v:IsA("Humanoid") then
+				humanoid = v;
+				break;
+			end;
+		end;
+		while not humanoid do
+			-- Start listening
+			local v = c.ChildAdded:wait();
+			if v:IsA("Humanoid") then
+				humanoid = v;
+				break;
+			end;
+		end;
+	end;
+	humanoid.Died:wait();
+	overlay.Parent = script;
 end);
 cxitio.GetOverlay = function() return overlay	end;
 

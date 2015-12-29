@@ -1,10 +1,10 @@
 -- Init
 
-_G.Valkyrie:LoadLibrary("Util");
-_G.Valkyrie.LoadLibrary("Design");
+_G.ValkyrieC:LoadLibrary("Util");
+_G.ValkyrieC.LoadLibrary("Design");
 
-local GUI = _G.Valkyrie:GetOverlay();
-local FontRender = _G.Valkyrie:GetComponent("Fonts");
+local GUI = _G.ValkyrieC:GetOverlay();
+local FontRender = _G.ValkyrieC:GetComponent("Fonts");
 local ContentProvider = ContentProvider;
 
 return function()
