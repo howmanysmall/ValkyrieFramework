@@ -232,7 +232,7 @@ return function(OverlayController)
 			};
 			NotificationTop = Chain(FontRender.Label("Roboto"))
 			.FontSize(9)
-			.Position(new "UDim2" (0.5,48,0,48)
+			.Position(new "UDim2" (0.5,48,0,48))
 			.TextXAlignment("Left")
 			.Text("Notifications")
 			.BackgroundTransparency(1)
