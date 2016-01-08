@@ -221,7 +221,7 @@ return function(OverlayController)
 			.TextYAlignment("Top")
 			.BackgroundTransparency(1)
 			.BorderSizePixel(0)
-			.Text("00:00")
+			.Text(string.format("%.2d:%.2d",(tick()/3600)%24,(tick()/60)%60))
 			.TextColor3(Color3.Amber[400])
 			._obj;
 			new "Frame":Instance {

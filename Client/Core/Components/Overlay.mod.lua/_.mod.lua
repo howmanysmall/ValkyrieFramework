@@ -7,6 +7,8 @@ local Init = require(script.init);
 local isOpen = false;
 OverlayController.Open = function()
 	isOpen = true;
+	game.StarterGui:SetCoreGuiEnabled('All', false);
+	game.Players.LocalPlayer.PlayerGui:SetTopbarTransparency(0);
 	if not didInit then
 		Init(OverlayController);
 		didInit = true;
