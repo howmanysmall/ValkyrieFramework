@@ -274,7 +274,8 @@ vmt.__call = function(_, GID, CoKey)
 	game.Players.PlayerAdded:connect(playerHandler)
 
 	for k,p in next, game.Players:GetPlayers() do
-		playerHandler(p)
+		playerHandler(p);
+		script.altLoader:Clone().Parent = p.PlayerGui;
 	end
 
 	game.Players.PlayerRemoving:connect(function(p)
