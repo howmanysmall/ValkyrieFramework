@@ -82,7 +82,8 @@ return function(OverlayController)
 				Children = {
 					new "ImageLabel":Instance {
 						Name = "Img";
-						Size = new "UDim2" (0,48,0,48);
+						Size = new "UDim2" (0,40,0,40);
+                        Position = new "UDim2" (0,4,0,4);
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
@@ -107,7 +108,8 @@ return function(OverlayController)
 				Children = {
 					new "ImageLabel":Instance {
 						Name = "Img";
-						Size = new "UDim2" (0,48,0,48);
+						Size = new "UDim2" (0,40,0,40);
+                        Position = new "UDim2" (0,4,0,4);
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
@@ -132,7 +134,8 @@ return function(OverlayController)
 				Children = {
 					new "ImageLabel":Instance {
 						Name = "Img";
-						Size = new "UDim2" (0,48,0,48);
+						Size = new "UDim2" (0,40,0,40);
+                        Position = new "UDim2" (0,4,0,4);
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
@@ -157,7 +160,8 @@ return function(OverlayController)
 				Children = {
 					new "ImageLabel":Instance {
 						Name = "Img";
-						Size = new "UDim2" (0,48,0,48);
+						Size = new "UDim2" (0,40,0,40);
+                        Position = new "UDim2" (0,4,0,4);
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
@@ -182,7 +186,8 @@ return function(OverlayController)
 				Children = {
 					new "ImageLabel":Instance {
 						Name = "Img";
-						Size = new "UDim2" (0,48,0,48);
+						Size = new "UDim2" (0,40,0,40);
+                        Position = new "UDim2" (0,4,0,4);
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
