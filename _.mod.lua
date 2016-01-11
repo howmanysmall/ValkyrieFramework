@@ -30,6 +30,7 @@ local cwrap = coroutine.wrap;
 local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
 local http = game:GetService("HttpService");
+local run = game:GetService("RunService");
 local wviis = {}
 getfenv(0).script = nil;
 getfenv(1).script = nil;
@@ -261,12 +262,10 @@ vmt.__call = function(_, GID, CoKey)
 	vmt.__index = ocxi;
 
 	local playerHandler = function(p)
-		remoteComm.friends:setOnlineGame({id = p.userId, game = GID});
 		local np = script.Server.Template:Clone();
 		np.Player.Value = p;
 		np.Parent = script.Server.ActivePlayers;
 		np.Name = p.Name;
-		np.Joined.Value = os.time();
 		for k,v in next, np:GetChildren() do
 			if v:IsA("ModuleScript") then assert(pcall(require,v), "Failed to load "..v.Name) end;
 		end
@@ -279,7 +278,6 @@ vmt.__call = function(_, GID, CoKey)
 	end
 
 	game.Players.PlayerRemoving:connect(function(p)
-		remoteComm.friends:goOffline({id = p.userId, time_ingame = os.time() - script.Server.ActivePlayers[p.Name].Joined.Value});
 		script.Server.ActivePlayers[p.Name]:Destroy()
 	end)
 
@@ -291,6 +289,11 @@ vmt.__call = function(_, GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
+	
+	if not run:IsStudio() then
+		-- Load up the Valkyrie Player tracker.
+		require(342249737)(tostring(GID),tostring(CoKey));
+	end;
 
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
