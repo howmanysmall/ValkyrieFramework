@@ -1,4 +1,4 @@
-local ENABLE 		= false;
+local ENABLE 		= true;
 
 local module		= {};
 local encoder;
@@ -31,7 +31,7 @@ do
 			func_mt.__metatable	= "HAHAHAHA NOPE";
 
 			func_mt.__index		= function(t, rem_function)
-				return setfenv(function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
+				return function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
 					if ENABLE then
 						if _GID then
 							encoder 	= _encoder;
@@ -44,14 +44,14 @@ do
 						-- Just because.
 						rem_module		= HS:UrlEncode(rem_module);
 						rem_function	= HS:UrlEncode(rem_function);
-						local req_url	= format("%s/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
+						local req_url	= format("%s/api/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
 						local ret		= decoder(HS:PostAsync(req_url, encoder(args)));
 						assert(ret.success, ret.error, 3);
 						return ret.result;
 					else
 						return true;
 					end
-				end, {});
+				end;
 			end
 		end
 

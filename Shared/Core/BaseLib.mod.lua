@@ -12,65 +12,39 @@ local newproxy = newproxy;
 local rawget, rawset = rawget, rawset;
 local http = game:GetService("HttpService");
 
--- Global tables for global identities.
 local GlobalUnwrapper = {unwrapper = true; pairs = setmetatable({},{__mode = 'k'})};
 local GlobalWrapper = {unwrapper = false; pairs = setmetatable({},{__mode = 'v'})};
 GlobalWrapper.ref = GlobalWrapper.pairs;
 GlobalUnwrapper.ref = GlobalUnwrapper.pairs;
 
--- Zero-length pointer for holding references.
 local empty = newproxy(false)
-
--- 5.2 Pack. Fun.
 local pack = function(...)
 	return {n=select('#',...),...}
 end;
-
--- Remove variable names and stuff from stack traces for no good reason.
---[[--
-	local a = 'p'
-	a() --> Attempt to call local 'a' (a string value)
-	echo(a)() --> Attempt to call a string value
---]]--
 local echo = function(...)
 	return ...
 end;
-
--- Gskw is picky
 local echoerror = function(e,s)
-	-- Not required because error() an I are st
-	--if type(e) == 'string' then
-	--	e = e:match("\n([^\n]*)$");
-	--end;
 	s = s or 1;
 	error(e,s+1);
 end;
 
 local convert do
 	local ignorerec = {};
-	-- Variadic form of convert
 	local convertAll = function(from, to, this, ...)
-		-- Pack all the extra arguments into a table
 		local returns = pack(...);
-		-- Iterate through the arguments
 		for i=1, returns.n do
-			-- Convert every argument
 			returns[i] = convert(from, to, this, returns[i]);
 		end;
-		-- Return in their original order
 		return unpack(returns, 1, returns.n);
 	end;
 	convert = function(from, to, this, value)
-		-- See if this value has already been converted
 		local ret = to.pairs[value];
 		if ret ~= nil then
-			-- If we're just holding the reference just return nil
 			if ret == empty then
 				return nil;
-			else -- Otherwise, return the value as it is.
+			else
 				if type(value) == 'table' and type(ret) == 'table' then
-					-- If we're dealing with a table then sort out the cloning
-					-- Also make sure we're plain converting
 					ignorerec[value] = true;
 					for k,v in pairs(value) do
 						if not ignorerec[v] then
@@ -87,37 +61,27 @@ local convert do
 			end;
 		end;
 		if from.unwrapper and from.pairs[value] and this.useStackedWrappers == false then
-			-- If we're not stacking the wrappers, then escape.
 			return value
 		end;
 		if to.unwrapper then
 			if not this.convertFullBidirectional then
-				-- If for whatever reason we're not unwrapping twice over, escape
 				return value
 			else
 				if from.pairs[value] and this.useContextInversion then
-					-- If we're using context inversion, and the current value already has
-					-- a wrap target, then escape instead of generating an inversion.
 					return value;
 				end
 			end
 		end;
 		local type = type(value);
 		if type == 'function' then
-			-- Generate a new proxy function
 			ret = function(...)
-				-- Grab the returns and error from the original function
 				local returns = pack(pcall(
-					-- pcall(getfenv,...) doesn't play nice
 					function(...) return value(...) end,
-					-- Convert the function arguments to suit
 					convertAll(to, from, this, ...)
 				));
-				if returns[1] then -- Success
-					-- Return everything that's not the error, after conversion.
+				if returns[1] then
 					return convertAll(from, to, this, unpack(returns, 2, returns.n));
 				else
-					-- Strip all the other lines and error
 					echoerror(returns[2], 2);
 				end;
 			end;
@@ -126,26 +90,19 @@ local convert do
 			return ret;
 		elseif type == 'table' then
 			ret = {};
-			-- Set the references beforehand to make sure that there's no overflow
 			to.pairs[value] = ret;
 			from.pairs[ret] = value;
 			for k,v in pairs(value) do
-				-- Convert all the values to the right side
 				ret[convert(from, to, this, k)] = convert(from, to, this, v);
 			end;
 			if from.unwrapper then
-				-- If we're wrapping, we need to set the wrapper metatable
 				setmetatable(ret,this.mt);
 			else
-				-- If we're not wrapping, we can attempt to set the original
-				-- table's metatable. Lazy, but fixes most issues. People should
-				-- lock their metatables if they don't want them changed.
 				pcall(setmetatable, value, this.mt);
 			end;
 			return ret;
 		elseif type == 'userdata' then
 			if this.useFullConversion == false and to.unwrapper then
-				-- If we're not converting fully
 				return value
 			end;
 			ret = newproxy(true);
@@ -349,7 +306,7 @@ local TypeChecks do
 	};
 end;
 
-local instancetable = http:JSONDecode(http:GetAsync("http://jacob.easleycompany.com/api/apidump")).Class;
+local instancetable = http:JSONDecode(game.ReplicatedStorage:WaitForChild("ValkyrieInheritReplicator").Value);
 
 local function newWrapper(private)
 	local self = {};
@@ -374,7 +331,7 @@ local function newWrapper(private)
 	
 	do local iOverrides = self.Overrides.Instance;
 		for k,v in next, instancetable do
-			iOverrides[k] = setmetatable({},{__index = iOverrides[v.BaseClassName]});
+			iOverrides[k] = setmetatable({},{__index = iOverrides[v]});
 		end;
 	end;
 

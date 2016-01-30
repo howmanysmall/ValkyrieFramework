@@ -7,7 +7,7 @@ Components provide a collection of modules that only load when you need them, an
 Valkyrie has its own overlay in development, which will allow players to connect more with the game and the community, by being able to access several Valkyrie cross-game features from within the game, such as seeing what achievements they've been given in the game through Valkyrie, or what their friends are up to and joining their game or their server instance (If valid and permitted by the game) without ever leaving the game.
 
 ## Where do I get it?
-For a list of models, please visit [The CI server](https://gskw.dedyn.io:444/models).
+For a list of models, please visit [The CI server](https://ci.crescentcode.net/models).
 To check the build log of a model, go to the [branches list](https://github.com/ValkyrieRBXL/ValkyrieFramework/branches) and click the icon next to the branch you want to inspect.
 
 ## How do I use it?

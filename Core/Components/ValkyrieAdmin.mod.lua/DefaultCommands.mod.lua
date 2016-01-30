@@ -18,10 +18,7 @@ return {
     end;
   end;
   tp = function(as, who, where)
-    local p;
-    for player in API.GetMatching(where) do
-      p = player; break;
-    end;
+    local p = API.GetMatching(where)();
     if (not p) or not (p.Character and p.Character:FindFirstChild("Torso")) then return end;
     for player in API.GetMatching(who) do
       if player.Character and player.Character:FindFirstChild("Torso") then
