@@ -609,6 +609,31 @@ function Controller.GetAction(...)
 	return Actions[actionname];
 end;
 
+function Controller.EmulateInput(...)
+	local source, dir, meta, data = extract(...);
+	assert(source, "[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply an Input source as #1", 2);
+	local Type, Name = LinkedTypes[source],LinkedNames[source];
+	assert(
+		Type and Name,
+		"[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+		2
+	);
+	assert(dir, "[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply an Input direction as #2", 2);
+	do local suc = false;
+		for k,v in next, InputDirections do
+			if v == dir then
+				suc = true;
+				break;
+			end;
+		end;
+		if not suc then
+			error("[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply a valid Valkyrie Input direction object as #2", 2);
+		end;
+	end;
+	local i = CreateInputState(source, meta);
+	iBinds[i]:Fire(i, dir, true, data);
+end;
+
 Controller.Mouse = Mouse;
 Controller.CAS = CAS;
 Controller.UIS = UIS;
