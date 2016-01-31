@@ -203,9 +203,8 @@ function class_wrap(object, addition, wrapper)
 	
 	local function init()
 		local mt = getmetatable(this);
-		mt.__index = function(t, k) return addition[k] or object[k]; end;
+		mt.__index = function(t, k) return addition.Properties[k] and addition.Properties[k](t) or addition[k] or object[k]; end;
 		mt.__newindex = function(t, k, v) if addition[k] then addition[k] = v; else object[k] = v; end; end;
-		mt.__call = function() return object; end;
 		mt.__tostring = function(t) return tostring(object); end;
 		mt.__metatable = "The metatable is locked.";
 	end;
@@ -525,8 +524,10 @@ function class_spritetext(font, class, wrapper)
 	end;
 	
 	-- public functions
+
+    this.Properties = {};
 	
-	function this:TextFits()
+	function this.Properties:TextFits()
 		return overide_props.TextFits;
 	end;
 	
