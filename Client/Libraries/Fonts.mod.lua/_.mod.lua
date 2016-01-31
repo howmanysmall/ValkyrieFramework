@@ -198,7 +198,7 @@ function class_events(tab)
 	return this;
 end;
 
-function class_wrap(object, addition)
+function class_wrap(object, addition, wrapper)
 	local this = newproxy(true);
 	
 	local function init()
@@ -211,6 +211,8 @@ function class_wrap(object, addition)
 	end;
 	
 	init();
+    wrapper:mod(object, this);
+
 	return this;
 end;
 
@@ -279,7 +281,7 @@ end;
 
 -- Sprite text object class
 
-function class_spritetext(font, class)
+function class_spritetext(font, class, wrapper)
 	local this = class_events {};
 	local exists = not (type(class) == "string");
 	
@@ -562,17 +564,21 @@ function class_spritetext(font, class)
 	end;
 
 	init();
-	return class_wrap(object, this);
+	return class_wrap(object, this, wrapper);
 end;
 
-------------------------------------------------------------------------------------------------------------------------------
---// Run
+return function(wrapper)
+    ------------------------------------------------------------------------------------------------------------------------------
+    --// Run
 
-local create = {};
-for _, class in pairs({"TextLabel", "TextBox", "TextButton", "TextReplace"}) do
-	create[string.sub(class, 5)] = function(font_name, object)
-		return class_spritetext(font_name, class == "TextReplace" and object or class);
-	end;
+    local create = {};
+    for _, class in pairs({"TextLabel", "TextBox", "TextButton", "TextReplace"}) do
+        wrapper:OverrideGlobal(class) {
+            new = function(font_name, object)
+                return class_spritetext(font_name, class == "TextReplace" and object or class, wrapper)
+            end;
+        };
+    end;
+
+    return create;
 end;
-
-return create;
