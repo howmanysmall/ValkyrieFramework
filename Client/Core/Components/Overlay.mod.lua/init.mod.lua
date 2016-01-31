@@ -2,10 +2,10 @@
 local import = _G.ValkyrieC.LoadLibrary;
 import("Design");
 import("Util");
+import("Fonts");
 local wait = wait;
 
 local GUI = _G.ValkyrieC:GetOverlay();
-local FontRender = _G.ValkyrieC:GetComponent("Fonts");
 local Input = _G.ValkyrieC:GetComponent("ValkyrieInput");
 local ContentProvider = ContentProvider;
 
@@ -87,7 +87,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Label = Chain(FontRender.Label("Roboto"))
+					--[[Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -96,7 +96,16 @@ return function(OverlayController)
 					.FontSize(7)
 					.BackgroundTransparency(1)
 					.TextColor3(Color3.White)
-					._obj;
+					._obj;]]
+                    new "TextLabel" "Roboto" {
+                        Size = new "UDim2" (1,-48,0,48);
+                        Position = new "UDim2" (0,48,0,0);
+                        TextXAlignment = "Left";
+                        Text = "Friends";
+                        BorderSizePixel = 0;
+                        BackgroundTransparency = 1;
+                        TextColor3 = Color3.White;
+                    };
 				};
 			};
 			new "Frame":Instance {
@@ -113,7 +122,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Label = Chain(FontRender.Label("Roboto"))
+					--[[Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -122,7 +131,7 @@ return function(OverlayController)
 					.FontSize(7)
 					.BackgroundTransparency(1)
 					.TextColor3(Color3.White)
-					._obj;
+					._obj;]]
 				};
 			};
 			new "Frame":Instance {
@@ -139,7 +148,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Label = Chain(FontRender.Label("Roboto"))
+					--[[Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -148,7 +157,7 @@ return function(OverlayController)
 					.FontSize(7)
 					.BackgroundTransparency(1)
 					.TextColor3(Color3.White)
-					._obj;
+					._obj;]]
 				};
 			};
 			new "Frame":Instance {
@@ -165,7 +174,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Label = Chain(FontRender.Label("Roboto"))
+					--[[Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -174,7 +183,7 @@ return function(OverlayController)
 					.FontSize(7)
 					.BackgroundTransparency(1)
 					.TextColor3(Color3.White)
-					._obj;
+					._obj;]]
 				};
 			};
 			new "Frame":Instance {
@@ -191,7 +200,7 @@ return function(OverlayController)
 						BackgroundTransparency = 1;
 						BorderSizePixel = 0;
 					};
-					Label = Chain(FontRender.Label("Roboto"))
+					--[[Label = Chain(FontRender.Label("Roboto"))
 					.Size(new "UDim2" (1,-48,0,48))
 					.Position(new "UDim2" (0,48,0,0))
 					.TextXAlignment("Left")
@@ -200,7 +209,7 @@ return function(OverlayController)
 					.FontSize(7)
 					.BackgroundTransparency(1)
 					.TextColor3(Color3.White)
-					._obj;
+					._obj;]]
 				};
 			};
 		};
@@ -218,7 +227,7 @@ return function(OverlayController)
 		BorderSizePixel = 0;
 		Parent = GUI;
 		Children = {
-			Clock = Chain(FontRender.Label("Roboto"))
+			--[[Clock = Chain(FontRender.Label("Roboto"))
 			.FontSize(8)
 			.Position(new "UDim2" (0.5,0,0,48))
 			.Size(new "UDim2" (0.5,-48,0,96))
@@ -228,7 +237,7 @@ return function(OverlayController)
 			.BorderSizePixel(0)
 			.Text(string.format("%.2d:%.2d",(tick()/3600)%24,(tick()/60)%60))
 			.TextColor3(Color3.Amber[400])
-			._obj;
+			._obj;]]
 			new "Frame":Instance {
 				Name = "NotificationSeparator";
 				Size = new "UDim2" (1,-96,0,2);
@@ -246,7 +255,7 @@ return function(OverlayController)
 				ClipsDescendants = true;
 				BorderSizePixel = 0;
 			};
-			NotificationTop = Chain(FontRender.Label("Roboto"))
+			--[[NotificationTop = Chain(FontRender.Label("Roboto"))
 			.FontSize(8)
 			.Position(new "UDim2" (0,48,0,48))
 			.TextXAlignment("Left")
@@ -255,7 +264,7 @@ return function(OverlayController)
 			.BorderSizePixel(0)
 			.Size(new "UDim2" (0.5,-48,0,48))
 			.TextTransparency(0.14)
-			._obj;
+			._obj;]]
 		};
 	};
 	
@@ -267,6 +276,7 @@ return function(OverlayController)
 		end);
 	end;
 	repeat wait() until ContentProvider.RequestQueueSize == 0;
+    wait(5);
 	
 	SplashFrame:TweenPosition(
 		new "UDim2" (0,0,1,0),

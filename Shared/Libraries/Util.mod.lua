@@ -55,6 +55,42 @@ return function(wrapper)
 		wrapper:OverrideGlobal "LocalPlayer" (game.Players.LocalPlayer)
 	end;
 	wrapper:OverrideGlobal "isLocal" (client)
+
+    local function ApplyInstanceArgs(retn, t)
+        if t.Children then
+            local children = t.Children;
+            t.Children = nil;
+            for k,v in next, children do
+                v.Parent = retn;
+                if type(k) == 'string' then
+                    v.Name = k;
+                end;
+            end;
+        end;
+        if t[1] then
+            retn.Parent = t[1];
+            t[1] = nil;
+        end;
+        for k,v in pairs(t) do
+            retn[k] = v;
+        end;
+        local target = wrapper(retn);
+        local tmt = getmetatable(target);
+        local oca = tmt.__call;
+        tmt.__call = wrapper(function(t,...)
+            if type(...) == 'table' then
+                local connections = ...;
+                for k,v in next, connections do
+                    t[k]:connect(function(...) v(t,...) end);
+                end;
+                tmt.__call = oca;
+                return t;
+            else
+                return oca(t,...);
+            end;
+        end);
+        return retn;
+    end
 	wrapper:OverrideGlobal "new" (function(thing)
 		return setmetatable({
 			Instance = function(_,t)
@@ -66,39 +102,7 @@ return function(wrapper)
 				);
 				if r[1] then
 					local retn = r[2]
-					if t.Children then
-						local children = t.Children;
-						t.Children = nil;
-						for k,v in next, children do
-							v.Parent = retn;
-							if type(k) == 'string' then
-								v.Name = k;
-							end;
-						end;
-					end;
-					if t[1] then
-						retn.Parent = t[1];
-						t[1] = nil;
-					end;
-					for k,v in pairs(t) do
-						retn[k] = v;
-					end;
-					local target = wrapper(retn);
-					local tmt = getmetatable(target);
-					local oca = tmt.__call;
-					tmt.__call = wrapper(function(t,...)
-						if type(...) == 'table' then
-							local connections = ...;
-							for k,v in next, connections do
-								t[k]:connect(function(...) v(t,...) end);
-							end;
-							tmt.__call = oca;
-							return t;
-						else
-							return oca(t,...);
-						end;
-					end);
-					return retn;
+                    return ApplyInstanceArgs(retn, t);
 				else
 					error(r[2],2);
 				end;
@@ -110,12 +114,19 @@ return function(wrapper)
 				local r = pack(
 					pcall(
 						function(_ENV,...)
+                            print(thing);
+                            print(_ENV[thing]);
 							return _ENV[thing].new(...);
 						end,
 						_ENV, ...
 					)
 				);
 				if r[1] then
+                    if pcall(game.GetService, game, r[2]) then -- Is it an Instance?
+                        return function(t)
+                            return ApplyInstanceArgs(r[2], t);
+                        end;
+                    end
 					return unpack(r,2,r.n)
 				else
 					error(r[2], 2);
