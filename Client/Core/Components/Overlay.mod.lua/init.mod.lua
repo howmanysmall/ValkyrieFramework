@@ -286,9 +286,9 @@ return function(OverlayController)
 	
 	-- Set the ZIndex of everything.
 	for k,v in next, ButtonsContainerFrame:GetChildren() do
-		v.ZIndex = 10;
-		v.Label.ZIndex = 10;
-		v.Img.ZIndex = 10;
+		v.ZIndex = 9;
+		v.Label.ZIndex = 9;
+		v.Img.ZIndex = 9;
 	end;
 	return true;
 end;
