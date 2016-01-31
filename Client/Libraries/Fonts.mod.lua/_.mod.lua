@@ -571,7 +571,6 @@ return function(wrapper)
     ------------------------------------------------------------------------------------------------------------------------------
     --// Run
 
-    local create = {};
     for _, class in pairs({"TextLabel", "TextBox", "TextButton", "TextReplace"}) do
         wrapper:OverrideGlobal(class) {
             new = function(font_name, object)
@@ -579,6 +578,4 @@ return function(wrapper)
             end;
         };
     end;
-
-    return create;
 end;
