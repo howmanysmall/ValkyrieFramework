@@ -641,6 +641,8 @@ Controller.UIS = UIS;
 Controller.InputSources = InputSources;
 Controller.GetInputState = CreateInputState;
 
+Controller.UserActions = UserActions;
+
 function ActionClass:UnbindAll()
 	local binds = ActionBinds[self];
 	for i=#binds,1,-1 do

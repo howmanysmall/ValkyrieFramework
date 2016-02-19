@@ -216,6 +216,7 @@ return function(OverlayController)
 		BackgroundColor3 = Color3.White;
 		Size = new "UDim2" (1,0,1,-48);
 		BorderSizePixel = 0;
+		Name = "ActiveContentFrame";
 		Parent = GUI;
 		Children = {
 			Clock = Chain(FontRender.Label("Roboto"))
@@ -256,6 +257,10 @@ return function(OverlayController)
 			.Size(new "UDim2" (0.5,-48,0,48))
 			.TextTransparency(0.14)
 			._obj;
+			new "StringValue":Instance {
+				Name = "DefaultName";
+				Value = "HomeFrame"
+			}
 		};
 	};
 	

@@ -117,9 +117,7 @@ mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
 end;
 mt.__metatable = "Locked metatable: Valkyrie";
-spawn(function()
-	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
-	LocalIntent = ValkyrieEvents.new "Event"
-	RemoteIntentBind = ValkyrieEvents.new "Event"
-end);
+ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
+LocalIntent = ValkyrieEvents.new "Event"
+RemoteIntentBind = ValkyrieEvents.new "Event"
 return r;
