@@ -1,0 +1,4 @@
+[submodule "Client/Core/Components/Fonts.mod.lua"]
+	path = Client/Core/Components/Fonts.mod.lua
+	url = git@github.com:gskartwii/rbx_customfont
+	branch = valkyrie-compat
