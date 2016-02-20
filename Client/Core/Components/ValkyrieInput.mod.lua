@@ -3,7 +3,8 @@
 
 local Controller = {};
 local this = newproxy(true);
-local IntentService,Event;
+local IntentService = _G.Valkyrie:GetComponent "IntentService";
+local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
@@ -1014,12 +1015,8 @@ end;
 
 do
 	local mt = getmetatable(this);
-	mt.__index = function(t,k)
-		IntentService = _G.Valkyrie:GetComponent "IntentService";
-		Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
-		mt.__index = Controller;
-		return t[k];
-	end;
+	mt.__index = Controller;
+
 	mt.__tostring = function()
 		return "Valkyrie Input controller";
 	end;
