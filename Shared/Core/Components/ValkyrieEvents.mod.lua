@@ -4,7 +4,7 @@ local Event = {};
 local Events = setmetatable({},{__mode = 'k'});
 local InstantEvents = setmetatable({},{__mode = 'k'});
 local Intents = setmetatable({},{__mode = 'k'});
-local IntentService = _G.Valkyrie:GetComponent "IntentService";
+local IntentService
 
 local connection do
 	-- Constructor for custom Connection objects
@@ -167,5 +167,10 @@ mt.__metatable =  "Locked metatable: Valkyrie";
 mt.__tostring = function()
   return "Valkyrie event controller";
 end;
+
+coroutine.wrap(function()
+	IntentService = _G.Valkyrie:GetComponent "IntentService";
+end)();
+
 return ni;
 
