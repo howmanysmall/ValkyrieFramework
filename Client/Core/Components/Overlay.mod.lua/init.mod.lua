@@ -216,6 +216,7 @@ return function(OverlayController)
 		BackgroundColor3 = Color3.White;
 		Size = new "UDim2" (1,0,1,-48);
 		BorderSizePixel = 0;
+		Name = "ActiveContentFrame";
 		Parent = GUI;
 		Children = {
 			Clock = Chain(FontRender.Label("Roboto"))
@@ -256,6 +257,10 @@ return function(OverlayController)
 			.Size(new "UDim2" (0.5,-48,0,48))
 			.TextTransparency(0.14)
 			._obj;
+			new "StringValue":Instance {
+				Name = "DefaultName";
+				Value = "HomeFrame"
+			}
 		};
 	};
 	
@@ -286,9 +291,9 @@ return function(OverlayController)
 	
 	-- Set the ZIndex of everything.
 	for k,v in next, ButtonsContainerFrame:GetChildren() do
-		v.ZIndex = 10;
-		v.Label.ZIndex = 10;
-		v.Img.ZIndex = 10;
+		v.ZIndex = 9;
+		v.Label.ZIndex = 9;
+		v.Img.ZIndex = 9;
 	end;
 	return true;
 end;

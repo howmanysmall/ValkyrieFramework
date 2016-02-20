@@ -48,7 +48,7 @@ if game:GetService("RunService"):IsStudio() then
 			if args[2] == 'All' then
 				RemoteIntent:FireAllClients(args[1], unpack(args,3,args.n));
 			else
-				RemoteIntent:Fire(args[2],args[1],unpack(args,3,args.n));
+				RemoteIntent:FireClient(args[2],args[1],unpack(args,3,args.n));
 			end;
 		end;
 	end;
@@ -81,7 +81,7 @@ else
 		if args[2] == 'All' then
 			RemoteIntent:FireAllClients(args[1], unpack(args,3,args.n));
 		else
-			RemoteIntent:Fire(args[2],args[1],unpack(args,3,args.n));
+			RemoteIntent:FireClient(args[2],args[1],unpack(args,3,args.n));
 		end;
 	end;
 end;
@@ -112,14 +112,16 @@ cxitio.InvokeIntent = function(...)
 end;
 
 local mt = getmetatable(r);
-mt.__index = cxitio;
+mt.__index = function(t,k)
+	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
+	LocalIntent = ValkyrieEvents.new "Event"
+	RemoteIntentBind = ValkyrieEvents.new "Event"
+	mt.__index = cxitio;
+	return t[k];
+end;
 mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
 end;
 mt.__metatable = "Locked metatable: Valkyrie";
-spawn(function()
-	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
-	LocalIntent = ValkyrieEvents.new "Event"
-	RemoteIntentBind = ValkyrieEvents.new "Event"
-end);
+
 return r;
