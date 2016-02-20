@@ -117,6 +117,7 @@ mt.__index = function(t,k)
 	LocalIntent = ValkyrieEvents.new "Event"
 	RemoteIntentBind = ValkyrieEvents.new "Event"
 	mt.__index = cxitio;
+	return t[k];
 end;
 mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
