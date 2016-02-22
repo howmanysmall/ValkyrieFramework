@@ -6,7 +6,7 @@ local pairs = pairs;
 local error = error;
 local unpack = unpack;
 local game = game;
-local gs = game.GetService;
+local gs = game.IsA;
 local pcall = pcall;
 local newproxy = newproxy;
 local rawget, rawset = rawget, rawset;
@@ -53,7 +53,7 @@ local convert do
 					end;
 					ignorerec[value] = nil;
 				elseif type(ret) == 'userdata' then
-					if pcall(gs, game, value) then
+					if pcall(gs, value, 'Instance') then
 						getmetatable(ret).__index = this.imt.__index;
 					end;
 				end;
@@ -115,7 +115,7 @@ local convert do
 					for e,m in pairs(this.umt[this.TypeIdentities[value]]) do
 						mt[e] = m;
 					end
-				elseif pcall(gs,game,value) then
+				elseif pcall(gs,value,'Instance') then
 					for e,m in pairs(this.imt) do
 						mt[e] = m;
 					end;
