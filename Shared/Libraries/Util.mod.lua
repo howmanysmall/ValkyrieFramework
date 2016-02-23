@@ -129,10 +129,7 @@ return function(wrapper)
 	wrapper:OverrideGlobal "pack" (pack);
 	wrapper:OverrideGlobal "query" (QueryImmediate);
 	wrapper:OverrideGlobal "fix" (function(t)
-		local proxy = wrapper(newproxy(true));
-		wrapper.ulist[proxy] = t;
-		wrapper.wlist[t] = proxy;
-		return proxy;
+		return t;
 	end)
 
 	for FuncName, UtilFunction in next, UtilMod do
