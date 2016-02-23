@@ -131,6 +131,7 @@ return function(wrapper)
 	wrapper:OverrideGlobal "fix" (function(t)
 		local proxy = wrapper(newproxy(true));
 		wrapper.ulist[proxy] = t;
+		wrapper.wlist[t] = proxy;
 		return proxy;
 	end)
 
