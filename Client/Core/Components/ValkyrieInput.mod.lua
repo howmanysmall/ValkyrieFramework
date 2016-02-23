@@ -104,6 +104,10 @@ local InputSources, LinkedTypes, LinkedNames do
 			Ctrl = make("Keyboard", "LeftControl");
 			Alt = make("Keyboard", "LeftAlt");
 			Super = make("Keyboard", "LeftMeta");
+			Up = make("Keyboard","Up");
+			Down = make("Keyboard","Down");
+			Left = make("Keyboard","Left");
+			Right = make("Keyboard","Right");
 		};
 		Controller1 = {
 			A = make("ControllerButton", "ButtonA");
