@@ -128,6 +128,11 @@ return function(wrapper)
 	wrapper:OverrideGlobal "map" (map);
 	wrapper:OverrideGlobal "pack" (pack);
 	wrapper:OverrideGlobal "query" (QueryImmediate);
+	wrapper:OverrideGlobal "fix" (function(t)
+		local proxy = wrapper(newproxy(true));
+		wrapper.ulist[proxy] = t;
+		return proxy;
+	end)
 
 	for FuncName, UtilFunction in next, UtilMod do
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
