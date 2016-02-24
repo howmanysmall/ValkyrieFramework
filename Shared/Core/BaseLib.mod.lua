@@ -75,11 +75,15 @@ local convert do
 		local type = type(value);
 		if type == 'function' then
 			ret = function(...)
+				local args = pack(convertAll(to, from, this, ...))
 				local returns = pack(pcall(
 					function(...) return value(...) end,
-					convertAll(to, from, this, ...)
+					unpack(args,1,args.n) -- Ugly.
 				));
 				if returns[1] then
+					if this.fixTables then
+						convertAll(from, to, this, unpack(args,1,args.n));
+					end;
 					return convertAll(from, to, this, unpack(returns, 2, returns.n));
 				else
 					echoerror(returns[2], 2);
@@ -339,6 +343,7 @@ local function newWrapper(private)
 	self.useFullConversion = false;
 	self.convertFullBidirectional = true;
 	self.useContextInversion = true;
+	self.fixTables = false;
 
 	self.genSeed = tick();
 
