@@ -131,6 +131,17 @@ return function(wrapper)
 	wrapper:OverrideGlobal "fix" (function(t)
 		return t;
 	end)
+	
+	do
+		local rawwrapper = newproxy(true);
+		local mt = getmetatable(rawwrapper)
+		mt.__index = wrapper;
+		mt.__call = function(t,...) return wrapper(...) end;
+		wrapper:OverrideGlobal "_wrapper" (rawwrapper);
+		wrapper.wlist[rawwrapper] = rawwrapper;
+		wrapper.ulist[rawwrapper] = rawwrapper;
+		-- rawwrapper will never go through the wrapper. Ever.
+	end
 
 	for FuncName, UtilFunction in next, UtilMod do
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
