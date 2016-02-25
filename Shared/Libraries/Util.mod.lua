@@ -49,7 +49,7 @@ local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 local UtilMod = _G.Valkyrie:GetComponent "Util";
 -- Import it from there
 
-local np,gmt = newproxy,getmetatable;
+local np,gmt,ge,rs = newproxy,getmetatable,getfenv,rawset;
 
 return function(wrapper)
 	local client = pcall(assertLocal);
@@ -141,7 +141,7 @@ return function(wrapper)
 		mt.__call = function(t,...) return wrapper(...) end;
 		wrapper.wlist[rawwrapper] = rawwrapper;
 		wrapper.ulist[rawwrapper] = rawwrapper;
-		wrapper:OverrideGlobal "_wrapper" (rawwrapper);
+		rs(ge(1),'_wrapper',rawwrapper);
 		-- rawwrapper will never go through the wrapper. Ever.
 	end
 
