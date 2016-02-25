@@ -49,6 +49,8 @@ local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 local UtilMod = _G.Valkyrie:GetComponent "Util";
 -- Import it from there
 
+local np,gmt = newproxy,getmetatable;
+
 return function(wrapper)
 	local client = pcall(assertLocal);
 	if client then
@@ -133,8 +135,8 @@ return function(wrapper)
 	end)
 	
 	do
-		local rawwrapper = newproxy(true);
-		local mt = getmetatable(rawwrapper)
+		local rawwrapper = np(true);
+		local mt = gmt(rawwrapper)
 		mt.__index = wrapper;
 		mt.__call = function(t,...) return wrapper(...) end;
 		wrapper.wlist[rawwrapper] = rawwrapper;
