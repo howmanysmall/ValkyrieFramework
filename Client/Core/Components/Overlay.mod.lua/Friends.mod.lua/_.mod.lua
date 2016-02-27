@@ -18,6 +18,8 @@ local function preInit()
 		Position = new "UDim2" (0, 0, 0, 0);
 		BorderSizePixel = 0;
 		Parent = GUI;
+		
+		FriendsController.ContentFrame = ContentContainerFrame;
 	};
 end;
 
