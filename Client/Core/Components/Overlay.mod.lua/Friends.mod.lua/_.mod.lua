@@ -19,8 +19,9 @@ local function preInit()
 		BorderSizePixel = 0;
 		Parent = GUI;
 		
-		FriendsController.ContentFrame = ContentContainerFrame;
 	};
+
+	FriendsController.ContentFrame = ContentContainerFrame;
 end;
 
 -- Just run the function (Too lazy to remove it from the function
