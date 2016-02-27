@@ -261,14 +261,20 @@ vmt.__call = function(_, GID, CoKey)
 	vmt.__call = function() return cxitio end;
 	vmt.__index = ocxi;
 
+	local ValkyrieSSS = Instance.new("Folder");
+	ValkyrieSSS.Name = "Valkyrie";
+	for k,v in next, script.Server:GetChildren() do
+		if v.Name ~= 'Template' then
+			v.Parent = ValkyrieSSS;
+		end;
+	end;
+	ValkyrieSSS.Parent = game.ServerScriptService;
+	
 	local playerHandler = function(p)
 		local np = script.Server.Template:Clone();
 		np.Player.Value = p;
-		np.Parent = script.Server.ActivePlayers;
 		np.Name = p.Name;
-		for k,v in next, np:GetChildren() do
-			if v:IsA("ModuleScript") then assert(pcall(require,v), "Failed to load "..v.Name) end;
-		end
+		np.Parent = ValkyrieSSS;
 	end;
 	game.Players.PlayerAdded:connect(playerHandler)
 
