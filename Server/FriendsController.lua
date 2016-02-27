@@ -20,8 +20,6 @@ intent:RegisterRPCIntent("FriendsController", function(player, command, ...)
 			intent:BroadcastRPCIntent("FriendsController", player, false, "Invalid UserId");
 		end
 	elseif command == "GetPlayerInfo" then
-		-- Don't need to check UserId of the player as it's already been taken care of
-		-- (And they should not send this request if their GetFriends errored, otherwise you can suspect something)
 		-- Because it has a chance to error (Not including the reason if Valkyrie Server goes down)
 		local userId = ...			
 		
