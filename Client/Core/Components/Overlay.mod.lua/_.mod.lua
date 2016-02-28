@@ -78,7 +78,7 @@ Friends.Open = function()
 	SplashFrame:TweenPosition(
 		UDim2.new(0,0,0,0),
 		nil, nil, 0.2, true,
-		function() ReadyHook.Value = true end;
+		function() ReadyHook.Value = true end
 	);
 	OldOpen();
 	if not ReadyHook.Value then
