@@ -43,6 +43,7 @@ end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
 local QueryImmediate = print--_G.Valkyrie:GetComponent "Query".Direct
 local newInst = Instance.new;
+local pcall = pcall;
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
