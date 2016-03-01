@@ -1,3 +1,7 @@
+local import = _G.ValkyrieC.LoadLibrary;
+import("Design");
+import("Util");
+
 local OverlayController = {};
 
 local extract;
@@ -73,7 +77,8 @@ Friends.Open = function()
 	end;
 	SplashFrame.BackgroundColor3 = Color3.Blue[500];
 	SplashFrame.Size = UDim2.new(1,0,1,0);
-	SplashFrame.SplashImage.ImageId = BIGFRIENDSIMAGEID;
+	-- BIGFRIENDSIMAGEID is not available and it's ".Image" not ".ImageId"
+	--SplashFrame.SplashImage.Image = BIGFRIENDSIMAGEID;
 	SplashFrame.Position = UDim2.new(0,0,1,0);
 	SplashFrame:TweenPosition(
 		UDim2.new(0,0,0,0),
@@ -86,7 +91,7 @@ Friends.Open = function()
 	end;
 	Overlay.ActiveContentFrame.Position = UDim2.new(0,0,1,0);
 	Overlay.ActiveContentFrame.Name = Overlay.ActiveContentFrame.DefaultName.Value;
-	Friends.ContentFrame.Name = ActiveContentFrame;
+	Friends.ContentFrame.Name = "ActiveContentFrame";
 	Friends.ContentFrame.Position = UDim2.new(0,0,0,0);
 	SplashFrame:TweenPosition(
 		UDim2.new(0,0,1,0),
@@ -96,11 +101,12 @@ end;
 Friends.ContentFrame.Parent = Overlay;
 Friends.ContentFrame.Position = UDim2.new(0,0,-1,0);
 Friends.ContentFrame.Size = UDim2.new(1,0,1,-48);
-local default = Instance.new("StringValue");
-default.Name = "DefaultName";
-default.Value = "Friends";
-default.Parent = Friends.ContentFrame;
-local mt = getmetatble(proxy);
+local default = new "StringValue":Instance {
+	Name = "DefaultName";
+	Value = "Friends";
+	Parent = Friends.ContentFrame;
+};
+local mt = getmetatable(proxy);
 mt.__index = Friends;
 mt.__metatable = "Locked Metatable: Valkyrie"
 end;
