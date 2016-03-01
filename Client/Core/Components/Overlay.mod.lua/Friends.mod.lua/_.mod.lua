@@ -34,10 +34,4 @@ FriendsController.Open = function()
 	end;
 end
 
-local proxy = newproxy(true);
-local mt = getmetatable(proxy);
-mt.__index = FriendsController;
-mt.__metatable = "Locked Metatable: Valkyrie";
-mt.__tostring = function() return "Valkyrie Friends Controller" end;
-
-return proxy;
+return FriendsController
