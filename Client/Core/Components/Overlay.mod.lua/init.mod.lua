@@ -75,7 +75,7 @@ return function(OverlayController)
 		Children = {
 			new "Frame":Instance {
 				Name = "Friends";
-				Size = new "UDim2" (0.2,1,0,48);
+				Size = new "UDim2" (0.25,1,0,48);
 				Position = new "UDim2" (0,0,0,0);
 				BackgroundColor3 = Color3.Blue;
 				BorderSizePixel = 0;
@@ -101,8 +101,8 @@ return function(OverlayController)
 			};
 			new "Frame":Instance {
 				Name = "Games";
-				Size = new "UDim2" (0.2,1,0,48);
-				Position = new "UDim2" (0.2,0,0,0);
+				Size = new "UDim2" (0.25,1,0,48);
+				Position = new "UDim2" (0.25,0,0,0);
 				BackgroundColor3 = Color3.Green;
 				BorderSizePixel = 0;
 				Children = {
@@ -127,8 +127,8 @@ return function(OverlayController)
 			};
 			new "Frame":Instance {
 				Name = "Profile";
-				Size = new "UDim2" (0.2,1,0,48);
-				Position = new "UDim2" (0.4,0,0,0);
+				Size = new "UDim2" (0.25,1,0,48);
+				Position = new "UDim2" (0.5,0,0,0);
 				BackgroundColor3 = Color3.Orange;
 				BorderSizePixel = 0;
 				Children = {
@@ -152,35 +152,9 @@ return function(OverlayController)
 				};
 			};
 			new "Frame":Instance {
-				Name = "Stats";
-				Size = new "UDim2" (0.2,1,0,48);
-				Position = new "UDim2" (0.6,0,0,0);
-				BackgroundColor3 = Color3.Red;
-				BorderSizePixel = 0;
-				Children = {
-					new "ImageLabel":Instance {
-						Name = "Img";
-						Size = new "UDim2" (0,40,0,40);
-                        Position = new "UDim2" (0,4,0,4);
-						BackgroundTransparency = 1;
-						BorderSizePixel = 0;
-					};
-					Label = Chain(FontRender.Label("Roboto"))
-					.Size(new "UDim2" (1,-48,0,48))
-					.Position(new "UDim2" (0,48,0,0))
-					.TextXAlignment("Left")
-					.Text("Stats")
-					.BorderSizePixel(0)
-					.FontSize(7)
-					.BackgroundTransparency(1)
-					.TextColor3(Color3.White)
-					._obj;
-				};
-			};
-			new "Frame":Instance {
 				Name = "Preferences";
-				Size = new "UDim2" (0.2,1,0,48);
-				Position = new "UDim2" (0.8,0,0,0);
+				Size = new "UDim2" (0.25,1,0,48);
+				Position = new "UDim2" (0.75,0,0,0);
 				BackgroundColor3 = Color3.Purple;
 				BorderSizePixel = 0;
 				Children = {
@@ -210,7 +184,6 @@ return function(OverlayController)
 	ButtonsContainerFrame.Games.Img:LoadIcon("Hardware", "Gamepad");
 	ButtonsContainerFrame.Profile.Img:LoadIcon("Action1","Account_box");
 	ButtonsContainerFrame.Preferences.Img:LoadIcon("Action2", "Settings");
-	ButtonsContainerFrame.Stats.Img:LoadIcon("Content", "Sort");
 	
 	local ContentContainerFrame = new "Frame":Instance {
 		BackgroundColor3 = Color3.White;
