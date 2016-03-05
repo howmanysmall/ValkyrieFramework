@@ -29,13 +29,18 @@ function Util.AssertType(Name, Value, Type, IgnoreNil)
 	end
 end
 
-function Util.RunAsync(Runner)
-	local Coroutine = coroutine.create(Runner);
-	coroutine.resume(Coroutine);
+function Util.RunAsync(Runner,...)
+	local ret;
+	local listener = Instance.new("BoolValue");
+	listener.Value = false;
+	local Coroutine = coroutine.create(function(...)
+		ret = {Runner(...)};
+		listener.Value = true;
+	end);
+	coroutine.resume(Coroutine,...);
 	return function()
-		while coroutine.status(Coroutine) ~= "dead" do
-			RenderStepped:wait();
-		end
+		listener.Changed:wait();
+		return unpack(ret);
 	end
 end
 
@@ -47,14 +52,7 @@ function Util.CopyMetatable(Object, Metatable)
 end
 
 function Util.GetScreenResolution()
-	local DummyFrame 		= Instance.new("Frame", Core:GetOverlay());
-	DummyFrame.BackgroundTransparency = 1;
-	DummyFrame.BorderSizePixel = 0;
-	DummyFrame.Size 		= UDim2.new(1,0,1,0);
-	local Size 				= DummyFrame.AbsoluteSize;
-	DummyFrame:Destroy();
-
-	return Size;
+	return Core:GetOverlay().AbsoluteSize;
 end
 
 local chainmeta = {
