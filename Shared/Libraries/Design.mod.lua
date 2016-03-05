@@ -1056,6 +1056,10 @@ local Icons = {
 
 local IUO = {
 	LoadIcon = function(this, SpriteSet, Icon)
+		assert(type(SpriteSet) == 'string', "You didn't supply a valid Spritesheet string", 2);
+		assert(type(Icon) == 'string', "You didn't supply a valid Icon string", 2);
+		SpriteSet = SpriteSet:lower();
+		Icon = Icon:lower();
 		assert(images[SpriteSet], "You didn't supply a valid spritesheet", 2)
 		assert(Icons[SpriteSet][Icon], "You didn't supply a valid Icon name", 2);
 		this.ImageRectSize = IRS;

@@ -15,6 +15,7 @@ local V3O = {
 	left = Vector3.new(-1,0,0);
 	right = Vector3.new(1,0,0);
 };
+
 local CFO = {
 	fromDirection = function(v3dir)
 		return CFrame.new(V3Zero, v3dir);
@@ -42,11 +43,14 @@ end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
 local QueryImmediate = print--_G.Valkyrie:GetComponent "Query".Direct
 local newInst = Instance.new;
+local pcall = pcall;
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
 local UtilMod = _G.Valkyrie:GetComponent "Util";
 -- Import it from there
+
+local np,gmt,ge,rs = newproxy,getmetatable,getfenv,rawset;
 
 return function(wrapper)
 	local client = pcall(assertLocal);
@@ -70,6 +74,9 @@ return function(wrapper)
 						t.Children = nil;
 						for k,v in next, children do
 							v.Parent = retn;
+							if type(k) == 'string' then
+								v.Name = k;
+							end;
 						end;
 					end;
 					if t[1] then
@@ -82,7 +89,7 @@ return function(wrapper)
 					local target = wrapper(retn);
 					local tmt = getmetatable(target);
 					local oca = tmt.__call;
-					tmt.__call = function(t,...)
+					tmt.__call = wrapper(function(t,...)
 						if type(...) == 'table' then
 							local connections = ...;
 							for k,v in next, connections do
@@ -93,7 +100,7 @@ return function(wrapper)
 						else
 							return oca(t,...);
 						end;
-					end;
+					end);
 					return retn;
 				else
 					error(r[2],2);
@@ -124,6 +131,20 @@ return function(wrapper)
 	wrapper:OverrideGlobal "map" (map);
 	wrapper:OverrideGlobal "pack" (pack);
 	wrapper:OverrideGlobal "query" (QueryImmediate);
+	wrapper:OverrideGlobal "fix" (function(t)
+		return t;
+	end)
+	
+	do
+		local rawwrapper = np(true);
+		local mt = gmt(rawwrapper)
+		mt.__index = wrapper;
+		mt.__call = function(t,...) return wrapper(...) end;
+		wrapper.wlist[rawwrapper] = rawwrapper;
+		wrapper.ulist[rawwrapper] = rawwrapper;
+		rs(ge(1),'_wrapper',rawwrapper);
+		-- rawwrapper will never go through the wrapper. Ever.
+	end
 
 	for FuncName, UtilFunction in next, UtilMod do
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);
@@ -141,6 +162,25 @@ return function(wrapper)
 		Require = require;
 	};
 
+	wrapper:Override "Instance":Instance {
+		GetDescendants = function(i)
+    		local queue = {};
+    		local returns = {};
+    		local v = i;
+    		while v do
+        		local t = v:GetChildren();
+        		for i = 1, #t do
+            		local v = t[i]
+            		returns[#returns+1] = v;
+            		queue[#queue+1] = v;
+        		end;
+        		v = queue[#queue];
+        		queue[#queue] = nil;
+    		end;
+    		return returns;
+		end;
+	};
+
 	wrapper:Override "UDim2" {
 		__mul = function(a, b)
 			if type(b) == "UDim2" then
@@ -149,5 +189,10 @@ return function(wrapper)
 				return UDim2.new(a.X.Scale * b, a.X.Offset * b, a.Y.Scale * b, a.Y.Offset * b);
 			end
 		end
+	};
+	wrapper:Override "Vector3" {
+		__len = function(s)
+			return s.magnitude;
+		end;
 	};
 end;

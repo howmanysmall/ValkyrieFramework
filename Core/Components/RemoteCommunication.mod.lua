@@ -1,4 +1,4 @@
-local ENABLE 		= false;
+local ENABLE 		= true;
 
 local module		= {};
 local encoder;
@@ -27,11 +27,10 @@ do
 			local func_mt		= getmetatable(func_proxy);
 			func_mt.__tostring	= function() return format("Valkyrie RemoteCommunication: %s Module", rem_module); end
 			func_mt.__len		= function() return 117; end;
-			func_mt.__newindex	= function() warn "This time I don't even want to think of what's going inside your head!"; end;
-			func_mt.__metatable	= "HAHAHAHA NOPE";
+			func_mt.__metatable	= "Locked Metatable: Valkyrie";
 
 			func_mt.__index		= function(t, rem_function)
-				return setfenv(function(should_be_func_proxy, args, _GID, _URL, _Key, _encoder, _decoder)
+				return function(should_be_func_proxy, args, _GID, _URL, _Key)
 					if ENABLE then
 						if _GID then
 							encoder 	= _encoder;
@@ -40,18 +39,18 @@ do
 							URL 		= _URL;
 							Key 		= _Key;
 						end
-						assert(should_be_func_proxy == func_proxy, "You really have to call this as a method for no reason.", 2);
+						assert(should_be_func_proxy == func_proxy, "You have to call this as a method solely for consistency with Roblox. Thanks Roblox.", 2);
 						-- Just because.
 						rem_module		= HS:UrlEncode(rem_module);
 						rem_function	= HS:UrlEncode(rem_function);
-						local req_url	= format("%s/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
+						local req_url	= format("%s/api/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
 						local ret		= decoder(HS:PostAsync(req_url, encoder(args)));
 						assert(ret.success, ret.error, 3);
 						return ret.result;
 					else
 						return true;
 					end
-				end, {});
+				end;
 			end
 		end
 
@@ -59,7 +58,6 @@ do
 	end});
 	mt.__tostring	= "Valkyrie RemoteCommunication Component";
 	mt.__len		= function() return 117 end;
-	mt.__newindex	= function() error("What are you even trying to do?!",2) end;
-	mt.__metatable	= "The feels when you know you're close to breaking it and you can't...";
+	mt.__metatable	= "Locked Metatable: Valkyrie";
 end
 return proxy;

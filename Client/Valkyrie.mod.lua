@@ -5,10 +5,10 @@ local function pack(...) return {n=select('#',...),...} end;
 
 local cxitio = {};
 local r;
-local wviis = setmetatable({},{__mode = 'k'});
+local wviis = {};
 
 local function extract(...)
-	if (...) == r or wviis[...] then
+	if (...) == r or wviis[(...)] then
 		return select(2,...)
 	else
 		return ...
@@ -20,7 +20,7 @@ local function echo(...) return ... end;
 script.Parent:WaitForChild("Core"):WaitForChild("Components");
 script.Parent.Core.Parent = script;
 script.Parent:WaitForChild("Libraries").Parent = script;
-local coreSettings = require(script.Core.Settings).Core;
+local coreSettings = require(script.Core:WaitForChild("Settings")).Core;
 
 do
 	local useGlobalLib = true;
@@ -66,7 +66,39 @@ cxitio.GetSettings = function(...)
 end;
 
 local overlay = script.Parent.ValkyrieOverlay;
-overlay.Parent = script.Parent.Parent;
+overlay = overlay:Clone();
+local Player = game.Players.LocalPlayer;
+local CharBind = function(c)
+	if not Player.PlayerGui:FindFirstChild("ValkyrieOverlay") then
+		overlay.Parent = Player.PlayerGui;
+		overlay.Name = "ValkyrieOverlay";
+	end;
+	local humanoid = c:FindFirstChild("Humanoid")
+	if not humanoid then
+		-- Look for a Humanoid class
+		local int = c:GetChildren();
+		for i=1,#int do
+			local v = int[i];
+			if v:IsA("Humanoid") then
+				humanoid = v;
+				break;
+			end;
+		end;
+		while not humanoid do
+			-- Start listening
+			local v = c.ChildAdded:wait();
+			if v:IsA("Humanoid") then
+				humanoid = v;
+				break;
+			end;
+		end;
+	end;
+	humanoid.Died:wait();
+	overlay.Parent = script;
+end
+Player.CharacterAdded:connect(CharBind);
+if Player.Character then coroutine.wrap(CharBind)(Player.Character) end;
+overlay.Parent = Player:WaitForChild("PlayerGui");
 cxitio.GetOverlay = function() return overlay	end;
 
 local CurrentContentFrame = nil;

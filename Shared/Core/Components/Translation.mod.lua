@@ -55,7 +55,7 @@ end;
 
 function ControllerClass.GetNode(...)
   local name = extract(...);
-  local node = TranslationNodeBackLinks(name);
+  local node = TranslationNodeBackLinks[name];
   if not node then
     warn("[Warn][Translation] (in GetNode): "..name.." doesn't yet exist. Creating a blank translation.");
     node = ControllerClass.CreateNode(name,{});

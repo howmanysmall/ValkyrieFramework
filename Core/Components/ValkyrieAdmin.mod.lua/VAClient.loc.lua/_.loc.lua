@@ -1,5 +1,5 @@
 local Player = game:GetService"Players".LocalPlayer;
-local BindManager = _G.Valkyrie:GetComponent"Bindsmanager_core"
+-- local BindManager = _G.Valkyrie:GetComponent"Bindsmanager_core"
 local active = false;
 local commandSend = script.DoCommand;
 
@@ -34,7 +34,7 @@ historyContainer.BackgroundColor = Color3.new(0.1,0.1,0.1);
 historyContainer.ZIndex = 2;
 
 -- Bind to user input to pull up the terminal/console
-BindManager:BindInputDown("Tilde", function()
+--[[BindManager:BindInputDown("Tilde", function()
 	active = not active;
 	if active then
 		lowerFrame:TweenPosition(UDim2.new(0,0,0,0), nil, 4, 0.4, true)
@@ -48,7 +48,7 @@ BindManager:BindInputUp("Tilde", function()
 	else
 		inputBox:ReleaseFocus();
 	end
-end);
+end);]]
 
 -- Bind the console
 sendButton.MouseButton1Click:connect(function()

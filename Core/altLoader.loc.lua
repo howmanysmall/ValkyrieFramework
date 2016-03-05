@@ -1,0 +1,1 @@
+game.StarterPlayer.StarterPlayerScripts:WaitForChild("ValkyrieClient"):Clone().Parent = game.Players.LocalPlayer.PlayerScripts;

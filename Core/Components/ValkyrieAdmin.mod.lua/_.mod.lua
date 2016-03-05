@@ -99,7 +99,7 @@ Players.PlayerAdded:connect(function(p)
     end;
   end)
   local ca = clientAdmin:Clone();
-  ca.RPC.OnServerEvent:connect(runCommand);
+  ca.DoCommand.OnServerEvent:connect(runCommand);
   ca.Parent = p:WaitForChild("PlayerScripts");
 end)
 
@@ -107,7 +107,7 @@ end)
 local addCommand = function(name, command)
   assert(type(name) == 'string' and type(command) == 'function', "You need to supply (name, command)", 2);
   local newPermission = Permissions:CreatePermission("Admin.Command."..name);
-  commands[name] = command;
+  CommandList[name] = command;
   return newPermission;
 end;
 
