@@ -55,6 +55,41 @@ function Util.GetScreenResolution()
 	return Core:GetOverlay().AbsoluteSize;
 end
 
+do
+	local mt = {
+ __index = {
+  case = function(this, ...)
+   local args = {...};
+   return function(r)
+    for i=1, #args do
+     this.cases[args[i]] = r;
+    end;
+    return this;
+   end;
+  end;
+  default = function(this,r)
+   local v = this.cases[this.switch] or r;
+   if type(v) == 'function' then
+    return v(this.switch);
+   else
+    return v;
+   end;
+  end;
+  eval = function(this)
+   local v = this.cases[this.switch];
+   if type(v) == 'function' then
+    return v(this.switch);
+   else
+    return v;
+   end;
+  end;
+ };
+};
+function Util.switch(obj)
+ return setmetatable({switch = obj, cases = {}},mt);
+end;
+end;
+
 local chainmeta = {
 	__newindex = function(t,k,v) t._obj[k] = v; end;
 	__index = function(t,k)
