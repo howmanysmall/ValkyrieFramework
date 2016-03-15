@@ -107,6 +107,7 @@ cxitio.BroadcastIntent = function(...)
 end;
 
 cxitio.FireIntent = cxitio.BroadcastIntent;
+cxitio.FireRPCIntent = cxitio.BroadcastIntent;
 cxitio.InvokeIntent = function(...)
 	return error("[Error][Valkyrie Intents] (in IntentService:InvokeIntent()): Invoke is not yet implemented");
 end;
