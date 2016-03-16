@@ -40,7 +40,20 @@ function ControllerClass.CreateNode(...)
     end;
     local _translations = {};
     for k,v in next,translations do
-      _translations[k:lower()] = v;
+      if type(k) ~= 'string' then
+      	return error("[Error][Translation] (in CreateNode): All keys must be strings", 2);
+    	end;
+    	if #k == 2 then
+      	-- We have no locale :S
+      	-- Assume repeated
+      	k = k..'_'..k;
+    	end;
+    	k = k:gsub('-','_');
+    	if #k ~= 5 or k:sub(3,3) ~= "_" then
+    	  return error("[Error][Translation] (in CreateNode): "..k.." doesn't appear to be a valid language format :(", 2);
+    	else
+    	  _translations[k:lower()] = v;
+	    end;
     end;
     TranslationNodeBackLinks[name] = newTranslationNode;
     TranslationNodeLinks[newTranslationNode] = _translations;
