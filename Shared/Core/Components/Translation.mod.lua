@@ -102,7 +102,7 @@ end;
 TranslationNodeMt.__metatable = "Valkyrie Translation Node Metatable";
 TranslationNodeMt.__index = function(this,k)
   local translations = TranslationNodeLinks[this];
-  local translation = translations[k] or translations.default;
+  local translation = translations[k];
   if not translation then
     for k,v in ipairs(aliases[TargetLanguage]) do
       translation = translations[v];
@@ -110,7 +110,7 @@ TranslationNodeMt.__index = function(this,k)
     end;
   end;
   if not translation then
-    translation = "##INVALID TRANSLATION: REPORT TO GAME OWNER##";
+    translation =  translations.default or "##INVALID TRANSLATION: REPORT TO GAME OWNER##";
   end;
   return translation;
 end;
