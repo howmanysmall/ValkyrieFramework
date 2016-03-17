@@ -109,8 +109,8 @@ end;
 Util.isLocal = isLocal;
 
 Util.wait = wait;
+local tick = tick;
 if isLocal then
-	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
 		if n then
@@ -124,7 +124,12 @@ if isLocal then
 		end
 	end;
 end;
-Util.ewait = ewait;
+Util.ewait = function(ev)
+	local newewait;
+	local now = tick();
+	local r={ewait(ev)};
+	return tick()-now, unpack(r)
+end;
 local yield = coroutine.yield;
 Util.ywait = function(n)
 	n = n or 0.029;
