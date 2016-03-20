@@ -80,7 +80,7 @@ local function runCommand(as,cmd)
     local params = {};
     if cmd:sub(-1,-1) == ')' then
       -- Probably got parameters
-      for param in cmd:match('^%((.+))%$'):gmatch('[^,]') do
+      for param in cmd:match('^%((.+)%)$'):gmatch('[^,]') do
         params[#params+1] = param:match('^%s*(.-)%s*$');
       end;
     end;
