@@ -139,7 +139,7 @@ controllerclass.RunCommand = function(...)
   runCommand(as, command);
 end;
 
-controllerclass.GetMatching = getMatching;
+controllerclass.GetMatching = function(...) return getMatching(extract(...)) end;
 
 controllermt.__index = controllerclass;
 controllermt.__metatable = "Locked metatable: Valkyrie"
