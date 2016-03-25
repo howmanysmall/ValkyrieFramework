@@ -1,3 +1,4 @@
+-- NOTE: This needs sorting out for production, as it is outdated.
 local VCore = _G._ValkyrieCores
 local DS = game:GetService("DataStoreService"):GetDataStore(VCore:GetGID())
 local http = game:GetService("HttpService")
