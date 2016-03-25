@@ -108,6 +108,7 @@ local InputSources, LinkedTypes, LinkedNames do
 			Down = make("Keyboard","Down");
 			Left = make("Keyboard","Left");
 			Right = make("Keyboard","Right");
+			Insert = make("Keyboard","Insert");
 		};
 		Controller1 = {
 			A = make("ControllerButton", "ButtonA");
