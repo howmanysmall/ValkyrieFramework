@@ -1,75 +1,87 @@
--- NOTE: This needs sorting out for production, as it is outdated.
-local VCore = _G._ValkyrieCores
-local DS = game:GetService("DataStoreService"):GetDataStore(VCore:GetGID())
-local http = game:GetService("HttpService")
-local Secure = require(script.Parent.Parent.SecureStorage)
-local assert,print,error = assert,print,error;
-local type = type;
-local string = string;
-local setfenv, getmetatable = setfenv, getmetatable;
-local game = game;
-local requester = VCore:GetComponent "RemoteCommunication";
+local Valkyrie = _G.Valkyrie;
+local RemoteCommunication = Valkyrie:GetComponent("RemoteCommunication");
 
-local AchievementsManager = {};
+local Controller = {};
+local extract;
 
-local function assertMethod(self)
-    assert(self == ret, "You should call this as a method of AchievementsManager.", 3); 
-end
+-- |: Increment
+-- |~ IncrementStep, Step
+-- |< Instance<Player> Player, string AchievementName, int ?Increment = 1
+-- |> bool Success, int NewStep, bool Awarded
+Controller.Increment = function(...)
+	local Player, AchievementName, Increment = extract(...);
+	Increment = Increment or 1;
+	
+end;
+Controller.IncrementStep = Controller.Increment;
+Controller.Step = Controller.Increment;
 
-local function assertType(expected, value, arg)
-    assert(type(value) == expected, ("Argument %q should be a %s"):format(arg, expected), 3);
-end
+-- |: Reveal
+-- |~ Show
+-- |< Instance<Player> Player, string AchievementName
+-- |> bool Success
+Controller.Reveal = function(...)
+	local Player, AchievementName = extract(...);
+	
+end;
+Controller.Show = Controller.Reveal
 
-function AchievementsManager:RegisterAchievement(reward, identification, name, description) -- Lemon.
-    assertMethod(self);
-    assertType("number", reward, "reward");
-    assertType("string", identification, "identification");
-    assertType("string", name, "name");
-    assertType("string", description, "description");
-    if not DS:GetAsync(identification) then
-        -- If it's not here according to this game, register it!
-        requester.achievements:register({reward = reward, id = identification, name = name, description = description});
-		print("Registered:", reward, identification, name, description);
-		DS:SetAsync(identification, true);
+-- |: Award
+-- |~ Unlock, Give, GiveAchievement
+-- |< Instance<Player> Player, string AchievementName
+-- |> bool Success, bool AlreadyAwarded
+Controller.Award = function(...)
+	local Player, AchievementName = extract(...);
+	
+end;
+Controller.Unlock = Controller.Award;
+Controller.Give = Controller.Award;
+Controller.GiveAchievement = Controller.Award;
+
+-- |: SetStep
+-- |~ SetStage, SetState
+-- |< Instance<Player> Player, string AchievementName, int NewStep
+-- |> bool Success, bool NewStep
+Controller.SetStep = function(...)
+	local Player, AchievementName, NewStep = extract(...);
+	
+	-- If NewStep is less than the current step, keep the current.
+end;
+Controller.SetStage = Controller.SetStep;
+Controller.SetState = Controller.SetStep;
+
+-- |: List
+-- |~ ListAchievements, GetAchievements
+-- |< Instance<Player> Player
+-- |> table {
+--      ... = {
+--        Name = string AchievementName,
+--        ?Steps = int Steps,
+--        Awarded = bool HasAchievement,
+--        Hidden = bool IsHidden
+--      }
+--    } AchievementsList
+Controller.List = function(...)
+	local Player = extract(...);
+
+end;
+Controller.ListAchievements = Controller.List;
+Controller.GetAchievements = Controller.List;
+
+local _controller = newproxy(true);
+local mt = getmetatable(_controller);
+mt.__index = Controller;
+mt.__metatable = "Locked metatable: Valkyrie";
+mt.__tostring = function()
+	return "Valkyrie Achievements controller";
+end;
+
+extract = function(...)
+	if ... == _controller then
+		return select(2,...);
 	else
-		print("Already registered:", identification);
-	end
+		return ...
+	end;
 end;
 
-function AchievementsManager:AwardAchievement(user, identification)
-    -- Get the data from the supplied argument.
-    local userType = type(user);
-    assert(user, "You must supply a user as Arg#1", 2);
-    assert(identification, "You must supply an achievement id as Arg#2", 2);
-    assertMethod(self);
-    assertType("string", identification, "identification");
-    if userType == 'string' then
-        assert(game.Players:FindFirstChild(user), user .. " is not a valid player!", 2);
-        user = game.Players:FindFirstChild(user).userId;
-    elseif userType == 'userdata' then
-        assert(pcall(function() if user.Parent ~= game.Players then error() else user = user.userId end end),"Invalid player", 2);
-    elseif userType ~= 'number' then
-        error("Invalid datatype for the user", 2);
-    end
-    requester.achievements:award({playerid = user, id = identification});
-    print("Awarded achievement id "..identification.." awarded to user:",user);
-end
-
-local ret;
-do
-ret = newproxy(true);
-local mt = getmetatable(ret);
-mt.__index = function(_,k)
-    local v = AchievementsManager[k];
-    if type(v) == 'function' then
-        return setfenv(v,{});
-    else
-        return v;
-    end
-end;
-mt.__newindex = error;
-mt.__tostring = function() return "Valkyrie Achievements Manager" end;
-mt.__metatable = "Nobody messes with Valkyrie";
-end
-
-return ret;
+return _controller;
