@@ -75,7 +75,8 @@ Controller.GetAchievements = Controller.List;
 --      Name = string AchievementTrueName,
 --      MaxSteps = int MaxSteps
 --      Description = string Description,
---      Image = int AssetId
+--      Image = int AssetId,
+--      Reward = int PointsReward
 --    } AchievementInfo
 Controller.Info = function(...)
 	local AchievementName = extract(...);
