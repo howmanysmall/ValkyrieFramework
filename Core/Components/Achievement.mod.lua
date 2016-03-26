@@ -142,7 +142,7 @@ Controller.Info = function(...)
 	local AchievementName = extract(...);
 	assert(
 		type(AchievementName) == 'string',
-		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a string as #2",
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
 		2
 	);
 	
