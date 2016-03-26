@@ -27,7 +27,7 @@ end;
 Controller.Show = Controller.Reveal
 
 -- |: Award
--- |~ Unlock, Give, GiveAchievement
+-- |~ Unlock, Give, GiveAchievement, AwardAchievement
 -- |< Instance<Player> Player, string AchievementName
 -- |> bool Success, bool AlreadyAwarded
 Controller.Award = function(...)
@@ -37,6 +37,7 @@ end;
 Controller.Unlock = Controller.Award;
 Controller.Give = Controller.Award;
 Controller.GiveAchievement = Controller.Award;
+Controller.AwardAchievement = Controller.Award;
 
 -- |: SetStep
 -- |~ SetStage, SetState
