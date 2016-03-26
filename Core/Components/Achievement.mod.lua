@@ -41,7 +41,7 @@ Controller.GiveAchievement = Controller.Award;
 -- |: SetStep
 -- |~ SetStage, SetState
 -- |< Instance<Player> Player, string AchievementName, int NewStep
--- |> bool Success, bool NewStep
+-- |> bool Success, int NewStep, bool Awarded
 Controller.SetStep = function(...)
 	local Player, AchievementName, NewStep = extract(...);
 	
@@ -55,7 +55,7 @@ Controller.SetState = Controller.SetStep;
 -- |< Instance<Player> Player
 -- |> table {
 --      ... = {
---        Name = string AchievementName,
+--        Name = string AchievementIdentifierName,
 --        ?Steps = int Steps,
 --        Awarded = bool HasAchievement,
 --        Hidden = bool IsHidden
@@ -67,6 +67,23 @@ Controller.List = function(...)
 end;
 Controller.ListAchievements = Controller.List;
 Controller.GetAchievements = Controller.List;
+
+-- |: Info
+-- |~ GetInfo, AchievementInfo, GetAchievementInfo
+-- |< string AchievementName
+-- |> table {
+--      Name = string AchievementTrueName,
+--      MaxSteps = int MaxSteps
+--      Description = string Description,
+--      Image = int AssetId
+--    } AchievementInfo
+Controller.Info = function(...)
+	local AchievementName = extract(...);
+	
+end;
+Controller.GetInfo = Controller.Info;
+Controller.AchievementInfo = Controller.Info;
+Controller.GetAchievementInfo = Controller.GetAchievementInfo;
 
 local _controller = newproxy(true);
 local mt = getmetatable(_controller);
