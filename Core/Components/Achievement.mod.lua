@@ -1,5 +1,6 @@
 local Valkyrie = _G.Valkyrie;
 local RemoteCommunication = Valkyrie:GetComponent("RemoteCommunication");
+local DataTypes = Valkyrie:GetComponent("DataTypes");
 
 local Controller = {};
 local extract;
@@ -11,6 +12,22 @@ local extract;
 Controller.Increment = function(...)
 	local Player, AchievementName, Increment = extract(...);
 	Increment = Increment or 1;
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a string as #2",
+		2
+	);
+	assert(
+		type(Increment) == 'number',
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a number as #3",
+		2
+	);
+	Increment = math.floor(Increment+.5);
 	
 end;
 Controller.IncrementStep = Controller.Increment;
@@ -22,6 +39,16 @@ Controller.Step = Controller.Increment;
 -- |> bool Success
 Controller.Reveal = function(...)
 	local Player, AchievementName = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a string as #2",
+		2
+	);
 	
 end;
 Controller.Show = Controller.Reveal
@@ -32,6 +59,16 @@ Controller.Show = Controller.Reveal
 -- |> bool Success, bool AlreadyAwarded
 Controller.Award = function(...)
 	local Player, AchievementName = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Award): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Award): You need to supply a string as #2",
+		2
+	);
 	
 end;
 Controller.Unlock = Controller.Award;
@@ -45,6 +82,22 @@ Controller.AwardAchievement = Controller.Award;
 -- |> bool Success, int NewStep, bool Awarded
 Controller.SetStep = function(...)
 	local Player, AchievementName, NewStep = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a string as #2",
+		2
+	);
+	assert(
+		type(AchievementName) == 'number',
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a number as #3",
+		2
+	);
+	NewStep = math.floor(NewStep+.5);
 	
 	-- If NewStep is less than the current step, keep the current.
 end;
@@ -56,6 +109,7 @@ Controller.SetState = Controller.SetStep;
 -- |< Instance<Player> Player
 -- |> table {
 --      ... = {
+--        DisplayName = string AchievementDisplayName,
 --        Name = string AchievementIdentifierName,
 --        ?Steps = int Steps,
 --        Awarded = bool HasAchievement,
@@ -64,6 +118,11 @@ Controller.SetState = Controller.SetStep;
 --    } AchievementsList
 Controller.List = function(...)
 	local Player = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
+		2
+	);
 
 end;
 Controller.ListAchievements = Controller.List;
@@ -81,6 +140,11 @@ Controller.GetAchievements = Controller.List;
 --    } AchievementInfo
 Controller.Info = function(...)
 	local AchievementName = extract(...);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
+		2
+	);
 	
 end;
 Controller.GetInfo = Controller.Info;
