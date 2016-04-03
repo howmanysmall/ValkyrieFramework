@@ -6,5 +6,4 @@ return {
 	"Players.PVE";
 	"Players.Action.Reset";
 	"Players.Action.Chat";
-	"Overlay.Open";
 };

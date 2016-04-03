@@ -351,6 +351,10 @@ local function outInBounce(t, b, c, d)
   end
 end
 
+local function smoother(x)
+    return t = x*x*x*(x*(x*6 - 15) + 10)
+end;
+
 local ret = {
   linear = linear,
   inQuad = inQuad,
@@ -393,6 +397,7 @@ local ret = {
   outBounce = outBounce,
   inOutBounce = inOutBounce,
   outInBounce = outInBounce,
+  smoother = smoother
 }
 
 local copy = {};
