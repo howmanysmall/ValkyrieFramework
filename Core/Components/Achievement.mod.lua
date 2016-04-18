@@ -28,7 +28,11 @@ Controller.Increment = function(...)
 		2
 	);
 	Increment = math.floor(Increment+.5);
-	
+	return RemoteCommunication.Achievement:Increment{
+	    Player = Player;
+	    Achievement = AchievementName;
+	    Value = Increment;
+	};
 end;
 Controller.IncrementStep = Controller.Increment;
 Controller.Step = Controller.Increment;
@@ -49,7 +53,10 @@ Controller.Reveal = function(...)
 		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a string as #2",
 		2
 	);
-	
+	return RemoteCommunication.Achievement:Reveal{
+	    Player = Player;
+	    Achievement = AchievementName;
+	};
 end;
 Controller.Show = Controller.Reveal
 
@@ -69,7 +76,10 @@ Controller.Award = function(...)
 		"[Error][Valkyrie Achievements] (in Award): You need to supply a string as #2",
 		2
 	);
-	
+	return RemoteCommunication.Achievement:Award{
+	    Player = Player;
+	    Achievement = AchievementName;
+	};
 end;
 Controller.Unlock = Controller.Award;
 Controller.Give = Controller.Award;
@@ -98,8 +108,12 @@ Controller.SetStep = function(...)
 		2
 	);
 	NewStep = math.floor(NewStep+.5);
-	
 	-- If NewStep is less than the current step, keep the current.
+	return RemoteCommunication.Achievement:SetStep{
+	    Player = Player;
+	    Achievement = AchievementName;
+	    Value = NewStep;
+	};
 end;
 Controller.SetStage = Controller.SetStep;
 Controller.SetState = Controller.SetStep;
@@ -123,7 +137,9 @@ Controller.List = function(...)
 		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
 		2
 	);
-
+    return RemoteCommunication.Achievement:GetAchievements{
+        Player = Player;
+    };
 end;
 Controller.ListAchievements = Controller.List;
 Controller.GetAchievements = Controller.List;
@@ -145,7 +161,9 @@ Controller.Info = function(...)
 		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
 		2
 	);
-	
+	return RemoteCommunication.Achievement:GetAchievementInfo{
+	    Name = AchievementName;
+	};
 end;
 Controller.GetInfo = Controller.Info;
 Controller.AchievementInfo = Controller.Info;
