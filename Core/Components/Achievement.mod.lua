@@ -1,6 +1,7 @@
 local Valkyrie = _G.Valkyrie;
 local RemoteCommunication = Valkyrie:GetComponent("RemoteCommunication");
 local DataTypes = Valkyrie:GetComponent("DataTypes");
+local IntentService = Valkyrie:GetComponent("IntentService");
 
 local Controller = {};
 local extract;
@@ -28,11 +29,21 @@ Controller.Increment = function(...)
 		2
 	);
 	Increment = math.floor(Increment+.5);
-	return RemoteCommunication.Achievement:Increment{
-	    Player = Player;
-	    Achievement = AchievementName;
-	    Value = Increment;
+	local r = RemoteCommunication.Achievement:Increment{
+		Player = Player;
+		Achievement = AchievementName;
+		Value = Increment;
 	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		if r.Awarded then
+			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		else
+			IntentService:BroadcastRPCIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
 end;
 Controller.IncrementStep = Controller.Increment;
 Controller.Step = Controller.Increment;
@@ -53,10 +64,16 @@ Controller.Reveal = function(...)
 		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a string as #2",
 		2
 	);
-	return RemoteCommunication.Achievement:Reveal{
-	    Player = Player;
-	    Achievement = AchievementName;
+	local r = RemoteCommunication.Achievement:Reveal{
+		Player = Player;
+		Achievement = AchievementName;
 	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		IntentService:BroadcastRPCIntent("Achievement.Reveal", Player); -- In case some games want to implement something
+		return r;
+	end;
 end;
 Controller.Show = Controller.Reveal
 
@@ -76,10 +93,20 @@ Controller.Award = function(...)
 		"[Error][Valkyrie Achievements] (in Award): You need to supply a string as #2",
 		2
 	);
-	return RemoteCommunication.Achievement:Award{
-	    Player = Player;
-	    Achievement = AchievementName;
+	local r = RemoteCommunication.Achievement:Award{
+		Player = Player;
+		Achievement = AchievementName;
 	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		if r.AlreadyAwarded then
+			warn(AchievementName.." was already awarded to "..Player.Name);
+		else
+			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
 end;
 Controller.Unlock = Controller.Award;
 Controller.Give = Controller.Award;
@@ -109,11 +136,21 @@ Controller.SetStep = function(...)
 	);
 	NewStep = math.floor(NewStep+.5);
 	-- If NewStep is less than the current step, keep the current.
-	return RemoteCommunication.Achievement:SetStep{
-	    Player = Player;
-	    Achievement = AchievementName;
-	    Value = NewStep;
+	local r = RemoteCommunication.Achievement:SetStep{
+		Player = Player;
+		Achievement = AchievementName;
+		Value = NewStep;
 	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		if r.Awarded then
+			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		else
+			IntentService:BroadcastRPCIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
 end;
 Controller.SetStage = Controller.SetStep;
 Controller.SetState = Controller.SetStep;
@@ -137,9 +174,14 @@ Controller.List = function(...)
 		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
 		2
 	);
-    return RemoteCommunication.Achievement:GetAchievements{
-        Player = Player;
-    };
+	local r = RemoteCommunication.Achievement:GetAchievements{
+		Player = Player;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		return r;
+	end;
 end;
 Controller.ListAchievements = Controller.List;
 Controller.GetAchievements = Controller.List;
@@ -161,9 +203,14 @@ Controller.Info = function(...)
 		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
 		2
 	);
-	return RemoteCommunication.Achievement:GetAchievementInfo{
-	    Name = AchievementName;
+	local r = RemoteCommunication.Achievement:GetAchievementInfo{
+		Name = AchievementName;
 	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		return r;
+	end;
 end;
 Controller.GetInfo = Controller.Info;
 Controller.AchievementInfo = Controller.Info;
