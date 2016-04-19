@@ -38,9 +38,9 @@ Controller.Increment = function(...)
 		return error(r.Error, 2);
 	else
 		if r.Awarded then
-			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		else
-			IntentService:BroadcastRPCIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
@@ -71,7 +71,7 @@ Controller.Reveal = function(...)
 	if not r.Success then
 		return error(r.Error, 2);
 	else
-		IntentService:BroadcastRPCIntent("Achievement.Reveal", Player); -- In case some games want to implement something
+		IntentService:BroadcastUniversalIntent("Achievement.Reveal", Player); -- In case some games want to implement something
 		return r;
 	end;
 end;
@@ -103,7 +103,7 @@ Controller.Award = function(...)
 		if r.AlreadyAwarded then
 			warn(AchievementName.." was already awarded to "..Player.Name);
 		else
-			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
@@ -145,9 +145,9 @@ Controller.SetStep = function(...)
 		return error(r.Error, 2);
 	else
 		if r.Awarded then
-			IntentService:BroadcastRPCIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		else
-			IntentService:BroadcastRPCIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
