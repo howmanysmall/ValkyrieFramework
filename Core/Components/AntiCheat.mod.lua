@@ -2,7 +2,7 @@ local Controller = {};
 local evalmt = {};
 local evalref = setmetatable({},{__mode = 'k'});
 local DataTypes = _G.Valkyrie:GetComponent "DataTypes";
-local BanController = _G.Valkyrie:GetComponent "ValkyrieBans";
+local BanController = _G.Valkyrie:GetComponent "ValkyrieBans"; -- Secure version, injected on load.
 local extract;
 
 evalmt.__call = function(t)
@@ -15,7 +15,7 @@ evalmt.__tostring = function(t)
     elseif t.lhs then
         return "(" .. tostring(t.lhs) .. " " .. t.type .. tostring(t.rhs) .. ")";
     else
-        -- Something something GetFullName
+        return "(" .. t.obj:GetFullName() .. ".Value " .. t.type .. " " .. tostring(t.rhs) .. ")";
     end;
 end;
 evalmt.__metatable = "Locked metatable: Valkyrie (Eval object)";
@@ -133,7 +133,7 @@ Controller.And = function(...)
         end;
         lhs = e1;
         rhs = e2;
-        type = "==";
+        type = "and";
     };
     return ne;
 end;
@@ -154,7 +154,7 @@ Controller.Not = function(...)
             return not e1();
         end;
         unobj = e1;
-        type = "==";
+        type = "not";
     };
     return ne;
 end;
@@ -169,13 +169,28 @@ Controller.Protect = function(...)
 end;
 
 Controller.BanWhen = function(...)
-    local condition = extract(...);
+    local player, condition = extract(...);
     assert(
         condition and evalref[condition],
         "[Error][AntiCheat] (in BanWhen): You need to supply an Eval object as argument #1", 
         2
     );
-
+    local ref = evalref[condition];
+    local q = {ref};
+    local function kill()
+        BanController.BanCheck(player, condition);
+    end;
+    while q[#q] do
+        local v = q[#q];
+        q[#q] = nil;
+        if v.obj then
+            v.obj.Changed:connect(kill);
+        else
+            q[#q+1] = lhs;
+            q[#q+1] = rhs;
+            q[#q+1] = unobj;
+        end;
+    end;
 end;
 
 local r = newproxy();
