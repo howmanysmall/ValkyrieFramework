@@ -4,6 +4,7 @@ local Event = {};
 local Events = setmetatable({},{__mode = 'k'});
 local InstantEvents = setmetatable({},{__mode = 'k'});
 local Intents = setmetatable({},{__mode = 'k'});
+local Intercept = setmetatable({},{__mode = 'k'});
 local IntentService
 
 local connection do
@@ -49,7 +50,9 @@ local eClass = {
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			spawn(function() f(unpack(ar)) end);
+			if Intercept[self] and not Intercept[self](...) then
+			    spawn(function() f(unpack(ar)) end);
+			end;
 		end;
 	end;
 	connect = function(self, f)
@@ -78,15 +81,25 @@ local eClass = {
 		c:disconnect();
 		return unpack(ret);
 	end;
+	intercept = function(self, f)
+		local old = Intercept[self];
+		IntentService:BroadcastIntent("Event.InterceptChanged", self, old, f);
+		Intercept[self] = f;
+		return old;
+	end;
 };
 eClass.Fire = eClass.fire;
+eClass.Intercept = eClass.intercept;
 local ieClass = {
 	fire = function(self, ...)
 		local e = InstantEvents[self];
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			coroutine.wrap(f)(...);
+			if Intercept[self] and not Intercept[self](...) then
+				-- Some time later, prevent yields in intercepts
+				coroutine.wrap(f)(...);
+			end;
 		end;
 	end;
 	connect = function(self, f)
@@ -117,6 +130,8 @@ local ieClass = {
 	end;
 };
 ieClass.Fire = ieClass.fire
+ieClass.Intercept = eClass.intercept;
+ieClass.intercept = eClass.intercept;
 local iClass = {
 	Fire = function(self,...)
 		return IntentService:FireIntent(Intents[self],f);
