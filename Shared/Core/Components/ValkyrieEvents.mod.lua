@@ -50,8 +50,14 @@ local eClass = {
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			if Intercept[self] and not Intercept[self](...) then
-			    spawn(function() f(unpack(ar)) end);
+			local tmp;
+			if Intercept[self] then
+				tmp = Intercept[self](...)
+			end;
+			if not tmp then
+				spawn(function() f(unpack(ar)) end);
+			else
+				return tmp
 			end;
 		end;
 	end;
@@ -96,9 +102,15 @@ local ieClass = {
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			if Intercept[self] and not Intercept[self](...) then
+			local tmp;
+			if Intercept[self] then
+				tmp = Intercept[self](...);
 				-- Some time later, prevent yields in intercepts
+			end;
+			if not tmp then
 				coroutine.wrap(f)(...);
+			else
+				return tmp
 			end;
 		end;
 	end;
@@ -182,10 +194,9 @@ mt.__index = function(t,k)
 	mt.__index = Event;
 	return t[k];
 end;
-mt.__metatable =  "Locked metatable: Valkyrie";
+mt.__metatable =	"Locked metatable: Valkyrie";
 mt.__tostring = function()
-  return "Valkyrie event controller";
+	return "Valkyrie event controller";
 end;
 
 return ni;
-
