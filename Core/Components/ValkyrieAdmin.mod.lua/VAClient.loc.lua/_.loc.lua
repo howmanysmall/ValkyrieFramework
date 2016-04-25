@@ -1,5 +1,5 @@
 local Player = game:GetService"Players".LocalPlayer;
--- local BindManager = _G.Valkyrie:GetComponent"Bindsmanager_core"
+local Binds = _G.Valkyrie:GetComponent"ValkyrieInput"
 local active = false;
 local commandSend = script.DoCommand;
 
@@ -34,7 +34,7 @@ historyContainer.BackgroundColor = Color3.new(0.1,0.1,0.1);
 historyContainer.ZIndex = 2;
 
 -- Bind to user input to pull up the terminal/console
---[[BindManager:BindInputDown("Tilde", function()
+local Open = Binds:CreateAction("OpenValkyrieAdmin", function()
 	active = not active;
 	if active then
 		lowerFrame:TweenPosition(UDim2.new(0,0,0,0), nil, 4, 0.4, true)
@@ -42,13 +42,15 @@ historyContainer.ZIndex = 2;
 		lowerFrame:TweenPosition(UDim2.new(0,0,1,0), nil, 4, 0.5, true)
 	end
 end);
-BindManager:BindInputUp("Tilde", function()
+Open:BindControl(Binds.InputSources.Keyboard.Tilde, Binds.InputDirections.Down);
+local Focus = Binds:CreateAction("FocusValkyrieAdmin", function()
 	if active then
 		inputBox:CaptureFocus();
 	else
 		inputBox:ReleaseFocus();
 	end
-end);]]
+end);
+Focus:BindControl(Binds.InputSources.Keyboard.Tilde, Binds.InputDirections.Down);
 
 -- Bind the console
 sendButton.MouseButton1Click:connect(function()
