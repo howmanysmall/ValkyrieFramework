@@ -22,7 +22,7 @@ local getMatching do
       return wrapiter(Players:GetPlayers())
     elseif str == 'other' or str == 'others' then
       local p = {};
-      for i,v in ipairs(Players:GetPlayers()) do
+      for i,v in pairs(Players:GetPlayers()) do
         if v ~= self then
           p[#p+1] = v;
         end;
@@ -37,7 +37,7 @@ local getMatching do
         -- We got a group. Magic.
         local p = {};
         local gp = Permissions.GetGroup(str).Users
-        for i,v in ipairs(Players:GetPlayers()) do
+        for i,v in pairs(Players:GetPlayers()) do
           if gp[v] then
             p[#p+1]=v;
           end;
