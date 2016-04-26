@@ -33,6 +33,7 @@ OverlayController.Open = function()
 			nil, nil, 0.2, true
 		);
 	end;
+	IntentService:BroadcastIntent("Overlay.Opened");
 end;
 
 OverlayController.Close = function()
@@ -46,6 +47,7 @@ OverlayController.Close = function()
 		UDim2.new(0,0,-1,0),
 		nil, nil, 0.3, true
 	);
+	IntentService:BroadcastIntent("Overlay.Closed");
 end;
 
 OverlayController.ReturnHome = function()
@@ -61,7 +63,7 @@ OverlayController.ReturnHome = function()
 			UDim2.new(0,0,0,0),
 			nil, nil, 0.3, true
 		);
-		IntentService:BroadcastIntent("OverlayContentChanged")
+		IntentService:BroadcastIntent("Overlay.ContentChanged")
 	end;
 end;
 
@@ -97,6 +99,7 @@ Friends.Open = function()
 		UDim2.new(0,0,1,0),
 		nil, nil, 0.3, true
 	);
+	IntentService:BroadcastIntent("Overlay.ContentChanged");
 end;
 Friends.ContentFrame.Parent = Overlay;
 Friends.ContentFrame.Position = UDim2.new(0,0,-1,0);
