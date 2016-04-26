@@ -5,6 +5,7 @@ local Controller = {};
 local this = newproxy(true);
 local IntentService = _G.Valkyrie:GetComponent "IntentService";
 local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
+local Translation = _G.Valkyrie:GetCompontent "Translation";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
@@ -235,6 +236,26 @@ local InputSources, LinkedTypes, LinkedNames do
 		Keyboard.LeftWin = Keyboard.Super;
 		Keyboard.WindowsKey = Keyboard.Super;
 		Keyboard.Windows = Keyboard.Super;
+
+		-- ~ Keyboard Translation aliases
+		local _translations = {};
+		for k,v in next, Keyboard do
+			local n = LinkedNames[v];
+			_translations[n] = {en_us = n};
+		end;
+		local modlist = script:GetChildren();
+		for i = 1, #modlist do
+			local v = modlist[i];
+			local tlist = require(v);
+			local nom = v.Name;
+			for n,v in next, tlist do
+				_translations[n] = _translations[n] or {};
+				_translations[n][nom] = v;
+			end;
+		end;
+		for k,v in next, _translations do
+			Translations:CreateNode("Keyboard."..k, v);
+		end;
 	end;
 	do
 		-- ~ Gamepad input aliases
@@ -671,7 +692,7 @@ function ActionClass:SetFlag(flag, value)
 		);
 	end;
 end;
-do	
+do
 	local utilIsTouch = function(s)
 		return LinkedTypes[s] == 'TouchAction'
 	end
@@ -733,10 +754,10 @@ do
 				error("[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply a valid Valkyrie Input direction object as #2", 2);
 			end;
 		end;
-		
+
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source);
-		
+
 		-- Wrap the function in a binding
 		local func,bfunc = self.Action
 		if d == InputDirections.UpDown then
@@ -759,7 +780,7 @@ do
 				end;
 			end;
 		end;
-		
+
 		--> Connection
 		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
@@ -789,10 +810,10 @@ do
 			end;
 		end;
 		assert(object, "[Error][ValkyrieInput] (in ActionClass:BindSource()): You need to supply a valid source as #3", 2);
-		
+
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source, object);
-		
+
 		-- Wrap the function in a binding
 		local func,bfunc = self.Action
 		if d == InputDirections.UpDown then
@@ -815,7 +836,7 @@ do
 				end;
 			end;
 		end;
-		
+
 		--> Connection
 		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
@@ -845,9 +866,9 @@ do
 			error("[Error][Valkyrie Input] (in ActionClass:BindContext()): "..errmsg, 2);
 			return;
 		end
-		
+
 		local Connections = {};
-		
+
 		for i=1,#sources do
 			local v = sources[i];
 			local state = CreateInputState(v[1]);
@@ -875,14 +896,14 @@ do
 			end;
 			Connections[#Connections+1] = iBinds[state]:connect(bfunc);
 		end;
-		
+
 		local Button;
 		if makebutton then
 			Button = Instance.new("TextButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
 			Connections[#Connections+1] = self:BindButtonPress(newButton);
 			Connections[#Connections+1] = CustomConnection(function() Button:Destroy() end);
 		end
-		
+
 		--> Connection, ?Button
 		local bind = CustomConnection(function()
 			for i=1,#Connections do
@@ -894,12 +915,12 @@ do
 	end;
 	function ActionClass:BindButtonPress(button)
 		-- ~ Redirects a button press (From any input that can provide it) to the action
-		
+
 		local TouchState = CreateInputState(InputSources.Touch.TouchTap, button);
 		local tBind = iBinds[TouchState]:connect(function(i,d,p,r) self.Action(i,p,r) end);
 		local mBind = button.MouseButton1Click:connect(self.Action);
 		-- Not sure how the Controller is supposed to select things?
-		
+
 		--> Connection
 		local bind = CustomConnection(function()
 			tBind:disconnect();
@@ -911,7 +932,7 @@ do
 	function ActionClass:BindCombo(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | When they're all down, it fires. Once.
-		
+
 		local BindCollection = {};
 		local Totals = {};
 		local ilist = {};
@@ -956,7 +977,7 @@ do
 			end;
 			error("[Error][Valkyrie Input] (in ActionClass:BindCombo()): "..errmsg, 2);
 		end;
-		
+
 		--> Connection
 		-- Create a CustomConnection Object to disconnect all of the connections stored inside of BindCollection
 		local bind = CustomConnection(function()
@@ -1007,8 +1028,8 @@ do
 	function ActionClass:BindTouchAction(source, object)
 		-- ~ Specific touch events like tapping, pinching, scrolling etc
 		assert(utilIsTouch(source), "[Error][Valkyrie Input] (in ActionClass:BindTouchAction()): Supplied input source was not a TouchAction", 2);
-		local state = CreateInputState(source, object);		
-		
+		local state = CreateInputState(source, object);
+
 		--> Connection
 		local bind = iBinds[state]:connect(function(i,d,p,r)
 			return self.Action(i,p,r);
