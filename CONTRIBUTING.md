@@ -23,8 +23,8 @@ What's with the file names?
 **Filename.mod.lua**: Module Script  
 **Filename.loc.lua**: Local Script  
 **Filename.lua**: Script  
-**_.Filename.\***: Represents the parent directory; replaces the build target in the CI  
-**.Filename.\***: A dot in front of a file name tells the CI to ignore the file.
+**_.Filename.ext**: Represents the parent directory; replaces the build target in the CI  
+**.Filename.ext**: A dot in front of a file name tells the CI to ignore the file.
 
 What can I add?
 ---
