@@ -5,6 +5,8 @@ local Events = setmetatable({},{__mode = 'k'});
 local InstantEvents = setmetatable({},{__mode = 'k'});
 local Intents = setmetatable({},{__mode = 'k'});
 local Intercept = setmetatable({},{__mode = 'k'});
+local Listeners = setmetatable({},{__mode = 'k'});
+local TempHolders = setmetatable({},{__mode = 'k'});
 local IntentService
 
 local connection do
@@ -55,6 +57,8 @@ local eClass = {
 				tmp = Intercept[self](...)
 			end;
 			if not tmp then
+				TempHolders[self] = ar;
+				Listeners[self]:Fire();
 				spawn(function() f(unpack(ar)) end);
 			else
 				return tmp
@@ -78,14 +82,8 @@ local eClass = {
 		end);
 	end;
 	wait = function(self)
-		local done,ret = false;
-		local c = self:connect(function(...)
-			done = true;
-			ret = {...};
-		end);
-		repeat wait() until done;
-		c:disconnect();
-		return unpack(ret);
+		Listeners[self].Event:wait();
+		return unpack(TempHolders[self]);
 	end;
 	intercept = function(self, f)
 		local old = Intercept[self];
@@ -108,6 +106,8 @@ local ieClass = {
 				-- Some time later, prevent yields in intercepts
 			end;
 			if not tmp then
+				TempHolders[self] = ar;
+				Listeners[self]:Fire();
 				coroutine.wrap(f)(...);
 			else
 				return tmp
@@ -131,14 +131,8 @@ local ieClass = {
 		end);
 	end;
 	wait = function(self)
-		local done,ret = false;
-		local c = self:connect(function(...)
-			done = true;
-			ret = {...};
-		end);
-		repeat wait() until done;
-		c:disconnect();
-		return unpack(ret);
+		Listeners[self].Event:wait();
+		return unpack(TempHolders[self]);
 	end;
 };
 ieClass.Fire = ieClass.fire
@@ -184,6 +178,7 @@ Event.new = function(type,iname)
 	else
 		return error("[Error][Valkyrie Input] (in Event.new()): No valid event type was given", 2);
 	end;
+	Listeners[ni] = Instance.new("BindableEvent");
 	return ni;
 end;
 
