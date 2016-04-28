@@ -18,7 +18,7 @@ local connection do
 			finishers[self](self);
 			finishers[self] = nil;
 		else
-			warn("[Warn][Valkyrie Events] (in connection:disconnect()): Unable to disconnect disconnected action for ValkyrieInput");
+			warn("[Warn][Valkyrie Events] (in connection:disconnect()): Unable to disconnect disconnected connection for ValkyrieEvents");
 		end;
 	end;
 	local cmt = {
