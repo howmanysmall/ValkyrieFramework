@@ -165,9 +165,11 @@ Event.new = function(type,iname)
 	end;
 	if type == 'Event' then
 		mt.__index = eClass;
+		mt.__call = eClass.fire;
 		Events[ni] = {};
 	elseif type == 'InstantEvent' then
 		mt.__index = ieClass;
+		mt.__call = ieClass.fire;
 		InstantEvents[ni] = {};
 	elseif type == 'Intent' then
 		mt.__index = iClass;
@@ -178,6 +180,8 @@ Event.new = function(type,iname)
 	else
 		return error("[Error][Valkyrie Input] (in Event.new()): No valid event type was given", 2);
 	end;
+	mt.__metatable = "Locked metatable: Valkyrie Events";
+	mt.__tostring = function() return "Valkyrie Event" end;
 	Listeners[ni] = Instance.new("BindableEvent");
 	return ni;
 end;
