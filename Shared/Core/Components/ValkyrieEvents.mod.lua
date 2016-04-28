@@ -29,7 +29,7 @@ local connection do
 		end;
 		__metatable = "Locked metatable: Valkyrie";
 		__tostring = function()
-			return "Connection object for ValkyrieInput";
+			return "Connection object for ValkyrieEvents";
 		end;
 	};
 	connection = function(disconnectFunc)
