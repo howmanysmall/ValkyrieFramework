@@ -1002,7 +1002,12 @@ do
 		for i=1,#sources do
 			local state = CreateInputState(sources[i]);
 			local down = false;
-			local func = self.Action;
+			local _func = self.Action;
+			local func = function(...)
+				if curr > #sources then
+					return _func(...)
+				end;
+			end;
 			BindCollection[#BindCollection+1] = iBinds[state]:connect(function(q,d,p,r)
 				if curr ~= i then curr = 1 return end;
 				if d == InputDirections.Up then
