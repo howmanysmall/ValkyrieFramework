@@ -236,6 +236,8 @@ local InputSources, LinkedTypes, LinkedNames do
 		Keyboard.LeftWin = Keyboard.Super;
 		Keyboard.WindowsKey = Keyboard.Super;
 		Keyboard.Windows = Keyboard.Super;
+		Keyboard.LShift = Keyboard.Shift;
+		Keyboard.Cmd = Keyboard.Super;
 
 		-- ~ Keyboard Translation aliases
 		local _translations = {};
