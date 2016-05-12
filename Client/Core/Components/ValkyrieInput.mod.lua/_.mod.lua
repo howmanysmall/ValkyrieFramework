@@ -904,7 +904,7 @@ do
 
 		local Button;
 		if makebutton then
-			Button = Instance.new("TextButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
+			Button = Instance.new("ImageButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
 			Connections[#Connections+1] = self:BindButtonPress(newButton);
 			Connections[#Connections+1] = CustomConnection(function() Button:Destroy() end);
 		end
