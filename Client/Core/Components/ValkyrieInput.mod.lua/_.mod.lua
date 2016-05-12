@@ -291,7 +291,7 @@ local InputSources, LinkedTypes, LinkedNames do
 		local Touch = InputSources.TouchActions;
 		InputSources.Touch = Touch;
 		Touch.Tap = Touch.Tapped;
-		Touch.LongPress = Touch.LongPress;
+		Touch.LongPress = Touch.LongPressed;
 		Touch.Move = Touch.Moved;
 		Touch.Pan = Touch.Panned;
 	end
@@ -303,10 +303,13 @@ local InputSources, LinkedTypes, LinkedNames do
 		mt.__metatable = "Locked metatable: Valkyrie";
 		InputSources[k] = np;
 	end;
-	InputSources.Touchscreen = InputSources.TouchScreen;
-	InputSources.Touch = InputSources.TouchScreen;
-	InputSources.Gamepad = InputSources.Controller;
-	InputSources.GamePad = InputSources.Controller;
+	for i=1,4 do
+		InputSources["Gamepad"..tostring(i)] = InputSources["Controller"..tostring(i)];
+		InputSources["GamePad"..tostring(i)] = InputSources["Controller"..tostring(i)];
+	end;
+	InputSources.Controller = InputSources.Controller1;
+	InputSources.Gamepad = InputSources.Controller1;
+	InputSources.GamePad = InputSources.Controller1;
 	local ni = InputSources;
 	InputSources = newproxy(true);
 	local mt = getmetatable(InputSources);
