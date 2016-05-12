@@ -23,6 +23,9 @@ What's with the file names?
 **Filename.mod.lua**: Module Script  
 **Filename.loc.lua**: Local Script  
 **Filename.lua**: Script  
+**Filename.mod.moon**: Module Script (Moonscript)  
+**Filename.loc.moon**: Local Script (Moonscript)  
+**Filename.moon**: Script (Moonscript)  
 **_.Filename.ext**: Represents the parent directory; replaces the build target in the CI  
 **.Filename.ext**: A dot in front of a file name tells the CI to ignore the file.
 
