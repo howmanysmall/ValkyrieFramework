@@ -34,7 +34,7 @@ local function createPermission(name)
 	mt.__tostring = function()
 		return name;
 	end;
-	mt.__metatable = {};
+	mt.__metatable = "Locked metatable: Valkyrie Permissions";
 	-- Will possibly extend this later if Valkyrie gets a standard way to extend
 	-- operator behaviour on data.
 
