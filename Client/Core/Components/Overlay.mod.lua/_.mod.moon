@@ -20,7 +20,6 @@ OverlayController = with {}
         else
             -- Get our init going
             require(script.init)!
-        end
         open = true
     .CloseOverlay = hybrid ->
         -- Also need a better closing animation.
