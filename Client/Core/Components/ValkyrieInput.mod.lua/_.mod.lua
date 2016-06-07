@@ -5,7 +5,7 @@ local Controller = {};
 local this = newproxy(true);
 local IntentService = _G.Valkyrie:GetComponent "IntentService";
 local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
-local Translation = _G.Valkyrie:GetCompontent "Translation";
+local Translation = _G.Valkyrie:GetComponent "Translation";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
