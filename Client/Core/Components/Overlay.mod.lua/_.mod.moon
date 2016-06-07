@@ -6,13 +6,32 @@ Load "Design"
 Valkyrie = _G.ValkyrieC
 Overlay = Valkyrie\GetOverlay!
 
-sbl = new"Frame"
-    Name: "LeftNav"
-    Parent: Overlay
-    Size: new"UDim2" 0, 56, 1, 0
-    BackgroundColor3: new"Color3" .18, .18, .18
-    ZIndex: 8
-    Children:
-        ValkButton: new"ImageButton"
-            Size: new"UDim2" 0, 56, 0, 56
-            
+r = newproxy true
+hybrid = Valkyrie.GetComponent('moonutil').ExtractWrapper r
+
+init = false
+open = false
+
+-- Whoops.
+OverlayController = with {}
+    .OpenOverlay = hybrid ->
+        if init
+            -- Need a better opening animation now that it's differently styled
+        else
+            -- Get our init going
+            require(script.init)!
+        end
+        open = true
+    .CloseOverlay = hybrid ->
+        -- Also need a better closing animation.
+        open = false
+    .ToggleOverlay = hybrid ->
+        return OverlayController.CloseOverlay! if open else OverlayController.OpenOverlay!
+    
+    
+with getmetatable r
+    .__index = OverlayController
+    .__metatable = 'Locked Metatable: Valkyrie Overlay'
+    .__tostring = -> "Valkyrie Overlay"
+
+return r
