@@ -256,7 +256,7 @@ local InputSources, LinkedTypes, LinkedNames do
 			end;
 		end;
 		for k,v in next, _translations do
-			Translations:CreateNode("Keyboard."..k, v);
+			Translation:CreateNode("Keyboard."..k, v);
 		end;
 	end;
 	do
