@@ -4,7 +4,10 @@ local Event = {};
 local Events = setmetatable({},{__mode = 'k'});
 local InstantEvents = setmetatable({},{__mode = 'k'});
 local Intents = setmetatable({},{__mode = 'k'});
-local IntentService = _G.Valkyrie:GetComponent "IntentService";
+local Intercept = setmetatable({},{__mode = 'k'});
+local Listeners = setmetatable({},{__mode = 'k'});
+local TempHolders = setmetatable({},{__mode = 'k'});
+local IntentService
 
 local connection do
 	-- Constructor for custom Connection objects
@@ -17,7 +20,7 @@ local connection do
 			finishers[self](self);
 			finishers[self] = nil;
 		else
-			warn("[Warn][Valkyrie Events] (in connection:disconnect()): Unable to disconnect disconnected action for ValkyrieInput");
+			warn("[Warn][Valkyrie Events] (in connection:disconnect()): Unable to disconnect disconnected connection for ValkyrieEvents");
 		end;
 	end;
 	local cmt = {
@@ -28,7 +31,7 @@ local connection do
 		end;
 		__metatable = "Locked metatable: Valkyrie";
 		__tostring = function()
-			return "Connection object for ValkyrieInput";
+			return "Connection object for ValkyrieEvents";
 		end;
 	};
 	connection = function(disconnectFunc)
@@ -49,7 +52,17 @@ local eClass = {
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			spawn(function() f(unpack(ar)) end);
+			local tmp;
+			if Intercept[self] then
+				tmp = Intercept[self](...)
+			end;
+			if not tmp then
+				TempHolders[self] = ar;
+				Listeners[self]:Fire();
+				spawn(function() f(unpack(ar)) end);
+			else
+				return tmp
+			end;
 		end;
 	end;
 	connect = function(self, f)
@@ -69,24 +82,36 @@ local eClass = {
 		end);
 	end;
 	wait = function(self)
-		local done,ret = false;
-		local c = self:connect(function(...)
-			done = true;
-			ret = {...};
-		end);
-		repeat wait() until done;
-		c:disconnect();
-		return unpack(ret);
+		Listeners[self].Event:wait();
+		return unpack(TempHolders[self]);
+	end;
+	intercept = function(self, f)
+		local old = Intercept[self];
+		IntentService:BroadcastIntent("Event.InterceptChanged", self, old, f);
+		Intercept[self] = f;
+		return old;
 	end;
 };
 eClass.Fire = eClass.fire;
+eClass.Intercept = eClass.intercept;
 local ieClass = {
 	fire = function(self, ...)
 		local e = InstantEvents[self];
 		for i=1,#e do
 			local f = e[i] -- e i o
 			-- And old McDonald had a sheep
-			coroutine.wrap(f)(...);
+			local tmp;
+			if Intercept[self] then
+				tmp = Intercept[self](...);
+				-- Some time later, prevent yields in intercepts
+			end;
+			if not tmp then
+				TempHolders[self] = ar;
+				Listeners[self]:Fire();
+				coroutine.wrap(f)(...);
+			else
+				return tmp
+			end;
 		end;
 	end;
 	connect = function(self, f)
@@ -106,17 +131,13 @@ local ieClass = {
 		end);
 	end;
 	wait = function(self)
-		local done,ret = false;
-		local c = self:connect(function(...)
-			done = true;
-			ret = {...};
-		end);
-		repeat wait() until done;
-		c:disconnect();
-		return unpack(ret);
+		Listeners[self].Event:wait();
+		return unpack(TempHolders[self]);
 	end;
 };
 ieClass.Fire = ieClass.fire
+ieClass.Intercept = eClass.intercept;
+ieClass.intercept = eClass.intercept;
 local iClass = {
 	Fire = function(self,...)
 		return IntentService:FireIntent(Intents[self],f);
@@ -144,9 +165,11 @@ Event.new = function(type,iname)
 	end;
 	if type == 'Event' then
 		mt.__index = eClass;
+		mt.__call = eClass.fire;
 		Events[ni] = {};
 	elseif type == 'InstantEvent' then
 		mt.__index = ieClass;
+		mt.__call = ieClass.fire;
 		InstantEvents[ni] = {};
 	elseif type == 'Intent' then
 		mt.__index = iClass;
@@ -157,15 +180,22 @@ Event.new = function(type,iname)
 	else
 		return error("[Error][Valkyrie Input] (in Event.new()): No valid event type was given", 2);
 	end;
+	mt.__metatable = "Locked metatable: Valkyrie Events";
+	mt.__tostring = function() return "Valkyrie Event" end;
+	Listeners[ni] = Instance.new("BindableEvent");
 	return ni;
 end;
 
 local ni = newproxy(true);
 local mt = getmetatable(ni);
-mt.__index = Event;
-mt.__metatable =  "Locked metatable: Valkyrie";
-mt.__tostring = function()
-  return "Valkyrie event controller";
+mt.__index = function(t,k)
+	IntentService = _G.Valkyrie:GetComponent "IntentService";
+	mt.__index = Event;
+	return t[k];
 end;
-return ni;
+mt.__metatable =	"Locked metatable: Valkyrie";
+mt.__tostring = function()
+	return "Valkyrie event controller";
+end;
 
+return ni;

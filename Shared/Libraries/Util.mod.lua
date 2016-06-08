@@ -43,11 +43,14 @@ end;
 local CustomClasses = _G.Valkyrie:GetComponent "Classes".ClassList
 local QueryImmediate = print--_G.Valkyrie:GetComponent "Query".Direct
 local newInst = Instance.new;
+local pcall = pcall;
 
 local assertLocal = function() return assert(game.Players.LocalPlayer,'') end
 
 local UtilMod = _G.Valkyrie:GetComponent "Util";
 -- Import it from there
+
+local np,gmt,ge,rs = newproxy,getmetatable,getfenv,rawset;
 
 return function(wrapper)
 	local client = pcall(assertLocal);
@@ -128,6 +131,20 @@ return function(wrapper)
 	wrapper:OverrideGlobal "map" (map);
 	wrapper:OverrideGlobal "pack" (pack);
 	wrapper:OverrideGlobal "query" (QueryImmediate);
+	wrapper:OverrideGlobal "fix" (function(t)
+		return t;
+	end)
+	
+	do
+		local rawwrapper = np(true);
+		local mt = gmt(rawwrapper)
+		mt.__index = wrapper;
+		mt.__call = function(t,...) return wrapper(...) end;
+		wrapper.wlist[rawwrapper] = rawwrapper;
+		wrapper.ulist[rawwrapper] = rawwrapper;
+		rs(ge(1),'_wrapper',rawwrapper);
+		-- rawwrapper will never go through the wrapper. Ever.
+	end
 
 	for FuncName, UtilFunction in next, UtilMod do
 	   wrapper:OverrideGlobal(FuncName)(UtilFunction);

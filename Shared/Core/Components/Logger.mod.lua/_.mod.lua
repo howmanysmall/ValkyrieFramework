@@ -142,8 +142,6 @@ local function HandlePrintingFunction(self, Level, ...)
         error("Script stopped by Valkyrie Logger. Flag = " .. tostring(Settings[self].StopScriptFlag));
     end
 
-    Settings[self].StopScriptFlag = nil;
-
     return self;
 end
 

@@ -14,7 +14,9 @@ To check the build log of a model, go to the [branches list](https://github.com/
 Just `require()` the Valkyrie model and then call the returned Valkyrie object with `(GameName, Key)` to auth it and link it to your Valkyrie identity.
 
 ### Where is the API?
-The API documentation is currently in the making, but some docs are available in `/.Spec/APIDocs`
+The API documentation is currently in the making, but some docs are available in `/.Spec/APIDocs` or potentially [the Valkyrie site](https://valkyrie.crescentcode.net/docs), however both are outdated or broken at the time of writing.
+
+The docs are currently being set up to be statically rendered, and updated versions of the source files can be found at [the CrescentDocs repo](https://github.com/CrescentCode/CrescentDocs) which will be rendered to [Crescent Docs](https://docs.crescentcode.net/) when all the styling is sorted out.
 
 ## How can I help?
 Test. Valkyrie always needs testing, so grab a model and load it up. Play with the components, and try to make something with it, then if you find a bug submit an issue to the bug tracker with a stack trace from the output, the branch it came from, and how to replicate.

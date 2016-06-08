@@ -5,6 +5,7 @@ local Controller = {};
 local this = newproxy(true);
 local IntentService = _G.Valkyrie:GetComponent "IntentService";
 local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
+local Translation = _G.Valkyrie:GetComponent "Translation";
 
 local function extract(...) -- Dynamic methods are pretty much standard now
 	if (...) == this then
@@ -104,6 +105,12 @@ local InputSources, LinkedTypes, LinkedNames do
 			Ctrl = make("Keyboard", "LeftControl");
 			Alt = make("Keyboard", "LeftAlt");
 			Super = make("Keyboard", "LeftMeta");
+			Up = make("Keyboard","Up");
+			Down = make("Keyboard","Down");
+			Left = make("Keyboard","Left");
+			Right = make("Keyboard","Right");
+			Insert = make("Keyboard","Insert");
+			Tilde = make("Keyboard","Tilde");
 		};
 		Controller1 = {
 			A = make("ControllerButton", "ButtonA");
@@ -229,6 +236,28 @@ local InputSources, LinkedTypes, LinkedNames do
 		Keyboard.LeftWin = Keyboard.Super;
 		Keyboard.WindowsKey = Keyboard.Super;
 		Keyboard.Windows = Keyboard.Super;
+		Keyboard.LShift = Keyboard.Shift;
+		Keyboard.Cmd = Keyboard.Super;
+
+		-- ~ Keyboard Translation aliases
+		local _translations = {};
+		for k,v in next, Keyboard do
+			local n = LinkedNames[v];
+			_translations[n] = {en_us = n};
+		end;
+		local modlist = script:GetChildren();
+		for i = 1, #modlist do
+			local v = modlist[i];
+			local tlist = require(v);
+			local nom = v.Name;
+			for n,v in next, tlist do
+				_translations[n] = _translations[n] or {};
+				_translations[n][nom] = v;
+			end;
+		end;
+		for k,v in next, _translations do
+			Translation:CreateNode("Keyboard."..k, v);
+		end;
 	end;
 	do
 		-- ~ Gamepad input aliases
@@ -262,7 +291,7 @@ local InputSources, LinkedTypes, LinkedNames do
 		local Touch = InputSources.TouchActions;
 		InputSources.Touch = Touch;
 		Touch.Tap = Touch.Tapped;
-		Touch.LongPress = Touch.LongPress;
+		Touch.LongPress = Touch.LongPressed;
 		Touch.Move = Touch.Moved;
 		Touch.Pan = Touch.Panned;
 	end
@@ -274,10 +303,13 @@ local InputSources, LinkedTypes, LinkedNames do
 		mt.__metatable = "Locked metatable: Valkyrie";
 		InputSources[k] = np;
 	end;
-	InputSources.Touchscreen = InputSources.TouchScreen;
-	InputSources.Touch = InputSources.TouchScreen;
-	InputSources.Gamepad = InputSources.Controller;
-	InputSources.GamePad = InputSources.Controller;
+	for i=1,4 do
+		InputSources["Gamepad"..tostring(i)] = InputSources["Controller"..tostring(i)];
+		InputSources["GamePad"..tostring(i)] = InputSources["Controller"..tostring(i)];
+	end;
+	InputSources.Controller = InputSources.Controller1;
+	InputSources.Gamepad = InputSources.Controller1;
+	InputSources.GamePad = InputSources.Controller1;
 	local ni = InputSources;
 	InputSources = newproxy(true);
 	local mt = getmetatable(InputSources);
@@ -609,12 +641,39 @@ function Controller.GetAction(...)
 	return Actions[actionname];
 end;
 
+function Controller.EmulateInput(...)
+	local source, dir, meta, data = extract(...);
+	assert(source, "[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply an Input source as #1", 2);
+	local Type, Name = LinkedTypes[source],LinkedNames[source];
+	assert(
+		Type and Name,
+		"[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+		2
+	);
+	assert(dir, "[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply an Input direction as #2", 2);
+	do local suc = false;
+		for k,v in next, InputDirections do
+			if v == dir then
+				suc = true;
+				break;
+			end;
+		end;
+		if not suc then
+			error("[Error][Valkyrie Input] (in Controller.EmulateInput()): You need to supply a valid Valkyrie Input direction object as #2", 2);
+		end;
+	end;
+	local i = CreateInputState(source, meta);
+	iBinds[i]:Fire(i, dir, true, data);
+end;
+
 Controller.Mouse = Mouse;
 Controller.CAS = CAS;
 Controller.UIS = UIS;
 
 Controller.InputSources = InputSources;
 Controller.GetInputState = CreateInputState;
+
+Controller.UserActions = UserActions;
 
 function ActionClass:UnbindAll()
 	local binds = ActionBinds[self];
@@ -638,7 +697,7 @@ function ActionClass:SetFlag(flag, value)
 		);
 	end;
 end;
-do	
+do
 	local utilIsTouch = function(s)
 		return LinkedTypes[s] == 'TouchAction'
 	end
@@ -700,10 +759,10 @@ do
 				error("[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply a valid Valkyrie Input direction object as #2", 2);
 			end;
 		end;
-		
+
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source);
-		
+
 		-- Wrap the function in a binding
 		local func,bfunc = self.Action
 		if d == InputDirections.UpDown then
@@ -726,7 +785,7 @@ do
 				end;
 			end;
 		end;
-		
+
 		--> Connection
 		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
@@ -756,10 +815,10 @@ do
 			end;
 		end;
 		assert(object, "[Error][ValkyrieInput] (in ActionClass:BindSource()): You need to supply a valid source as #3", 2);
-		
+
 		-- Grab the input object for the source
 		local iobj = CreateInputState(source, object);
-		
+
 		-- Wrap the function in a binding
 		local func,bfunc = self.Action
 		if d == InputDirections.UpDown then
@@ -782,7 +841,7 @@ do
 				end;
 			end;
 		end;
-		
+
 		--> Connection
 		local bind = iBinds[iobj]:connect(bfunc);
 		ActionBinds[self][#ActionBinds[self]+1] = bind;
@@ -812,9 +871,9 @@ do
 			error("[Error][Valkyrie Input] (in ActionClass:BindContext()): "..errmsg, 2);
 			return;
 		end
-		
+
 		local Connections = {};
-		
+
 		for i=1,#sources do
 			local v = sources[i];
 			local state = CreateInputState(v[1]);
@@ -842,14 +901,14 @@ do
 			end;
 			Connections[#Connections+1] = iBinds[state]:connect(bfunc);
 		end;
-		
+
 		local Button;
 		if makebutton then
-			Button = Instance.new("TextButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
+			Button = Instance.new("ImageButton", game.Player.LocalPlayer.PlayerGui.ControlGui);
 			Connections[#Connections+1] = self:BindButtonPress(newButton);
 			Connections[#Connections+1] = CustomConnection(function() Button:Destroy() end);
 		end
-		
+
 		--> Connection, ?Button
 		local bind = CustomConnection(function()
 			for i=1,#Connections do
@@ -861,12 +920,12 @@ do
 	end;
 	function ActionClass:BindButtonPress(button)
 		-- ~ Redirects a button press (From any input that can provide it) to the action
-		
+
 		local TouchState = CreateInputState(InputSources.Touch.TouchTap, button);
 		local tBind = iBinds[TouchState]:connect(function(i,d,p,r) self.Action(i,p,r) end);
 		local mBind = button.MouseButton1Click:connect(self.Action);
 		-- Not sure how the Controller is supposed to select things?
-		
+
 		--> Connection
 		local bind = CustomConnection(function()
 			tBind:disconnect();
@@ -878,7 +937,7 @@ do
 	function ActionClass:BindCombo(sources)
 		-- @sources: Table array of Valkyrie Input Sources
 		-- | When they're all down, it fires. Once.
-		
+
 		local BindCollection = {};
 		local Totals = {};
 		local ilist = {};
@@ -923,7 +982,7 @@ do
 			end;
 			error("[Error][Valkyrie Input] (in ActionClass:BindCombo()): "..errmsg, 2);
 		end;
-		
+
 		--> Connection
 		-- Create a CustomConnection Object to disconnect all of the connections stored inside of BindCollection
 		local bind = CustomConnection(function()
@@ -943,7 +1002,12 @@ do
 		for i=1,#sources do
 			local state = CreateInputState(sources[i]);
 			local down = false;
-			local func = self.Action;
+			local _func = self.Action;
+			local func = function(...)
+				if curr > #sources then
+					return _func(...)
+				end;
+			end;
 			BindCollection[#BindCollection+1] = iBinds[state]:connect(function(q,d,p,r)
 				if curr ~= i then curr = 1 return end;
 				if d == InputDirections.Up then
@@ -974,8 +1038,8 @@ do
 	function ActionClass:BindTouchAction(source, object)
 		-- ~ Specific touch events like tapping, pinching, scrolling etc
 		assert(utilIsTouch(source), "[Error][Valkyrie Input] (in ActionClass:BindTouchAction()): Supplied input source was not a TouchAction", 2);
-		local state = CreateInputState(source, object);		
-		
+		local state = CreateInputState(source, object);
+
 		--> Connection
 		local bind = iBinds[state]:connect(function(i,d,p,r)
 			return self.Action(i,p,r);
@@ -989,6 +1053,7 @@ end;
 do
 	local mt = getmetatable(this);
 	mt.__index = Controller;
+
 	mt.__tostring = function()
 		return "Valkyrie Input controller";
 	end;

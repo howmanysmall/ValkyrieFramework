@@ -48,7 +48,7 @@ if game:GetService("RunService"):IsStudio() then
 			if args[2] == 'All' then
 				RemoteIntent:FireAllClients(args[1], unpack(args,3,args.n));
 			else
-				RemoteIntent:Fire(args[2],args[1],unpack(args,3,args.n));
+				RemoteIntent:FireClient(args[2],args[1],unpack(args,3,args.n));
 			end;
 		end;
 	end;
@@ -81,7 +81,7 @@ else
 		if args[2] == 'All' then
 			RemoteIntent:FireAllClients(args[1], unpack(args,3,args.n));
 		else
-			RemoteIntent:Fire(args[2],args[1],unpack(args,3,args.n));
+			RemoteIntent:FireClient(args[2],args[1],unpack(args,3,args.n));
 		end;
 	end;
 end;
@@ -101,25 +101,56 @@ cxitio.RegisterIntent = function(...)
 		if i == Intent then f(...) end;
 	end);
 end;
+cxitio.ConnectIntent = cxitio.RegisterIntent;
 
 cxitio.BroadcastIntent = function(...)
 	LocalIntent:Fire(extract(...));
 end;
 
 cxitio.FireIntent = cxitio.BroadcastIntent;
+cxitio.FireRPCIntent = cxitio.BroadcastRPCIntent;
 cxitio.InvokeIntent = function(...)
 	return error("[Error][Valkyrie Intents] (in IntentService:InvokeIntent()): Invoke is not yet implemented");
 end;
 
+cxitio.BroadcastUniversal = function(...)
+    cxitio.BroadcastIntent(...);
+    if client then
+        cxitio.BroadcastRPCIntent(...);
+    else
+        cxitio.BroadcastRPCIntent(select(2,extract(...)));
+    end;
+end;
+cxitio.FireUniversal = cxitio.BroadcastUniversal;
+cxitio.FireUniversalIntent = cxitio.BroadcastUniversal;
+cxitio.BroadcastUniversalIntent = cxitio.BroadcastUniversal;
+
+cxitio.RegisterUniversal = function(...)
+    local rpcc, locc;
+    locc = cxitio.RegisterIntent(...);
+    rpcc = cxitio.RegisterRPCIntent(...);
+    return {
+        disconnect = function()
+            rpcc:disconnect();
+            locc:disconnect();
+        end;
+    };
+end;
+cxitio.ConnectUniversal = cxitio.RegisterUniversal;
+cxitio.ConnectUniversalIntent = cxitio.RegisterUniversal;
+cxitio.RegisterUniversalIntent = cxitio.RegisterUniversal;
+
 local mt = getmetatable(r);
-mt.__index = cxitio;
+mt.__index = function(t,k)
+	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
+	LocalIntent = ValkyrieEvents.new "Event"
+	RemoteIntentBind = ValkyrieEvents.new "Event"
+	mt.__index = cxitio;
+	return t[k];
+end;
 mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
 end;
 mt.__metatable = "Locked metatable: Valkyrie";
-spawn(function()
-	ValkyrieEvents = _G.Valkyrie:GetComponent("ValkyrieEvents");
-	LocalIntent = ValkyrieEvents.new "Event"
-	RemoteIntentBind = ValkyrieEvents.new "Event"
-end);
+
 return r;

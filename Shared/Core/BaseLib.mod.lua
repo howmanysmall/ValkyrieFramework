@@ -6,7 +6,7 @@ local pairs = pairs;
 local error = error;
 local unpack = unpack;
 local game = game;
-local gs = game.GetService;
+local gs = game.IsA;
 local pcall = pcall;
 local newproxy = newproxy;
 local rawget, rawset = rawget, rawset;
@@ -53,7 +53,7 @@ local convert do
 					end;
 					ignorerec[value] = nil;
 				elseif type(ret) == 'userdata' then
-					if pcall(gs, game, value) then
+					if pcall(gs, value, 'Instance') then
 						getmetatable(ret).__index = this.imt.__index;
 					end;
 				end;
@@ -75,11 +75,15 @@ local convert do
 		local type = type(value);
 		if type == 'function' then
 			ret = function(...)
+				local args = pack(convertAll(to, from, this, ...))
 				local returns = pack(pcall(
 					function(...) return value(...) end,
-					convertAll(to, from, this, ...)
+					unpack(args,1,args.n) -- Ugly.
 				));
 				if returns[1] then
+					if this.fixTables then
+						convertAll(from, to, this, unpack(args,1,args.n));
+					end;
 					return convertAll(from, to, this, unpack(returns, 2, returns.n));
 				else
 					echoerror(returns[2], 2);
@@ -115,7 +119,7 @@ local convert do
 					for e,m in pairs(this.umt[this.TypeIdentities[value]]) do
 						mt[e] = m;
 					end
-				elseif pcall(gs,game,value) then
+				elseif pcall(gs,value,'Instance') then
 					for e,m in pairs(this.imt) do
 						mt[e] = m;
 					end;
@@ -339,6 +343,7 @@ local function newWrapper(private)
 	self.useFullConversion = false;
 	self.convertFullBidirectional = true;
 	self.useContextInversion = true;
+	self.fixTables = false;
 
 	self.genSeed = tick();
 

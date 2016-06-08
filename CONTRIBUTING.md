@@ -23,7 +23,10 @@ What's with the file names?
 **Filename.mod.lua**: Module Script  
 **Filename.loc.lua**: Local Script  
 **Filename.lua**: Script  
-**_.ext**: Represents the parent directory; replaces the build target in the CI  
+**Filename.mod.moon**: Module Script (Moonscript)  
+**Filename.loc.moon**: Local Script (Moonscript)  
+**Filename.moon**: Script (Moonscript)  
+**_.Filename.ext**: Represents the parent directory; replaces the build target in the CI  
 **.Filename.ext**: A dot in front of a file name tells the CI to ignore the file.
 
 What can I add?
@@ -46,7 +49,7 @@ Create a pull request on this repository. Put "[WIP]" in the title to inform tha
 Go to the pull request's page. You should see that the CI has started to build it.  
 After a few seconds you should see it finish and display either an error or success icon.  
 If it's an error icon, click "Show all checks" and then "Details" and you should see what went wrong.  
-If it's a success icon, go to [the list of models](https://gskw.dedyn.io:444/models) and pick the one that is yours.
+If it's a success icon, go to [the list of models](https://ci.crescentcode.net/models) and pick the one that is yours.
 Take the model. You should now be able to `require()` the model.  
 
 If you want to update it, don't create a new pull request, but add commits to the already existing one instead.
