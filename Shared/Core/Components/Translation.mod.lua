@@ -25,13 +25,13 @@ end;
 -- Controller class
 function ControllerClass.CreateNode(...)
   local name, translations = extract(...);
-  if TranslationNodeBackLinks[name] then
+  if TranslationNodeBacklinks[name] then
     warn("[Warn][Translation] (in CreateNode): "..name.." already exists. Updating translations instead.");
-    local tli = TranslationNodeLinks[TranslationNodeBackLinks[name]];
+    local tli = TranslationNodeLinks[TranslationNodeBacklinks[name]];
     for k,v in next, translations do
       tli[k:lower()] = v;
     end;
-    return TranslationNodeBackLinks[name];
+    return TranslationNodeBacklinks[name];
   else
     local newTranslationNode = newproxy(true);
     local newTranslationMt = getmetatable(newTranslationNode);
@@ -55,7 +55,7 @@ function ControllerClass.CreateNode(...)
     	  _translations[k:lower()] = v;
 	    end;
     end;
-    TranslationNodeBackLinks[name] = newTranslationNode;
+    TranslationNodeBacklinks[name] = newTranslationNode;
     TranslationNodeLinks[newTranslationNode] = _translations;
     _translations.default = _translations.default
     or _translations.en_us
@@ -68,7 +68,7 @@ end;
 
 function ControllerClass.GetNode(...)
   local name = extract(...);
-  local node = TranslationNodeBackLinks[name];
+  local node = TranslationNodeBacklinks[name];
   if not node then
     warn("[Warn][Translation] (in GetNode): "..name.." doesn't yet exist. Creating a blank translation.");
     node = ControllerClass.CreateNode(name,{});
