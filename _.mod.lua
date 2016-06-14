@@ -83,7 +83,7 @@ local GId = "";
 local URL = "https://valkyrie.crescentcode.net";
 
 -- Quickly fetch the Class inherit table for BaseLib
-do local ctab = http:JSONDecode(http:GetAsync("http://pastebin.com/raw/aE2kuGUF"));
+do local ctab = http:JSONDecode(http:GetAsync("http://cdn.easleycompany.com/apidump.php")).Class;
 	local itab = {};
 	for k,v in next, ctab do
 		itab[k] = v.BaseClassName;
