@@ -215,6 +215,7 @@ local InputSources, LinkedTypes, LinkedNames do
 	do
 		-- ~ Keyboard input aliases
 		local Keyboard = InputSources.Keyboard;
+    for k,v in next, Keyboard do Keyboard[LinkedNames[v]] = v end;
 		Keyboard.One = Keyboard[1];
 		Keyboard.Two = Keyboard[2];
 		Keyboard.Three = Keyboard[3];
@@ -238,6 +239,8 @@ local InputSources, LinkedTypes, LinkedNames do
 		Keyboard.Windows = Keyboard.Super;
 		Keyboard.LShift = Keyboard.Shift;
 		Keyboard.Cmd = Keyboard.Super;
+    Keyboard.LeftShift = Keyboard.Shift;
+
 
 		-- ~ Keyboard Translation aliases
 		local _translations = {};
@@ -285,6 +288,8 @@ local InputSources, LinkedTypes, LinkedNames do
 			Controller.DPadDown = Controller.Down;
 			Controller.ThumbStick1 = Controller.Analogue1;
 			Controller.ThumbStick2 = Controller.Analogue2;
+      InputSources["Gamepad"..tostring(i)] = Controller;
+  		InputSources["GamePad"..tostring(i)] = Controller;
 		end;
 	end;
 	do
@@ -302,10 +307,6 @@ local InputSources, LinkedTypes, LinkedNames do
 		mt.__tostring = function()return k end;
 		mt.__metatable = "Locked metatable: Valkyrie";
 		InputSources[k] = np;
-	end;
-	for i=1,4 do
-		InputSources["Gamepad"..tostring(i)] = InputSources["Controller"..tostring(i)];
-		InputSources["GamePad"..tostring(i)] = InputSources["Controller"..tostring(i)];
 	end;
 	InputSources.Controller = InputSources.Controller1;
 	InputSources.Gamepad = InputSources.Controller1;
@@ -547,7 +548,7 @@ UISEdge = function(i,p,m)
 		sType = 'Mouse';
 		sName = 'Scrolled';
 	elseif sType:sub(1,-2) == 'Gamepad' then
-		sType = 'Controller'
+    -- I think this should solve an issue with whose controller is whose
 		sName = i.KeyCode.Name;
 	elseif sType == 'Focus' then
 		sType = 'Application';
