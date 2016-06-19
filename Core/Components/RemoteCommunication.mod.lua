@@ -44,7 +44,7 @@ do
 						rem_module		= HS:UrlEncode(rem_module);
 						rem_function	= HS:UrlEncode(rem_function);
 						local req_url	= format("%s/api/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
-						local ret		= decoder(HS:PostAsync(req_url, encoder(args)));
+						local ret		= HS:JSONDecode(HS:PostAsync(req_url, encoder(args)));
 						assert(ret.success, ret.error, 3);
 						return ret.result;
 					else
