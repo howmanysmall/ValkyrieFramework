@@ -104,7 +104,7 @@ local ieClass = {
       for i=1,#e do
 			  local f = e[i] -- e i o
 			  -- And old McDonald had a sheep
-				TempHolders[self] = ar;
+				TempHolders[self] = {...};
 				Listeners[self]:Fire();
 				coroutine.wrap(f)(...);
 			end;
