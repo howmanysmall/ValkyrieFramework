@@ -54,16 +54,22 @@ local function DayFromSeconds(sec) -- Epoch was on a Thursday
     return Days[ce(((sec+3*DAY)%WEEK)/DAY)]
 end
 local function GetMonth(...) -- Not so lazy months
-    sec = extract(...) or t();
-    local days = ce(sec%AYEAR/DAY);
+    sec = fl(extract(...) or t());
+    sec = sec+1; -- Otherwise it treats midnight as being yesterday
+    local ileap = isLeapYear(fl(sec/YEAR)+1970);
+    while sec > (ileap and LYEAR or YEAR) do
+    	sec = sec - (ileap and LYEAR or YEAR)
+    	ileap = isLeapYear(fl(sec/YEAR)+1970);
+    end;
+    local days = ce(sec/DAY)
     local month = 0;
     local useLeapFeb = isLeapYear(fl(sec/YEAR+1970))
-    for _,v in pairs(Months) do
-        if _==2 and useLeapFeb then v=29 end;
+    for i,v in pairs(Months) do
+        if i==2 and useLeapFeb then v=29 end;
         if days>v then
             days = days-v;
         else
-            month = iMonths[_]
+            month = iMonths[i]
             break
         end
     end

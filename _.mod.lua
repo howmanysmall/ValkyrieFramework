@@ -239,7 +239,7 @@ vmt.__call = function(_, GID, CoKey)
 	if resp then
 		print("Valkyrie Auth success: "..(resp == true and "Correct keypair" or resp));
 	else
-		return error("Valkyrie Auth failure!");
+		return error("Valkyrie Auth failure: Response was " .. resp) ;
 	end;
 
 	local vc = script.Client:Clone();

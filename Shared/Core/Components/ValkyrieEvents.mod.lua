@@ -49,20 +49,20 @@ local eClass = {
 	fire = function(self, ...)
 		local e = Events[self];
 		local ar = {...};
-		for i=1,#e do
-			local f = e[i] -- e i o
-			-- And old McDonald had a sheep
-			local tmp;
-			if Intercept[self] then
-				tmp = Intercept[self](...)
-			end;
-			if not tmp then
+    local tmp;
+    if Intercept[self] then
+      tmp = Intercept[self](...)
+    end;
+		if not tmp then
+      for i=1,#e do
+			  local f = e[i] -- e i o
+			  -- And old McDonald had a sheep
 				TempHolders[self] = ar;
 				Listeners[self]:Fire();
 				spawn(function() f(unpack(ar)) end);
-			else
-				return tmp
 			end;
+    else
+      return tmp;
 		end;
 	end;
 	connect = function(self, f)
@@ -97,21 +97,19 @@ eClass.Intercept = eClass.intercept;
 local ieClass = {
 	fire = function(self, ...)
 		local e = InstantEvents[self];
-		for i=1,#e do
-			local f = e[i] -- e i o
-			-- And old McDonald had a sheep
-			local tmp;
-			if Intercept[self] then
-				tmp = Intercept[self](...);
-				-- Some time later, prevent yields in intercepts
-			end;
-			if not tmp then
+    if Intercept[self] then
+      tmp = Intercept[self](...)
+    end;
+		if not tmp then
+      for i=1,#e do
+			  local f = e[i] -- e i o
+			  -- And old McDonald had a sheep
 				TempHolders[self] = ar;
 				Listeners[self]:Fire();
 				coroutine.wrap(f)(...);
-			else
-				return tmp
 			end;
+    else
+      return tmp;
 		end;
 	end;
 	connect = function(self, f)
