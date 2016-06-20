@@ -738,7 +738,7 @@ do
     end;
   end;
   -- @source: Valkyrie Input type
-  -- @dir: Input direction (Up, Down, UpDown/Click)
+  -- @dir: Input direction (Up, Down, /Click)
   function ActionClass:BindControl(source, dir)
     -- ~ UIS/Mouse style input sources to bind from
     assert(source, "[Error][Valkyrie Input] (in ActionClass:BindControl()): You need to supply an Input source as #1", 2);
@@ -766,7 +766,7 @@ do
 
     -- Wrap the function in a binding
     local func,bfunc = self.Action
-    if d == InputDirections.UpDown then
+    if d == InputDirections.DownUp then
       local down = false;
       bfunc = function(i,d,p,r)
         if d == InputDirections.Up then
@@ -822,7 +822,7 @@ do
 
     -- Wrap the function in a binding
     local func,bfunc = self.Action
-    if d == InputDirections.UpDown then
+    if d == InputDirections.DownUp then
       local down = false;
       bfunc = function(i,d,p,r)
         if d == InputDirections.Up then
@@ -880,7 +880,7 @@ do
       local state = CreateInputState(v[1]);
       local func,bfunc = self.Action
       local d = v[2];
-      if d == InputDirections.UpDown then
+      if d == InputDirections.DownUp then
         local down = false;
         bfunc = function(i,d,p,r)
           if d == InputDirections.Up then
