@@ -1072,7 +1072,7 @@ do
 
     local state = CreateInputState(source);
 
-    local acfunc = self.Action;
+    local afunc = self.Action;
     local bfunc = function(i,d,p,r)
       if d == InputDirections.Down then
         local alive = true;
