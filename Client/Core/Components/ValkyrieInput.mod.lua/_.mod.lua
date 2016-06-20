@@ -557,7 +557,7 @@ UISEdge = function(i,p,m)
   local source = InputSources[sType][sName];
   if not source then return end;
   local vType = LinkedTypes[source];
-  local dir = i.UserInputState == Enum.UserInputState.Begin and InputDirections.Up or InputDirections.Down;
+  local dir = i.UserInputState == Enum.UserInputState.Begin and InputDirections.Down or InputDirections.Up;
   if i.UserInputState == Enum.UserInputState.Change then
     dir = InputDirections.Change;
   end;
