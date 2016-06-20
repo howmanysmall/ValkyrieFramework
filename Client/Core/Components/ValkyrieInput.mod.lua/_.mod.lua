@@ -6,6 +6,7 @@ local this = newproxy(true);
 local IntentService = _G.Valkyrie:GetComponent "IntentService";
 local Event = _G.Valkyrie:GetComponent "ValkyrieEvents";
 local Translation = _G.Valkyrie:GetComponent "Translation";
+local RenderStep = game:GetService('RenderService').RenderStepped;
 
 local function extract(...) -- Dynamic methods are pretty much standard now
   if (...) == this then
@@ -1048,7 +1049,7 @@ do
     ActionBinds[self][#ActionBinds[self]] = bind;
     return bind;
   end;
-  function ActionClass:BindHold(source, time)
+  function ActionClass:BindHold(source, time, interval)
     assert(source, "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply an Input source as #1", 2);
     local Type, Name = LinkedTypes[source],LinkedNames[source];
     assert(
@@ -1060,17 +1061,35 @@ do
       type(time) == 'number',
       "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply a hold time as #1"
     );
+    interval = interval or -1;
+    assert(
+      type(interval) == 'number',
+      "[Error][Valkyrie Input] (in ActionClass:BindHold()): Supplied repeat interval was not a number"
+    )
 
-    local state = CreateInputState(source, object);
+    local state = CreateInputState(source);
 
     local acfunc = self.Action;
     local bfunc = function(i,d,p,r)
       if d == InputDirections.Down then
         local alive = true;
         delay(time, function()
-          if alive then
-            return afunc(i,p,r);
-          end
+          if interval > 0 then
+            local d = 0;
+            while alive do
+              return afunc(i,p,r,d);
+              d = 0; -- It is possible to adjust this loop so that it reduces
+              -- the length of the next wait, but that fucks with the expected
+              -- delta and we're supplying the delta for a reason.
+              while d < interval do
+                d = d + RenderStep:wait();
+              end;
+            end;
+          else
+            if alive then
+              return afunc(i,p,r,0);
+            end
+          end;
         end);
         repeat
           local _,_d = iBinds[state]:wait();
