@@ -1080,7 +1080,7 @@ do
           if interval > 0 then
             local d = 0;
             while alive do
-              return afunc(i,p,r,d);
+              afunc(i,p,r,d);
               d = 0; -- It is possible to adjust this loop so that it reduces
               -- the length of the next wait, but that fucks with the expected
               -- delta and we're supplying the delta for a reason.
