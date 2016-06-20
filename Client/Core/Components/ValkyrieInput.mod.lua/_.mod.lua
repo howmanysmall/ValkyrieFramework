@@ -111,6 +111,7 @@ local InputSources, LinkedTypes, LinkedNames do
       Left = make("Keyboard","Left");
       Right = make("Keyboard","Right");
       Insert = make("Keyboard","Insert");
+      KeypadZero = make("Keyboard","KeypadZero");
       Tilde = make("Keyboard","Tilde");
     };
     Controller1 = {

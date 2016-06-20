@@ -44,7 +44,13 @@ do
 						rem_module		= HS:UrlEncode(rem_module);
 						rem_function	= HS:UrlEncode(rem_function);
 						local req_url	= format("%s/api/%s/%s/%s/%s", URL, rem_module, rem_function, GID, Key);
-						local ret		= HS:JSONDecode(HS:PostAsync(req_url, encoder(args)));
+                        local Result;
+                        local Success, Error = pcall(function() Result = HS:PostAsync(req_url, HS:JSONEncode(args)) end);
+                        if not Success then
+                            warn("RemoteCommunication request to " .. URL .. "failed: " .. Error); -- warn() to not leak the URL to client
+                            error("RemoteCommunication request failed. More info in server warnings.");
+                        end
+						local ret		= HS:JSONDecode(Result);
 						assert(ret.success, ret.error, 3);
 						return ret.result;
 					else
