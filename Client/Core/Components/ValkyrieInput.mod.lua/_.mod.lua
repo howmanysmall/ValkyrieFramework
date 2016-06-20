@@ -1048,6 +1048,40 @@ do
     ActionBinds[self][#ActionBinds[self]] = bind;
     return bind;
   end;
+  function ActionClass:BindHold(source, time)
+    assert(source, "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply an Input source as #1", 2);
+    local Type, Name = LinkedTypes[source],LinkedNames[source];
+    assert(
+      Type and Name,
+      "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply a valid Valkyrie Input as #1, did you supply a string by accident?",
+      2
+    );
+    assert(
+      type(time) == 'number',
+      "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply a hold time as #1"
+    );
+
+    local state = CreateInputState(source, object);
+
+    local acfunc = self.Action;
+    local bfunc = function(i,d,p,r)
+      local alive;
+      if d == InputDirections.Down then
+        delay(time, function()
+          if alive then
+            return afunc(i,p,r);
+          end
+        end);
+        repeat
+          local _,_d = iBinds[state]:wait();
+        until _d == InputDirections.Up;
+        alive = false;
+      end;
+    end;
+    local bind = iBinds[state]:connect(bfunc);
+    ActionBinds[self][#ActionBinds[self]] = bind;
+    return bind;
+  end;
 end;
 
 
