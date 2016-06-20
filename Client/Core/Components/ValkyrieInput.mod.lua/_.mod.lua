@@ -111,6 +111,7 @@ local InputSources, LinkedTypes, LinkedNames do
       Left = make("Keyboard","Left");
       Right = make("Keyboard","Right");
       Insert = make("Keyboard","Insert");
+      KeypadZero = make("Keyboard","KeypadZero");
       Tilde = make("Keyboard","Tilde");
     };
     Controller1 = {
@@ -1059,12 +1060,14 @@ do
     );
     assert(
       type(time) == 'number',
-      "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply a hold time as #1"
+      "[Error][Valkyrie Input] (in ActionClass:BindHold()): You need to supply a hold time as #1",
+      2
     );
     interval = interval or -1;
     assert(
       type(interval) == 'number',
-      "[Error][Valkyrie Input] (in ActionClass:BindHold()): Supplied repeat interval was not a number"
+      "[Error][Valkyrie Input] (in ActionClass:BindHold()): Supplied repeat interval was not a number",
+      2
     )
 
     local state = CreateInputState(source);
@@ -1085,10 +1088,8 @@ do
                 d = d + RenderStep:wait();
               end;
             end;
-          else
-            if alive then
-              return afunc(i,p,r,0);
-            end
+          elseif alive then
+            return afunc(i,p,r,0);
           end;
         end);
         repeat
