@@ -1065,8 +1065,8 @@ do
 
     local acfunc = self.Action;
     local bfunc = function(i,d,p,r)
-      local alive;
       if d == InputDirections.Down then
+        local alive = true;
         delay(time, function()
           if alive then
             return afunc(i,p,r);
