@@ -492,9 +492,6 @@ CreateInputState = function(source, meta)
     meta.TouchLongPress:connect(function(a,i,p)
       return Edge.TouchLongPress(a,i,p,meta);
     end);
-    meta.TouchMoved:connect(function(i,p)
-      return Edge.TouchMoved(i,p,meta);
-    end);
     meta.TouchPan:connect(function(a,t,v,i,p)
       return Edge.TouchPan(a,t,v,i,p,meta);
     end);
@@ -504,12 +501,6 @@ CreateInputState = function(source, meta)
     meta.TouchRotate:connect(function(a,r,v,i,p)
       return Edge.TouchRotate(a,r,v,i,p,meta);
     end);
-    meta.TouchStarted:connect(function(i,p)
-      return Edge.TouchStarted(i,p,meta);
-    end);
-    meta.TouchEnded:connect(function(i,p)
-      return Edge.TouchEnded(i,p,meta);
-    end)
     meta.TouchSwipe:connect(function(d,i,p)
       return Edge.TouchSwipe(d,i,p,meta);
     end);
