@@ -91,17 +91,21 @@ end;
 local clientAdmin = script.VAClient;
 
 -- Bind the Player events
-Players.PlayerAdded:connect(function(p)
-  -- Bind the Chat commands
-  p.Chatted:connect(function(str)
-    if str:sub(1,2) == '#!' then
-      runCommand(p,str:sub(3,#str));
-    end;
-  end)
-  local ca = clientAdmin:Clone();
-  ca.DoCommand.OnServerEvent:connect(runCommand);
-  ca.Parent = p:WaitForChild("PlayerScripts");
-end)
+do
+  local pebind = function(p)
+    -- Bind the Chat commands
+    p.Chatted:connect(function(str)
+      if str:sub(1,2) == '#!' then
+        runCommand(p,str:sub(3,#str));
+      end;
+    end)
+    local ca = clientAdmin:Clone();
+    ca.DoCommand.OnServerEvent:connect(runCommand);
+    ca.Parent = p:WaitForChild("PlayerScripts");
+  end
+  game.Players.PlayerAdded:connect(pebind)
+  for k,v in next, game.Players:GetPlayers() do pebind(v) end;
+end
 
 -- Create the API
 local addCommand = function(name, command)
