@@ -912,7 +912,7 @@ do
         Connections[i]:disconnect();
       end
     end)
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind, Button
   end;
   function ActionClass:BindButtonPress(button)
@@ -928,7 +928,7 @@ do
       tBind:disconnect();
       mBind:disconnect();
     end)
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind;
   end;
   function ActionClass:BindCombo(sources)
@@ -988,7 +988,7 @@ do
         BindCollection[i] = nil;
       end;
     end);
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind;
   end;
   function ActionClass:BindSequence(sources)
@@ -1029,7 +1029,7 @@ do
         BindCollection[i]:disconnect();
       end
     end);
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind;
   end;
   function ActionClass:BindTouchAction(source, object)
@@ -1041,7 +1041,7 @@ do
     local bind = iBinds[state]:connect(function(i,d,p,r)
       return self.Action(i,p,r);
     end)
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind;
   end;
   function ActionClass:BindHold(source, time, interval)
@@ -1093,7 +1093,7 @@ do
       end;
     end;
     local bind = iBinds[state]:connect(bfunc);
-    ActionBinds[self][#ActionBinds[self]] = bind;
+    ActionBinds[self][#ActionBinds[self]+1] = bind;
     return bind;
   end;
 end;
