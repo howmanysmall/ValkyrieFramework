@@ -297,6 +297,9 @@ local InputSources, LinkedTypes, LinkedNames do
   do
     local Touch = InputSources.TouchActions;
     InputSources.Touch = Touch;
+    for k,v in next, Touch do
+      Touch["Touch"..k] = v;
+    end;
     Touch.Tap = Touch.Tapped;
     Touch.LongPress = Touch.LongPressed;
     Touch.Move = Touch.Moved;
