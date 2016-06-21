@@ -78,9 +78,9 @@ local function runCommand(as,cmd)
     -- We got a valid command, guys
     local cmdf = CommandList[cmdname];
     local params = {};
-    if cmd:sub(-1,-1) == ')' then
+    if cmdns:sub(-1,-1) == ')' then
       -- Probably got parameters
-      for param in cmd:match('^%((.+)%)$'):gmatch('[^,]') do
+      for param in cmd:match('^[^(]*%((.+)%)%s*$'):gmatch('[^,]') do
         params[#params+1] = param:match('^%s*(.-)%s*$');
       end;
     end;
