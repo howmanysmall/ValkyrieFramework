@@ -297,13 +297,13 @@ local InputSources, LinkedTypes, LinkedNames do
   do
     local Touch = InputSources.TouchActions;
     InputSources.Touch = Touch;
-    for k,v in next, Touch do
-      Touch["Touch"..k] = v;
-    end;
     Touch.Tap = Touch.Tapped;
     Touch.LongPress = Touch.LongPressed;
     Touch.Move = Touch.Moved;
     Touch.Pan = Touch.Panned;
+    for k,v in next, Touch do
+      Touch["Touch"..k] = v;
+    end;
   end
   for k,v in next, InputSources do
     local np = newproxy(true);
