@@ -298,7 +298,6 @@ local InputSources, LinkedTypes, LinkedNames do
     local Touch = InputSources.TouchActions;
     InputSources.Touch = Touch;
     Touch.Tap = Touch.Tapped;
-    Touch.TouchTap = Touch.Tapped;
     Touch.LongPress = Touch.LongPressed;
     Touch.Move = Touch.Moved;
     Touch.Pan = Touch.Panned;
