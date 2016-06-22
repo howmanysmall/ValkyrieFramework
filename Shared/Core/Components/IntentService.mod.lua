@@ -152,5 +152,4 @@ mt.__tostring = function()
 	return "Valkyrie Intent Service: "..(client and "Client" or "Server");
 end;
 mt.__metatable = "Locked metatable: Valkyrie";
-
 return r;
