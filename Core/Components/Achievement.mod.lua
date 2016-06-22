@@ -1,74 +1,235 @@
-local VCore = _G._ValkyrieCores
-local DS = game:GetService("DataStoreService"):GetDataStore(VCore:GetGID())
-local http = game:GetService("HttpService")
-local Secure = require(script.Parent.Parent.SecureStorage)
-local assert,print,error = assert,print,error;
-local type = type;
-local string = string;
-local setfenv, getmetatable = setfenv, getmetatable;
-local game = game;
-local requester = VCore:GetComponent "RemoteCommunication";
+local Valkyrie = _G.Valkyrie;
+local RemoteCommunication = Valkyrie:GetComponent("RemoteCommunication");
+local DataTypes = Valkyrie:GetComponent("DataTypes");
+local IntentService = Valkyrie:GetComponent("IntentService");
 
-local AchievementsManager = {};
+local Controller = {};
+local extract;
 
-local function assertMethod(self)
-    assert(self == ret, "You should call this as a method of AchievementsManager.", 3); 
-end
-
-local function assertType(expected, value, arg)
-    assert(type(value) == expected, ("Argument %q should be a %s"):format(arg, expected), 3);
-end
-
-function AchievementsManager:RegisterAchievement(reward, identification, name, description) -- Lemon.
-    assertMethod(self);
-    assertType("number", reward, "reward");
-    assertType("string", identification, "identification");
-    assertType("string", name, "name");
-    assertType("string", description, "description");
-    if not DS:GetAsync(identification) then
-        -- If it's not here according to this game, register it!
-        requester.achievements:register({reward = reward, id = identification, name = name, description = description});
-		print("Registered:", reward, identification, name, description);
-		DS:SetAsync(identification, true);
+-- |: Increment
+-- |~ IncrementStep, Step
+-- |< Instance<Player> Player, string AchievementName, int ?Increment = 1
+-- |> bool Success, int NewStep, bool Awarded
+Controller.Increment = function(...)
+	local Player, AchievementName, Increment = extract(...);
+	Increment = Increment or 1;
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a string as #2",
+		2
+	);
+	assert(
+		type(Increment) == 'number',
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a number as #3",
+		2
+	);
+	Increment = math.floor(Increment+.5);
+	local r = RemoteCommunication.Achievement:Increment{
+		Player = Player;
+		Achievement = AchievementName;
+		Value = Increment;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
 	else
-		print("Already registered:", identification);
-	end
+		if r.Awarded then
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		else
+			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
+end;
+Controller.IncrementStep = Controller.Increment;
+Controller.Step = Controller.Increment;
+
+-- |: Reveal
+-- |~ Show
+-- |< Instance<Player> Player, string AchievementName
+-- |> bool Success
+Controller.Reveal = function(...)
+	local Player, AchievementName = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a string as #2",
+		2
+	);
+	local r = RemoteCommunication.Achievement:Reveal{
+		Player = Player;
+		Achievement = AchievementName;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		IntentService:BroadcastUniversalIntent("Achievement.Reveal", Player); -- In case some games want to implement something
+		return r;
+	end;
+end;
+Controller.Show = Controller.Reveal
+
+-- |: Award
+-- |~ Unlock, Give, GiveAchievement, AwardAchievement
+-- |< Instance<Player> Player, string AchievementName
+-- |> bool Success, bool AlreadyAwarded
+Controller.Award = function(...)
+	local Player, AchievementName = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Award): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Award): You need to supply a string as #2",
+		2
+	);
+	local r = RemoteCommunication.Achievement:Award{
+		Player = Player;
+		Achievement = AchievementName;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		if r.AlreadyAwarded then
+			warn(AchievementName.." was already awarded to "..Player.Name);
+		else
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
+end;
+Controller.Unlock = Controller.Award;
+Controller.Give = Controller.Award;
+Controller.GiveAchievement = Controller.Award;
+Controller.AwardAchievement = Controller.Award;
+
+-- |: SetStep
+-- |~ SetStage, SetState
+-- |< Instance<Player> Player, string AchievementName, int NewStep
+-- |> bool Success, int NewStep, bool Awarded
+Controller.SetStep = function(...)
+	local Player, AchievementName, NewStep = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a Player as #1",
+		2
+	);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a string as #2",
+		2
+	);
+	assert(
+		type(AchievementName) == 'number',
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a number as #3",
+		2
+	);
+	NewStep = math.floor(NewStep+.5);
+	-- If NewStep is less than the current step, keep the current.
+	local r = RemoteCommunication.Achievement:SetStep{
+		Player = Player;
+		Achievement = AchievementName;
+		Value = NewStep;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		if r.Awarded then
+			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+		else
+			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+		end;
+		return r;
+	end;
+end;
+Controller.SetStage = Controller.SetStep;
+Controller.SetState = Controller.SetStep;
+
+-- |: List
+-- |~ ListAchievements, GetAchievements
+-- |< Instance<Player> Player
+-- |> table {
+--      ... = {
+--        DisplayName = string AchievementDisplayName,
+--        Name = string AchievementIdentifierName,
+--        ?Steps = int Steps,
+--        Awarded = bool HasAchievement,
+--        Hidden = bool IsHidden
+--      }
+--    } AchievementsList
+Controller.List = function(...)
+	local Player = extract(...);
+	assert(
+		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
+		2
+	);
+	local r = RemoteCommunication.Achievement:GetAchievements{
+		Player = Player;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		return r;
+	end;
+end;
+Controller.ListAchievements = Controller.List;
+Controller.GetAchievements = Controller.List;
+
+-- |: Info
+-- |~ GetInfo, AchievementInfo, GetAchievementInfo
+-- |< string AchievementName
+-- |> table {
+--      Name = string AchievementTrueName,
+--      MaxSteps = int MaxSteps
+--      Description = string Description,
+--      Image = int AssetId,
+--      Reward = int PointsReward
+--    } AchievementInfo
+Controller.Info = function(...)
+	local AchievementName = extract(...);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
+		2
+	);
+	local r = RemoteCommunication.Achievement:GetAchievementInfo{
+		Name = AchievementName;
+	};
+	if not r.Success then
+		return error(r.Error, 2);
+	else
+		return r;
+	end;
+end;
+Controller.GetInfo = Controller.Info;
+Controller.AchievementInfo = Controller.Info;
+Controller.GetAchievementInfo = Controller.GetAchievementInfo;
+
+local _controller = newproxy(true);
+local mt = getmetatable(_controller);
+mt.__index = Controller;
+mt.__metatable = "Locked metatable: Valkyrie";
+mt.__tostring = function()
+	return "Valkyrie Achievements controller";
 end;
 
-function AchievementsManager:AwardAchievement(user, identification)
-    -- Get the data from the supplied argument.
-    local userType = type(user);
-    assert(user, "You must supply a user as Arg#1", 2);
-    assert(identification, "You must supply an achievement id as Arg#2", 2);
-    assertMethod(self);
-    assertType("string", identification, "identification");
-    if userType == 'string' then
-        assert(game.Players:FindFirstChild(user), user .. " is not a valid player!", 2);
-        user = game.Players:FindFirstChild(user).userId;
-    elseif userType == 'userdata' then
-        assert(pcall(function() if user.Parent ~= game.Players then error() else user = user.userId end end),"Invalid player", 2);
-    elseif userType ~= 'number' then
-        error("Invalid datatype for the user", 2);
-    end
-    requester.achievements:award({playerid = user, id = identification});
-    print("Awarded achievement id "..identification.." awarded to user:",user);
-end
-
-local ret;
-do
-ret = newproxy(true);
-local mt = getmetatable(ret);
-mt.__index = function(_,k)
-    local v = AchievementsManager[k];
-    if type(v) == 'function' then
-        return setfenv(v,{});
-    else
-        return v;
-    end
+extract = function(...)
+	if ... == _controller then
+		return select(2,...);
+	else
+		return ...
+	end;
 end;
-mt.__newindex = error;
-mt.__tostring = function() return "Valkyrie Achievements Manager" end;
-mt.__metatable = "Nobody messes with Valkyrie";
-end
 
-return ret;
+return _controller;

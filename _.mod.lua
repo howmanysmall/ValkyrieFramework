@@ -83,7 +83,7 @@ local GId = "";
 local URL = "https://valkyrie.crescentcode.net";
 
 -- Quickly fetch the Class inherit table for BaseLib
-do local ctab = http:JSONDecode(http:GetAsync("http://pastebin.com/raw/aE2kuGUF"));
+do local ctab = http:JSONDecode(http:GetAsync("http://cdn.easleycompany.com/apidump.php")).Class;
 	local itab = {};
 	for k,v in next, ctab do
 		itab[k] = v.BaseClassName;
@@ -228,8 +228,7 @@ vmt.__call = function(_, GID, CoKey)
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
 		"You should not be passing a table or userdata, silly",2);
 	GId = GID;
-	require(script.Core.SecureStorage).Key = CoKey;
-    remoteComm.GiveDependencies(GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
+  remoteComm.GiveDependencies(GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
 	local resp
 	if not game:GetService("RunService"):IsStudio() then
 		resp = remoteComm.auth:check({uid = UId});
@@ -240,9 +239,9 @@ vmt.__call = function(_, GID, CoKey)
 	if resp then
 		print("Valkyrie Auth success: "..(resp == true and "Correct keypair" or resp));
 	else
-		return error("Valkyrie Auth failure!");
+		return error("Valkyrie Auth failure: Response was " .. tostring(resp));
 	end;
-	
+
 	local vc = script.Client:Clone();
 	vc.Name = "ValkyrieClient";
 	for _,v in ipairs(repSpace.Core:GetChildren()) do
@@ -269,7 +268,7 @@ vmt.__call = function(_, GID, CoKey)
 		end;
 	end;
 	ValkyrieSSS.Parent = game.ServerScriptService;
-	
+
 	local playerHandler = function(p)
 		local np = script.Server.Template:Clone();
 		np.Player.Value = p;
@@ -295,7 +294,7 @@ vmt.__call = function(_, GID, CoKey)
 		end
 		gpn.Parent = game.ReplicatedStorage;
 	end
-	
+
 	if not run:IsStudio() then
 		-- Load up the Valkyrie Player tracker.
 		require(342249737)(tostring(GID),tostring(CoKey));

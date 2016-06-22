@@ -101,15 +101,44 @@ cxitio.RegisterIntent = function(...)
 		if i == Intent then f(...) end;
 	end);
 end;
+cxitio.ConnectIntent = cxitio.RegisterIntent;
 
 cxitio.BroadcastIntent = function(...)
 	LocalIntent:Fire(extract(...));
 end;
 
 cxitio.FireIntent = cxitio.BroadcastIntent;
+cxitio.FireRPCIntent = cxitio.BroadcastRPCIntent;
 cxitio.InvokeIntent = function(...)
 	return error("[Error][Valkyrie Intents] (in IntentService:InvokeIntent()): Invoke is not yet implemented");
 end;
+
+cxitio.BroadcastUniversal = function(...)
+    cxitio.BroadcastIntent(...);
+    if client then
+        cxitio.BroadcastRPCIntent(...);
+    else
+        cxitio.BroadcastRPCIntent(select(2,extract(...)));
+    end;
+end;
+cxitio.FireUniversal = cxitio.BroadcastUniversal;
+cxitio.FireUniversalIntent = cxitio.BroadcastUniversal;
+cxitio.BroadcastUniversalIntent = cxitio.BroadcastUniversal;
+
+cxitio.RegisterUniversal = function(...)
+    local rpcc, locc;
+    locc = cxitio.RegisterIntent(...);
+    rpcc = cxitio.RegisterRPCIntent(...);
+    return {
+        disconnect = function()
+            rpcc:disconnect();
+            locc:disconnect();
+        end;
+    };
+end;
+cxitio.ConnectUniversal = cxitio.RegisterUniversal;
+cxitio.ConnectUniversalIntent = cxitio.RegisterUniversal;
+cxitio.RegisterUniversalIntent = cxitio.RegisterUniversal;
 
 local mt = getmetatable(r);
 mt.__index = function(t,k)

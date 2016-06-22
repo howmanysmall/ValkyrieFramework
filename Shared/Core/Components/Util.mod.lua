@@ -29,13 +29,18 @@ function Util.AssertType(Name, Value, Type, IgnoreNil)
 	end
 end
 
-function Util.RunAsync(Runner)
-	local Coroutine = coroutine.create(Runner);
-	coroutine.resume(Coroutine);
+function Util.RunAsync(Runner,...)
+	local ret;
+	local listener = Instance.new("BoolValue");
+	listener.Value = false;
+	local Coroutine = coroutine.create(function(...)
+		ret = {Runner(...)};
+		listener.Value = true;
+	end);
+	coroutine.resume(Coroutine,...);
 	return function()
-		while coroutine.status(Coroutine) ~= "dead" do
-			RenderStepped:wait();
-		end
+		listener.Changed:wait();
+		return unpack(ret);
 	end
 end
 
@@ -47,15 +52,43 @@ function Util.CopyMetatable(Object, Metatable)
 end
 
 function Util.GetScreenResolution()
-	local DummyFrame 		= Instance.new("Frame", Core:GetOverlay());
-	DummyFrame.BackgroundTransparency = 1;
-	DummyFrame.BorderSizePixel = 0;
-	DummyFrame.Size 		= UDim2.new(1,0,1,0);
-	local Size 				= DummyFrame.AbsoluteSize;
-	DummyFrame:Destroy();
-
-	return Size;
+	return Core:GetOverlay().AbsoluteSize;
 end
+
+do
+	local mt = {
+ __index = {
+  case = function(this, ...)
+   local args = {...};
+   return function(r)
+    for i=1, #args do
+     this.cases[args[i]] = r;
+    end;
+    return this;
+   end;
+  end;
+  default = function(this,r)
+   local v = this.cases[this.switch] or r;
+   if type(v) == 'function' then
+    return v(this.switch);
+   else
+    return v;
+   end;
+  end;
+  eval = function(this)
+   local v = this.cases[this.switch];
+   if type(v) == 'function' then
+    return v(this.switch);
+   else
+    return v;
+   end;
+  end;
+ };
+};
+function Util.switch(obj)
+ return setmetatable({switch = obj, cases = {}},mt);
+end;
+end;
 
 local chainmeta = {
 	__newindex = function(t,k,v) t._obj[k] = v; end;
@@ -76,8 +109,8 @@ end;
 Util.isLocal = isLocal;
 
 Util.wait = wait;
+local tick = tick;
 if isLocal then
-	local tick = tick;
 	Util.Player = game.Players.LocalPlayer;
 	Util.wait = function(n)
 		if n then
@@ -91,7 +124,12 @@ if isLocal then
 		end
 	end;
 end;
-Util.ewait = ewait;
+Util.ewait = function(ev)
+	local newewait;
+	local now = tick();
+	local r={ewait(ev)};
+	return tick()-now, unpack(r)
+end;
 local yield = coroutine.yield;
 Util.ywait = function(n)
 	n = n or 0.029;

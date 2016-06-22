@@ -25,13 +25,13 @@ end;
 -- Controller class
 function ControllerClass.CreateNode(...)
   local name, translations = extract(...);
-  if TranslationNodeBackLinks[name] then
+  if TranslationNodeBacklinks[name] then
     warn("[Warn][Translation] (in CreateNode): "..name.." already exists. Updating translations instead.");
-    local tli = TranslationNodeLinks[TranslationNodeBackLinks[name]];
+    local tli = TranslationNodeLinks[TranslationNodeBacklinks[name]];
     for k,v in next, translations do
       tli[k:lower()] = v;
     end;
-    return TranslationNodeBackLinks[name];
+    return TranslationNodeBacklinks[name];
   else
     local newTranslationNode = newproxy(true);
     local newTranslationMt = getmetatable(newTranslationNode);
@@ -40,9 +40,22 @@ function ControllerClass.CreateNode(...)
     end;
     local _translations = {};
     for k,v in next,translations do
-      _translations[k:lower()] = v;
+      if type(k) ~= 'string' then
+      	return error("[Error][Translation] (in CreateNode): All keys must be strings", 2);
+    	end;
+    	if #k == 2 then
+      	-- We have no locale :S
+      	-- Assume repeated
+      	k = k..'_'..k;
+    	end;
+    	k = k:gsub('-','_');
+    	if #k ~= 5 or k:sub(3,3) ~= "_" then
+    	  return error("[Error][Translation] (in CreateNode): "..k.." doesn't appear to be a valid language format :(", 2);
+    	else
+    	  _translations[k:lower()] = v;
+	    end;
     end;
-    TranslationNodeBackLinks[name] = newTranslationNode;
+    TranslationNodeBacklinks[name] = newTranslationNode;
     TranslationNodeLinks[newTranslationNode] = _translations;
     _translations.default = _translations.default
     or _translations.en_us
@@ -55,7 +68,7 @@ end;
 
 function ControllerClass.GetNode(...)
   local name = extract(...);
-  local node = TranslationNodeBackLinks[name];
+  local node = TranslationNodeBacklinks[name];
   if not node then
     warn("[Warn][Translation] (in GetNode): "..name.." doesn't yet exist. Creating a blank translation.");
     node = ControllerClass.CreateNode(name,{});
@@ -102,7 +115,7 @@ end;
 TranslationNodeMt.__metatable = "Valkyrie Translation Node Metatable";
 TranslationNodeMt.__index = function(this,k)
   local translations = TranslationNodeLinks[this];
-  local translation = translations[k] or translations.default;
+  local translation = translations[k];
   if not translation then
     for k,v in ipairs(aliases[TargetLanguage]) do
       translation = translations[v];
@@ -110,7 +123,7 @@ TranslationNodeMt.__index = function(this,k)
     end;
   end;
   if not translation then
-    translation = "##INVALID TRANSLATION: REPORT TO GAME OWNER##";
+    translation =  translations.default or "##INVALID TRANSLATION: REPORT TO GAME OWNER##";
   end;
   return translation;
 end;

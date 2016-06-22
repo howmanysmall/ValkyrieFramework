@@ -34,11 +34,12 @@ local function createPermission(name)
 	mt.__tostring = function()
 		return name;
 	end;
-	mt.__metatable = {};
+	mt.__metatable = "Locked metatable: Valkyrie Permissions";
 	-- Will possibly extend this later if Valkyrie gets a standard way to extend
 	-- operator behaviour on data.
 
 	-- Bind
+	start[subsets[#subsets]] = newPermission;
 	Permissionmtlist[newPermission] = mt;
 	PermissionLinks[name] = newPermission;
 
@@ -69,10 +70,14 @@ local groups = {};
 local users = {};
 local usergroups = {};
 local gclass = {};
-local glinks = setmetatable({},{__mode = 'v'});
+local glinks = {};
 -- [1] = Permissions; [2] = Users
 
 local function createGroup(name, inherits)
+	assert(type(name) == 'string', "[Error][Valkyrie Permissions] (in createGroup): GroupName must be a string.", 3);
+	if groups[name] then
+		return error("[Error][Valkyrie Permissions] (in createGroup): "..name.." already exists.", 3);
+	end;
 	local newGroup = newproxy(true);
 	local mt = getmetatable(newGroup);
 	local gPermissions = {};
@@ -137,8 +142,11 @@ local function createGroup(name, inherits)
 			end;
 		end;
 	end;
+	mt.__metatable = "Locked metatable: Valkyrie";
+	mt.__tostring = function() return name end;
 
 	glinks[newGroup] = {gPermissions,gUsers};
+	groups[name] = newGroup;
 
 	return newGroup;
 end;
@@ -192,7 +200,11 @@ end;
 function gclass:RemoveUser(user)
 	local ulist = glinks[self][1];
 	assert(user, "You must provide a user to add", 2);
-	usergroups[user] = nil;
+	if usergroups[user] == self then
+		usergroups[user] = nil;
+	else
+		return error("[Error][Valkyrie Permissions] (in Group.RemoveUser): User is not a member of "..tostring(self)..".", 2);
+	end;
 	if ulist[user] then
 		ulist[user] = nil;
 	else
@@ -272,7 +284,11 @@ function controllerclass.GetUserPermission(...)
 		return error("[Error][Valkyrie Permissions] (in GetUserPermission()): A valid permission was not supplied", 2);
 	end;
 	if not users[user] then users[user] = {} end;
-	return users[user][target] or (usergroups[user] and usergroups[user].Permissions[target] or nil);
+	local up = users[user][target];
+	if up == nil then
+		up = usergroups[user] and usergroups[user].Permissions[target];
+	end;
+	return up
 end;
 
 function controllerclass.GetUserPermissions(...)
