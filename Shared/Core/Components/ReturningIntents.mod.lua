@@ -15,7 +15,7 @@ if game:GetService("RunService"):IsClient() then
     RemoteIntent.OnClientInvoke = function(Intent, ...)
         return RemoteIntentBind:Invoke(Intent, ...);
     end;
-    ReturningIntents:CallReturningIntentRemote = function(...)
+    function ReturningIntents:CallReturningIntentRemote(...)
         return RemoteIntent:InvokeServer(...);
     end;
 else
@@ -33,7 +33,7 @@ else
 
     function ReturningIntents:CallReturningIntentRemote(...) -- Might add some named args later
         local Arguments = {...};
-        if Arguments[2] = 'All' then
+        if Arguments[2] == 'All' then
             local ClientReturns = {};
             local Players = game.Players:GetAllPlayers();
 
@@ -49,7 +49,7 @@ else
 end
 
 function ReturningIntents:RegisterReturningIntentRemote(Intent, Listener, Function)
-    assert(Intent and type(f) == 'function', "Invalid arguments", 2);
+    assert(Intent and type(Function) == 'function', "Invalid arguments", 2);
 
     local ThisIntentListeners = RemoteListeners[Intent];
     if ThisIntentListeners == nil then
@@ -65,7 +65,7 @@ function ReturningIntents:RegisterReturningIntentRemote(Intent, Listener, Functi
 end
 
 function ReturningIntents:RegisterReturningIntent(Intent, Listener, Function)
-    assert(Intent and type(f) == 'function', "Invalid arguments", 2);
+    assert(Intent and type(Function) == 'function', "Invalid arguments", 2);
 
     local ThisIntentListeners = LocalListeners[Intent];
     if ThisIntentListeners == nil then
@@ -90,13 +90,13 @@ end
 function LocalIntent.OnInvoke(Intent, ...) -- Reminder: "..." includes the player who sent the intent!!
     local Returns = {};
 
-    for Name, Function in next, LocalListeners do
+    for Name, Function in next, LocalListeners[Intent] do
         -- TODO
         -- Add a setting that prints each time a listener is about to be called
         -- Useful for end-user debugging to find out where their intents get stuck
 
         -- Might be a bit illogical, but will do for now
-        local IntentReturn = {Function()};
+        local IntentReturn = {Function(...)};
         if #IntentReturn == 1 then
             Returns[Name] = IntentReturn[1];
         else
@@ -110,13 +110,13 @@ end
 function RemoteIntentBind.OnInvoke(Intent, ...)
     local Returns = {};
 
-    for Name, Function in next, RemoteListeners do
+    for Name, Function in next, RemoteListeners[Intent] do
         -- TODO
         -- Add a setting that prints each time a listener is about to be called
         -- Useful for end-user debugging to find out where their intents get stuck
 
         -- Might be a bit illogical, but will do for now
-        local IntentReturn = {Function()};
+        local IntentReturn = {Function(...)};
         if #IntentReturn == 1 then
             Returns[Name] = IntentReturn[1];
         else
@@ -130,7 +130,7 @@ end
 local Metatable = getmetatable(UserdataProxy);
 Metatable.__index = ReturningIntents;
 Metatable.__tostring = function()
-    return "Valkyrie Returning Intents Component " .. (IsClient and "Client" or "Server");;
+    return "Valkyrie Returning Intents Component " .. (IsClient and "Client" or "Server");
 end;
 Metatable.__metatable = "I can't completely understand your intents...";
 
