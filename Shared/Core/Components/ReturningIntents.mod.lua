@@ -60,7 +60,7 @@ function ReturningIntents:RegisterReturningIntentRemote(Intent, Listener, Functi
     ThisIntentListeners[Listener] = Function;
 
     return function()
-        Listeners[Intent][Listener] = nil;
+        RemoteListeners[Intent][Listener] = nil;
     end;
 end
 
@@ -76,7 +76,7 @@ function ReturningIntents:RegisterReturningIntent(Intent, Listener, Function)
     ThisIntentListeners[Listener] = Function;
 
     return function()
-        Listeners[Intent][Listener] = nil;
+        LocalListeners[Intent][Listener] = nil;
     end;
 end
 
