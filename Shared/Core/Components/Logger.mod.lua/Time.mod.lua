@@ -16,7 +16,7 @@ local Days = {[0] = "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 local iMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
 
 local function TimeFromSeconds(sec)
-    sec = sec or t();
+    sec = sec or t()
     return string.format("%02d:%02d:%02d", floor(sec / HOUR % 24), floor(sec / MINUTE % MINUTE), floor(sec % MINUTE))
 end
 
