@@ -10,14 +10,14 @@ local TYEAR = 365.24*DAY;
 local MONTH = TYEAR/12;
 local iMONTH = DAY/0.0328549;
 
-local ceil, floor, t = math.ceil, math.floor, os.time
+local ceil, floor, t, format = math.ceil, math.floor, os.time, string.format
 
 local Days = {[0] = "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
 local iMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
 
 local function TimeFromSeconds(sec)
     sec = sec or t()
-    return string.format("%02d:%02d:%02d", floor(sec / HOUR % 24), floor(sec / MINUTE % MINUTE), floor(sec % MINUTE))
+    return format("%02d:%02d:%02d", floor(sec / HOUR % 24), floor(sec / MINUTE % MINUTE), floor(sec % MINUTE))
 end
 
 local function TimeEquations(sec, bool)
