@@ -10,56 +10,85 @@ local TYEAR = 365.24*DAY;
 local MONTH = TYEAR/12;
 local iMONTH = DAY/0.0328549;
 
-local ceil, floor, t, format, extract = math.ceil, math.floor, os.time, string.format
+local fl, t, format, extract = math.floor, os.time, string.format
 
-local Days = {[0] = "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
-local iMonths = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+local Days = {
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+}
+local iMonths = {
+    "January", 
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+}
 
 local function TimeFromSeconds(...)
     local sec = extract(...) or t();
-    return format("%02d:%02d:%02d", floor(sec / HOUR % 24), floor(sec / MINUTE % MINUTE), floor(sec % MINUTE))
+    return format("%.2d:%.2d:%.2d", sec/HOUR%24, sec/MINUTE%MINUTE, sec%MINUTE)
 end
 
-local function TimeEquations(bool, ...)
-    local sec   = extract(...) or t()
-    local days  = floor(sec / DAY) + 719468
-    local year  = floor((days >= 0 and days or days - 146096) / 146097)
-    days        = (days - year * 146097)
-    local years = floor((days - floor(days/1460) + floor(days/36524) - floor(days/146096))/365)
-    days        = days - (365*years + floor(years/4) - floor(years/100))
-    local month = floor((5*days + 2)/153)
-    days        = days - floor((153*month + 2)/5) + 1
-    month       = month + (month < 10 and 3 or -9)
-    year        = years + year*400 + (month < 3 and 1 or 0)
+local function DateFromSeconds(...)
+    -- http://howardhinnant.github.io/date_algorithms.html#civil_from_days
+    --[[
+    z += 719468;
+    const Int era = (z >= 0 ? z : z - 146096) / 146097;
+    const unsigned doe = static_cast<unsigned>(z - era * 146097);          // [0, 146096]
+    const unsigned yoe = (doe - doe/1460 + doe/36524 - doe/146096) / 365;  // [0, 399]
+    const Int y = static_cast<Int>(yoe) + era * 400;
+    const unsigned doy = doe - (365*yoe + yoe/4 - yoe/100);                // [0, 365]
+    const unsigned mp = (5*doy + 2)/153;                                   // [0, 11]
+    const unsigned d = doy - (153*mp+2)/5 + 1;                             // [1, 31]
+    const unsigned m = mp + (mp < 10 ? 3 : -9);                            // [1, 12]
+    return std::tuple<Int, unsigned, unsigned>(y + (m <= 2), m, d);
+    ]]
 
-    if bool then
-        return year
-    else
-        return iMonths[month], days
-    end
-end
-
-local function DayFromSeconds(...)
-    --- Finds weekday name
     local sec = extract(...) or t()
-    return Days[(floor(sec / DAY) + 4) % 7]
+    local days = fl(sec / DAY) + 719468
+    local era = fl((days >= 0 and days or days - 146096) / 146097)
+    local dayOfEra = (days - era * 146097)
+    local yearOfEra = fl((days - fl(days/1460) + fl(days/36524) - fl(days/146096))/365)
+    local dayOfYear = dayOfEra - (365*yearOfEra + fl(yearOfEra/4) - fl(yearOfEra/100))
+    local monthOfEra = fl((5*dayOfYear + 2)/153)
+    local days = dayOfYear - fl((153*monthOfEra + 2)/5) + 1
+    local month = monthOfEra + (monthOfEra < 10 and 3 or -9)
+    local year = yearOfEra + era*400 + (month < 3 and 1 or 0)
+
+    return year, iMonths[month], days
+end
+
+local function DayFromSeconds(...) -- Epoch was on a Thursday
+    local sec = extract(...) or t()
+    return Days[(fl(sec/DAY) + 4)%7 + 1]
 end
 
 local function GetMonth(...)
-    return TimeEquations(false, ...)
-end
+    return (select(2,DateFromSeconds(...)))
+end;
 
 local function FullDate(...) -- Remember...
     local sec = extract(...) or t();
     
     local ret = {}
     ret.Time = TimeFromSeconds(sec)
-    ret.Month, ret.Date = TimeEquations(false, sec)
+    ret.Year, ret.Month, ret.Date = TimeEquations(sec)
     ret.Day = DayFromSeconds(sec)
-    ret.Year = TimeEquations(true, sec)
-    ret.Second = floor(sec % MINUTE)
-    ret.Minute = floor(sec / MINUTE % MINUTE)
-    ret.Hour = floor(sec / HOUR % 24)
+    ret.Second = fl(sec%MINUTE)
+    ret.Minute = fl(sec/MINUTE%MINUTE)
+    ret.Hour = fl(sec/HOUR%24)
     return ret;
 end
 
