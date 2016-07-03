@@ -10,7 +10,7 @@ local TYEAR = 365.24*DAY;
 local MONTH = TYEAR/12;
 local iMONTH = DAY/0.0328549;
 
-local fl, t, format, extract = math.floor, os.time, string.format
+local fl, t, format, extract, select = math.floor, os.time, string.format, select
 
 local Days = {
     "Sunday",
@@ -76,7 +76,7 @@ local function DayFromSeconds(...) -- Epoch was on a Thursday
 end
 
 local function GetMonth(...)
-    return (select(2,DateFromSeconds(...)))
+    return select(2,DateFromSeconds(...))
 end;
 
 local function FullDate(...) -- Remember...
