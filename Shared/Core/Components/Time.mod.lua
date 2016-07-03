@@ -84,7 +84,7 @@ local function FullDate(...) -- Remember...
     
     local ret = {}
     ret.Time = TimeFromSeconds(sec)
-    ret.Year, ret.Month, ret.Date = TimeEquations(sec)
+    ret.Year, ret.Month, ret.Date = DateFromSeconds(sec)
     ret.Day = DayFromSeconds(sec)
     ret.Second = fl(sec%MINUTE)
     ret.Minute = fl(sec/MINUTE%MINUTE)
