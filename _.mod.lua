@@ -32,7 +32,7 @@ local coreSettings = require(script.Core.Settings).Core;
 local http = game:GetService("HttpService");
 local run = game:GetService("RunService");
 local wviis = {}
-lcoal ValkAuth = Instance.new("BindableEvent");
+local ValkAuth = Instance.new("BindableEvent");
 getfenv(0).script = nil;
 getfenv(1).script = nil;
 
