@@ -41,7 +41,8 @@ Why can't I change the core?
 Do you *want* to break things? If you're changing the core, only change how a
 process works; don't try and add new parts to the core API (Put them in a
 component), and don't change how the API works schematically (Keep input/returns
-the same)
+the same). The reason for this is simple - If you're changing how the API functions,
+you're going to cause API breaks.
 
 How do I test my changes?
 ---
