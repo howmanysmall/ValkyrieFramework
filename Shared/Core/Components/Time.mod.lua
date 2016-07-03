@@ -13,13 +13,13 @@ local iMONTH = DAY/0.0328549;
 local fl, t, format, extract = math.floor, os.time, string.format
 
 local Days = {
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday",
-    "Sunday"
+    "Saturday"
 }
 local iMonths = {
     "January", 
