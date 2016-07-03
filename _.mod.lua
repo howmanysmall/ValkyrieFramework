@@ -32,6 +32,7 @@ local coreSettings = require(script.Core.Settings).Core;
 local http = game:GetService("HttpService");
 local run = game:GetService("RunService");
 local wviis = {}
+lcoal ValkAuth = Instance.new("BindableEvent");
 getfenv(0).script = nil;
 getfenv(1).script = nil;
 
@@ -225,6 +226,11 @@ _G.Valkyrie = cxitio;
 local remoteComm = ocxi.GetComponent "RemoteCommunication";
 
 vmt.__call = function(_, GID, CoKey)
+    if not (GID or CoKey) then
+        -- Not authing, instead wait.
+        ValkAuth.Event:wait()
+        return cxitio
+    end;
 	assert(type(GID) ~= 'table' and type(GID) ~= 'userdata' and type(CoKey) ~= 'table' and type(CoKey) ~= 'userdata',
 		"You should not be passing a table or userdata, silly",2);
 	GId = GID;
@@ -302,6 +308,8 @@ vmt.__call = function(_, GID, CoKey)
 
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
+	
+	ValkAuth:Fire();
 	return cxitio
 end;
 
