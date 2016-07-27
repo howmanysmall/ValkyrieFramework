@@ -10,7 +10,7 @@ local TYEAR = 365.24*DAY;
 local MONTH = TYEAR/12;
 local iMONTH = DAY/0.0328549;
 
-local fl, t, format, extract, select = math.floor, os.time, string.format, select
+local fl, t, format, select, extract = math.floor, os.time, string.format, select
 
 local Days = {
     "Sunday",
