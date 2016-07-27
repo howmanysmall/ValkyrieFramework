@@ -1,5 +1,5 @@
 local Logger            = {};
-local Time              = require(script.Time);
+local Time              = _G.Valkyrie:GetComponent("Time");
 local Settings          = _G.Valkyrie:GetSettings("Logger");
 
 -- Since I don't know what order the user is going to use for the arguments, I'm doing this kind of formatting:
