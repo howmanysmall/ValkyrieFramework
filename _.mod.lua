@@ -237,7 +237,7 @@ vmt.__call = function(_, GID, CoKey)
   remoteComm.GiveDependencies(GID, URL, CoKey, ocxi.GetComponent "RequestEncode", ocxi.GetComponent "RequestDecode");
 	local resp
 	if not game:GetService("RunService"):IsStudio() then
-		resp = remoteComm.auth:check({uid = UId});
+		resp = remoteComm.Auth:Check({UID = UId});
 	else
 		resp = "Studio Bypass";
 	end;
@@ -276,6 +276,7 @@ vmt.__call = function(_, GID, CoKey)
 	ValkyrieSSS.Parent = game.ServerScriptService;
 
 	local playerHandler = function(p)
+		remoteComm.Friends:SetOnlineGame({ID = p.userId, Game = GID});
 		local np = script.Server.Template:Clone();
 		np.Player.Value = p;
 		np.Name = p.Name;
@@ -289,6 +290,7 @@ vmt.__call = function(_, GID, CoKey)
 	end
 
 	game.Players.PlayerRemoving:connect(function(p)
+		remoteComm.Friends:GoOffline({ID = p.userId, TimeInGame = os.time() - script.Server.ActivePlayers[p.Name].Joined.Value});
 		script.Server.ActivePlayers[p.Name]:Destroy()
 	end)
 
