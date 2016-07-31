@@ -575,6 +575,8 @@ UISEdge = function(i,p,m)
     iprops.Position = i.Position;
     iprops.Axis = i.Position.Y;
     iprops.Var = i.Position.Y;
+  elseif vType == 'ControllerAxis' then
+    iprops.Position = i.Position;
   elseif vType == 'ApplicationFocus' then
     iprops.Focused = dir == InputDirections.Down;
   else
