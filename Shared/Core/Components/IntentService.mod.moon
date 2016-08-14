@@ -1,9 +1,9 @@
 --//
---// * Intents for Freya
+--// * Intents for Valkyrie.
 --// | Simple, dependency-free, all-to-all events suitable for both IPC and
 --// | standard event implementations. Provides powerful interfaces for both
 --// | local and remote communication, including filtering incoming and
---// | outgoing intents.
+--// | outgoing intents. Cloned from Freya.
 --//
 
 local RIntent
@@ -120,6 +120,10 @@ with ni
     Intent = Events.new!
     Intent\Intercept (name, ...) -> IIntercept[name] and IIntercept[name] ...
     .__index = cxitio
+    if _G.Valkyrie.FreyaCompat
+      FreyaIntents = _G.Valkyrie:GetComponent "Freya.Intents"
+      RIntent = FreyaIntents.RIntent
+      Intent = FreyaIntents.Intent
     cxitio[k]
   .__tostring = -> "Valkyrie Intents component"
   .__metatable = "Locked Metatable: Valkyrie"

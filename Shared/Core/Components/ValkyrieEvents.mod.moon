@@ -1,9 +1,7 @@
 --//
---// * Events for Freya
+--// * Events for Valkyrie
 --// | Extended events system which supports the standard Roblox API, without
---// | all the gotchas of the BindableEvent implementation
---//
---// # TODO: Add intent support
+--// | all the gotchas of the BindableEvent implementation. Cloned from Freya.
 --//
 
 Event = {}
