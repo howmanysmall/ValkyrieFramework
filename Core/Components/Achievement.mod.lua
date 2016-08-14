@@ -1,6 +1,19 @@
 local Valkyrie = _G.Valkyrie;
 local RemoteCommunication = Valkyrie:GetComponent("RemoteCommunication");
-local DataTypes = Valkyrie:GetComponent("DataTypes");
+local IsInstance do
+  local game = game;
+  local GS = game.GetService;
+  local pcall = pcall;
+  local type = type;
+  IsInstance = function(i)
+    if type(i) ~= 'userdata' then return false end;
+    local s,e = pcall(GS, game, i);
+    if s and not e then
+      return true
+    end
+    return false
+  end
+end;
 local IntentService = Valkyrie:GetComponent("IntentService");
 
 local Controller = {};
@@ -14,7 +27,7 @@ Controller.Increment = function(...)
 	local Player, AchievementName, Increment = extract(...);
 	Increment = Increment or 1;
 	assert(
-		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		IsInstance(Player) and Player:IsA('Player'),
 		"[Error][Valkyrie Achievements] (in Increment): You need to supply a Player as #1",
 		2
 	);
@@ -38,9 +51,9 @@ Controller.Increment = function(...)
 		return error(r.Error, 2);
 	else
 		if r.Awarded then
-			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		else
-			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
@@ -55,7 +68,7 @@ Controller.Step = Controller.Increment;
 Controller.Reveal = function(...)
 	local Player, AchievementName = extract(...);
 	assert(
-		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		IsInstance(Player) and Player:IsA('Player'),
 		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a Player as #1",
 		2
 	);
@@ -71,7 +84,7 @@ Controller.Reveal = function(...)
 	if not r.Success then
 		return error(r.Error, 2);
 	else
-		IntentService:BroadcastUniversalIntent("Achievement.Reveal", Player); -- In case some games want to implement something
+		IntentService:Broadcast("Achievement.Reveal", Player); -- In case some games want to implement something
 		return r;
 	end;
 end;
@@ -84,7 +97,7 @@ Controller.Show = Controller.Reveal
 Controller.Award = function(...)
 	local Player, AchievementName = extract(...);
 	assert(
-		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		IsInstance(Player) and Player:IsA('Player'),
 		"[Error][Valkyrie Achievements] (in Award): You need to supply a Player as #1",
 		2
 	);
@@ -103,7 +116,7 @@ Controller.Award = function(...)
 		if r.AlreadyAwarded then
 			warn(AchievementName.." was already awarded to "..Player.Name);
 		else
-			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
@@ -120,7 +133,7 @@ Controller.AwardAchievement = Controller.Award;
 Controller.SetStep = function(...)
 	local Player, AchievementName, NewStep = extract(...);
 	assert(
-		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		IsInstance(Player) and Player:IsA('Player'),
 		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a Player as #1",
 		2
 	);
@@ -145,9 +158,9 @@ Controller.SetStep = function(...)
 		return error(r.Error, 2);
 	else
 		if r.Awarded then
-			IntentService:BroadcastUniversalIntent("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
 		else
-			IntentService:BroadcastUniversalIntent("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(AchievementName));
 		end;
 		return r;
 	end;
@@ -170,7 +183,7 @@ Controller.SetState = Controller.SetStep;
 Controller.List = function(...)
 	local Player = extract(...);
 	assert(
-		DataTypes(Player) == 'Instance' and Player:IsA('Player'),
+		IsInstance(Player) and Player:IsA('Player'),
 		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
 		2
 	);
