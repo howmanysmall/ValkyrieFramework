@@ -171,7 +171,7 @@ Controller.SetState = Controller.SetStep;
 -- |: List
 -- |~ ListAchievements, GetAchievements
 -- |< Instance<Player> Player
--- |> table {
+-- |> table Data {
 --      ... = {
 --        DisplayName = string AchievementDisplayName,
 --        Name = string AchievementIdentifierName,
@@ -193,7 +193,7 @@ Controller.List = function(...)
 	if not r.Success then
 		return error(r.Error, 2);
 	else
-		return r;
+		return r.Data;
 	end;
 end;
 Controller.ListAchievements = Controller.List;
