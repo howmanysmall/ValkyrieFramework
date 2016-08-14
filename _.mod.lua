@@ -31,27 +31,12 @@ local repSpace = script.Shared;
 local coreSettings = require(script.Core.Settings).Core;
 local http = game:GetService("HttpService");
 local run = game:GetService("RunService");
-local wviis = {}
 local ValkAuth = Instance.new("BindableEvent");
 getfenv(0).script = nil;
 getfenv(1).script = nil;
 
 local echo = function(...) return ... end;
 local pack = function(...) return {n=select('#',...),...} end;
-
-do
-	local useGlobalLib = true;
-	coreSettings:RegisterSetting('UseGlobalLib',{
-		get = function()
-			return useGlobalLib;
-		end;
-		set = function(v)
-			if type(v) == 'bool' then
-				useGlobalLib = v;
-			end
-		end;
-	})
-end;
 
 do
 	local suc = pcall(setmetatable, _G, {
@@ -68,10 +53,9 @@ do
 	end
 end
 
-local Libraries = {};
 local cxitio = {};
 local function extract(...)
-	if (...) == cxitio or wviis[(...)] then
+	if (...) == cxitio then
 		return select(2,...);
 	else
 		return ...
@@ -82,18 +66,6 @@ end
 local UId = game["CreatorId"]
 local GId = "";
 local URL = "https://valkyrie.crescentcode.net";
-
--- Quickly fetch the Class inherit table for BaseLib
-do local ctab = http:JSONDecode(http:GetAsync("http://cdn.easleycompany.com/apidump.php")).Class;
-	local itab = {};
-	for k,v in next, ctab do
-		itab[k] = v.BaseClassName;
-	end;
-	local newstrinst = Instance.new("StringValue");
-	newstrinst.Name = "ValkyrieInheritReplicator";
-	newstrinst.Value = http:JSONEncode(itab);
-	newstrinst.Parent = game.ReplicatedStorage
-end
 
 -- Script or its children must never be exposed directly,
 -- as a result, they must be proxied.
@@ -137,73 +109,6 @@ end
 cxitio.GetURL = function()
 	return URL;
 end
-
-do
-	local loaded = setmetatable({},{__mode = 'k'});
-	local libSpace = script.Core.Libraries;
-	local rlibSpace = repSpace.Libraries;
-	local newWrapper = require(repSpace.Core.BaseLib);
-	local gs = game.GetService;
-	local ll;
-	cxitio.LoadLibrary = function(...)
-		local l = extract(...);
-		assert(type(l) == 'string', "You must provide a string library name", 2);
-		local lib = libSpace:FindFirstChild(l) or rlibSpace:FindFirstChild(l);
-		if lib then
-			lib = require(lib)
-		elseif Libraries[l] then
-			lib = Libraries[l];
-		else
-			error("You didn't supply a valid library to load.", 2);
-		end;
-		local _ENV = getfenv(2);
-		if loaded[_ENV] then
-			setfenv(lib, _ENV)(loaded[_ENV]);
-		else
-			local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
-			Wrapper.wlist.ref[ll] = ll;
-			wviis[Wrapper(cxitio)] = true;
-			local newEnv = setmetatable({},{
-				__index = function(_,k)
-					local v = Wrapper.Overrides.Globals[k] or _ENV[k];
-					if v then return v end;
-					local s,v = pcall(game.GetService,game,k);
-					if s then return v end;
-				end;
-				__newindex = function(_,k,v)
-					warn("Settings global",k,"as",v);
-					_ENV[k] = v;
-				end;
-				__metatable = "Locked metatable: Valkyrie Library Environment";
-			});
-			_ENV.wrapper = Wrapper;
-			newEnv = Wrapper(newEnv);
-			loaded[_ENV] = Wrapper;
-			loaded[newEnv] = Wrapper;
-			setfenv(2, newEnv);
-			setfenv(lib, newEnv)(Wrapper);
-		end
-		pcall(print,"Loaded library",l,"into",_ENV,"successfully");
-	end;
-	ll = cxitio.LoadLibrary;
-	cxitio.AddLibrary = function(...)
-		local l,n = extract(...);
-		assert(l, "You need to supply a library to add", 2);
-		assert(n, "You need to supply a name to load the library as", 2);
-		if type(l) == 'function' then
-			Libraries[n] = l;
-		elseif type(l) == 'userdata' and pcall(gs,game,l) and l:IsA("ModuleScript") then
-			local s,e = pcall(cxitio.AddLibrary, require(l), n);
-			if e and not s then error(e, 2) end;
-		else
-			error("Supplied library was not a function or ModuleScript", 2);
-		end
-	end;
-	cxitio.GenerateWrapper = function(...)
-		local private = extract(...)
-		return newWrapper(type(private) == 'bool' and private or false);
-	end;
-end;
 
 local vmt,ocxi do
 	ocxi = cxitio;
@@ -276,7 +181,6 @@ vmt.__call = function(_, GID, CoKey)
 	ValkyrieSSS.Parent = game.ServerScriptService;
 
 	local playerHandler = function(p)
-		remoteComm.Friends:SetOnlineGame({ID = p.userId, Game = GID});
 		local np = script.Server.Template:Clone();
 		np.Player.Value = p;
 		np.Name = p.Name;
@@ -290,7 +194,6 @@ vmt.__call = function(_, GID, CoKey)
 	end
 
 	game.Players.PlayerRemoving:connect(function(p)
-		remoteComm.Friends:GoOffline({ID = p.userId, TimeInGame = os.time() - script.Server.ActivePlayers[p.Name].Joined.Value});
 		script.Server.ActivePlayers[p.Name]:Destroy()
 	end)
 
@@ -310,7 +213,7 @@ vmt.__call = function(_, GID, CoKey)
 
 	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
-	
+
 	ValkAuth:Fire();
 	return cxitio
 end;

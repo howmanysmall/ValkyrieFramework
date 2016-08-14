@@ -5,10 +5,9 @@ local function pack(...) return {n=select('#',...),...} end;
 
 local cxitio = {};
 local r;
-local wviis = {};
 
 local function extract(...)
-	if (...) == r or wviis[(...)] then
+	if (...) == r then
 		return select(2,...)
 	else
 		return ...
@@ -19,22 +18,8 @@ local function echo(...) return ... end;
 
 script.Parent:WaitForChild("Core"):WaitForChild("Components");
 script.Parent.Core.Parent = script;
-script.Parent:WaitForChild("Libraries").Parent = script;
 local coreSettings = require(script.Core:WaitForChild("Settings")).Core;
 
-do
-	local useGlobalLib = true;
-	coreSettings:RegisterSetting('UseGlobalLib', {
-		get = function()
-			return useGlobalLib;
-		end;
-		set = function(v)
-			if type(v) == 'bool' then
-				useGlobalLib = v;
-			end;
-		end;
-	})
-end
 local Components = {};
 cxitio.GetComponent = function(...)
 	local c = extract(...)
@@ -117,73 +102,6 @@ cxitio.LockParent = function(...)
 	local Instance = extract(...);
 	LockedParents[Instance] = true;
 end
-
-do
-	local Libraries = {};
-	local loaded = setmetatable({},{__mode = 'k'});
-	local libSpace = script.Libraries;
-	local newWrapper = require(script.Core.BaseLib);
-	local gs = game.GetService;
-	local ll;
-	cxitio.LoadLibrary = function(...)
-		local l = extract(...);
-		assert(type(l) == 'string', "You must provide a string library name", 2);
-		local lib = libSpace:FindFirstChild(l);
-		if lib then
-			lib = require(lib)
-		elseif Libraries[l] then
-			lib = Libraries[l];
-		else
-			error("You didn't supply a valid library to load.", 2);
-		end;
-		local _ENV = getfenv(2);
-		if loaded[_ENV] then
-			lib(loaded[_ENV]);
-		else
-			local Wrapper = newWrapper(not coreSettings:GetSetting('UseGlobalLib'));
-			Wrapper.wlist.ref[ll] = ll;
-			wviis[Wrapper(r)] = true;
-			local newEnv = setmetatable({},{
-				__index = function(_,k)
-					local v = Wrapper.Overrides.Globals[k] or _ENV[k];
-					if v then return v end;
-					local s,v = pcall(game.GetService,game,k);
-					if s then return v end;
-				end;
-				__newindex = function(_,k,v)
-					warn("Settings global",k,"as",v);
-					_ENV[k] = v;
-				end;
-				__metatable = "Locked metatable: Valkyrie Library Environment";
-			});
-			_ENV.wrapper = Wrapper;
-			newEnv = Wrapper(newEnv);
-			loaded[_ENV] = Wrapper;
-			loaded[newEnv] = Wrapper;
-			setfenv(2, newEnv);
-			lib(Wrapper);
-		end
-		--pcall(print,"Loaded library",l,"into",_ENV,"successfully");
-	end;
-	ll = cxitio.LoadLibrary;
-	cxitio.AddLibrary = function(...)
-		local l,n = extract(...);
-		assert(l, "You need to supply a library to add", 2);
-		assert(n, "You need to supply a name to load the library as", 2);
-		if type(l) == 'function' then
-			Libraries[n] = l;
-		elseif type(l) == 'userdata' and pcall(gs,game,l) and l:IsA("ModuleScript") then
-			local s,e = pcall(cxitio.AddLibrary, require(l), n);
-			if e and not s then error(e, 2) end;
-		else
-			error("Supplied library was not a function or ModuleScript", 2);
-		end
-	end;
-	cxitio.GenerateWrapper = function(...)
-		local private = extract(...);
-		return newWrapper(type(private) == 'bool' and private or false)
-	end;
-end;
 
 r = newproxy(true);
 do
