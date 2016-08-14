@@ -116,7 +116,7 @@ else
 
 with ni
   .__index = (k) ->
-    Events = _G.Freya:GetComponent "Events"
+    Events = _G.Valkyrie:GetComponent "Events"
     Intent = Events.new!
     Intent\Intercept (name, ...) -> IIntercept[name] and IIntercept[name] ...
     .__index = cxitio
