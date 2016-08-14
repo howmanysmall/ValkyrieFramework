@@ -24,7 +24,7 @@ RemoteCommunication = _G.Valkyrie\GetComponent "RemoteCommunication"
 --|: GetFriends
 --|~ ListFriends, List
 --|< var<Instance<Player>, int> Player
---|> {
+--|> table Data {
 --    ... = {
 --      Name = string Name,
 --      ID = int UserId,
@@ -40,9 +40,10 @@ cxitio.List = Hybrid (Player) ->
     "[Error][Valkyrie] (in Friends.ListFriends): Argument #1 must be a Player or UserId",
     2
   if IsInstance Player then Player = Player.UserId
-  return with RemoteCommunication.Friends\GetFriends
+  r = with RemoteCommunication.Friends\GetFriends
       ID: Player
     return error .Error, 2 unless .Success
+  return r.Data
 cxitio.ListFriends = cxitio.List
 cxitio.GetFriends = cxitio.List
 
