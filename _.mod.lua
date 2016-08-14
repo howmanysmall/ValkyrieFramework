@@ -110,6 +110,24 @@ cxitio.GetURL = function()
 	return URL;
 end
 
+if game.ServerStorage:FindFirstChild("Freya") then
+  cxitio.FreyaCompat = true;
+  local FreyaGet = require(game.ServerStorage.Freya.Main).GetComponent
+  local oldGet = cxitio.GetComponent;
+  cxitio.GetComponent = function(...)
+    local c = extract(...)
+    if type(c) == 'string' then
+      if c:sub(1,6) == 'Freya.' then
+        return FreyaGet(c:sub(7,-1));
+      end;
+    end;
+    return oldGet(...)
+  end;
+  cxitio.GetService = cxitio.GetComponent;
+else
+  cxitio.FreyaCompat = false;
+end;
+
 local vmt,ocxi do
 	ocxi = cxitio;
 	cxitio = newproxy(true);
