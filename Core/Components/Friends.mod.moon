@@ -47,6 +47,23 @@ cxitio.List = Hybrid (Player) ->
 cxitio.ListFriends = cxitio.List
 cxitio.GetFriends = cxitio.List
 
+--|: Invite
+--|~ InviteFriend, InviteToGame
+--|< var<Player, int> PlayerAs, var<Player, int> Friend
+--|> {Success = bool Success, Error = bool Error}
+cxitio.Invite = Hybrid (Player, Friend) ->
+  if IsInstance Player then Player = Player.UserId
+  if IsInstance Friend then Friend = Friend.UserId
+  assert type(Player) == 'number',
+    "[Error][Valkyrie] (in Friends.Invite): Argument #1 must be a Player or UserId",
+    2
+  assert type(Friend) == 'number',
+    "[Error][Valkyrie] (in Friends.Invite): Argument #2 must be a Player or UserId",
+    2
+  return with RemoteCommunication.Friends\Invite
+      ID: Player
+      Friend: Friend
+    return error .Error, 2 unless .Success
 
 with getmetatable ni
   .__index = cxitio
