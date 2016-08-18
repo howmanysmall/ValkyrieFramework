@@ -1,0 +1,3 @@
+--// 
+--// * Bans module for Valkyrie Server
+--//
