@@ -48,8 +48,13 @@ do
                         local Result;
                         local Success, Error = pcall(function() Result = HS:PostAsync(req_url, HS:JSONEncode(args)) end);
                         if not Success then
-                            warn("RemoteCommunication request to " .. URL .. "failed: " .. Error); -- warn() to not leak the URL to client
-                            error("RemoteCommunication request failed. More info in server warnings.");
+                            return nil, error {
+                              Tag = "RemoteCommunication",
+                              Section = rem_module,
+                              Level = 1,
+                              Message = Error,
+                              Type = "Internal"
+                            }
                         end
 						local ret		= HS:JSONDecode(Result);
 						if ret.Success then
@@ -59,7 +64,8 @@ do
 					            Tag = rem_module,
 					            Section = rem_function,
 					            Level = 2,
-					            Message = ret.Error
+					            Message = ret.Error,
+                      Type = "Server"
 				            }
 				        end
 					else
