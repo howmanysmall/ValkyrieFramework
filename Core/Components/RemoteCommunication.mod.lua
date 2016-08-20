@@ -8,6 +8,7 @@ local URL;
 local Key;
 
 local proxy;
+local error;
 local assert		= assert;
 local format		= string.format;
 local getmetatable	= getmetatable;
@@ -18,7 +19,7 @@ do
 	local mt		= getmetatable(proxy);
 	mt.__index		= setmetatable({
         GiveDependencies         = function(...)
-            GID, URL, Key, encoder, decoder = ...;
+            GID, URL, Key, encoder, decoder, error = ...;
         end
     }, {__index = function(t, rem_module)
 		local func_proxy;
@@ -51,8 +52,16 @@ do
                             error("RemoteCommunication request failed. More info in server warnings.");
                         end
 						local ret		= HS:JSONDecode(Result);
-						assert(ret.success, ret.error, 3);
-						return ret.result;
+						if ret.Success then
+						    return ret.Result, nil
+					    else
+					        return nil, error {
+					            Tag = rem_module,
+					            Section = rem_function,
+					            Level = 2,
+					            Message = ret.Error
+				            }
+				        end
 					else
 						return true;
 					end
