@@ -19,7 +19,8 @@ IsInstance = do
     s,e = pcall GS, game, i
     return s and not e
 
-RemoteCommunication = _G.Valkyrie\GetComponent "RemoteCommunication"
+RemoteCommunication = _G.Valkyrie.GetComponent "RemoteCommunication"
+IntentService = _G.Valkyrie.GetComponent "IntentService"
 
 --|: GetFriends
 --|~ ListFriends, List
@@ -36,14 +37,12 @@ RemoteCommunication = _G.Valkyrie\GetComponent "RemoteCommunication"
 --    }
 --  }
 cxitio.List = Hybrid (Player) ->
-  assert type(Player) == 'number' or IsInstance Player,
+  if IsInstance Player and Player\IsA "Player" then Player = Player.UserId
+  assert type(Player) == 'number',
     "[Error][Valkyrie] (in Friends.ListFriends): Argument #1 must be a Player or UserId",
     2
-  if IsInstance Player then Player = Player.UserId
-  r = with RemoteCommunication.Friends\GetFriends
-      ID: Player
-    return error .Error, 2 unless .Success
-  return r.Data
+  RemoteCommunication.Friends\GetFriends
+    ID: Player
 cxitio.ListFriends = cxitio.List
 cxitio.GetFriends = cxitio.List
 
@@ -52,18 +51,20 @@ cxitio.GetFriends = cxitio.List
 --|< var<Player, int> PlayerAs, var<Player, int> Friend
 --|> {Success = bool Success, Error = bool Error}
 cxitio.Invite = Hybrid (Player, Friend) ->
-  if IsInstance Player then Player = Player.UserId
-  if IsInstance Friend then Friend = Friend.UserId
+  if IsInstance Player and Player\IsA "Player" then Player = Player.UserId
+  if IsInstance Friend and Friend\IsA "Player" then Friend = Friend.UserId
   assert type(Player) == 'number',
     "[Error][Valkyrie] (in Friends.Invite): Argument #1 must be a Player or UserId",
     2
   assert type(Friend) == 'number',
     "[Error][Valkyrie] (in Friends.Invite): Argument #2 must be a Player or UserId",
     2
-  return with RemoteCommunication.Friends\Invite
-      ID: Player
-      Friend: Friend
-    return error .Error, 2 unless .Success
+  r,e = RemoteCommunication.Friends\Invite
+    ID: Player
+    Friend: Friend
+  return nil, e unless r
+  with r
+    IntentService.Broadcast "InviteCreated", Player, Friend
 
 with getmetatable ni
   .__index = cxitio
