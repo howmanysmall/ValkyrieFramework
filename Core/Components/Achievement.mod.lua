@@ -42,13 +42,13 @@ Controller.Increment = function(...)
 		2
 	);
 	Increment = math.floor(Increment+.5);
-	local r = RemoteCommunication.Achievement:Increment{
+	local r,e = RemoteCommunication.Achievement:Increment{
 		Player = Player;
 		Achievement = AchievementName;
 		Value = Increment;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return nil, e
 	else
 		if r.Awarded then
 			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
@@ -77,12 +77,12 @@ Controller.Reveal = function(...)
 		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a string as #2",
 		2
 	);
-	local r = RemoteCommunication.Achievement:Reveal{
+	local r,e = RemoteCommunication.Achievement:Reveal{
 		Player = Player;
 		Achievement = AchievementName;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return nil, e
 	else
 		IntentService:Broadcast("Achievement.Reveal", Player); -- In case some games want to implement something
 		return r;
@@ -106,12 +106,12 @@ Controller.Award = function(...)
 		"[Error][Valkyrie Achievements] (in Award): You need to supply a string as #2",
 		2
 	);
-	local r = RemoteCommunication.Achievement:Award{
+	local r,e = RemoteCommunication.Achievement:Award{
 		Player = Player;
 		Achievement = AchievementName;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return nil, e
 	else
 		if r.AlreadyAwarded then
 			warn(AchievementName.." was already awarded to "..Player.Name);
@@ -149,13 +149,13 @@ Controller.SetStep = function(...)
 	);
 	NewStep = math.floor(NewStep+.5);
 	-- If NewStep is less than the current step, keep the current.
-	local r = RemoteCommunication.Achievement:SetStep{
+	local r,e = RemoteCommunication.Achievement:SetStep{
 		Player = Player;
 		Achievement = AchievementName;
 		Value = NewStep;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return r,e
 	else
 		if r.Awarded then
 			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
@@ -187,13 +187,13 @@ Controller.List = function(...)
 		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
 		2
 	);
-	local r = RemoteCommunication.Achievement:GetAchievements{
+	local r,e = RemoteCommunication.Achievement:GetAchievements{
 		Player = Player;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return nil, e
 	else
-		return r.Data;
+		return r
 	end;
 end;
 Controller.ListAchievements = Controller.List;
@@ -216,11 +216,11 @@ Controller.Info = function(...)
 		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
 		2
 	);
-	local r = RemoteCommunication.Achievement:GetAchievementInfo{
+	local r,e = RemoteCommunication.Achievement:GetAchievementInfo{
 		Name = AchievementName;
 	};
-	if not r.Success then
-		return error(r.Error, 2);
+	if not r then
+		return nil, e
 	else
 		return r;
 	end;
