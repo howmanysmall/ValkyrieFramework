@@ -84,7 +84,7 @@ Controller.Reveal = function(...)
 	if not r then
 		return nil, e
 	else
-		IntentService:Broadcast("Achievement.Reveal", Player); -- In case some games want to implement something
+		IntentService:Broadcast("Achievement.Reveal", Player, Controller.Info(AchievementName)); -- In case some games want to implement something
 		return r;
 	end;
 end;
