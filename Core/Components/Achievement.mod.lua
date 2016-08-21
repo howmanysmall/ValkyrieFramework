@@ -26,9 +26,10 @@ local extract;
 Controller.Increment = function(...)
 	local Player, AchievementName, Increment = extract(...);
 	Increment = Increment or 1;
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in Increment): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in Increment): You need to supply a Player or UserId as #1",
 		2
 	);
 	assert(
@@ -67,9 +68,10 @@ Controller.Step = Controller.Increment;
 -- |> bool Success
 Controller.Reveal = function(...)
 	local Player, AchievementName = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in Reveal): You need to supply a Player or UserId as #1",
 		2
 	);
 	assert(
@@ -101,9 +103,10 @@ Controller.Show = Controller.Reveal
 -- |> bool Success, bool AlreadyAwarded
 Controller.Award = function(...)
 	local Player, AchievementName = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in Award): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in Award): You need to supply a Player or UserId as #1",
 		2
 	);
 	assert(
@@ -137,9 +140,10 @@ Controller.AwardAchievement = Controller.Award;
 -- |> bool Success, int NewStep, bool Awarded
 Controller.SetStep = function(...)
 	local Player, AchievementName, NewStep = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in SetStep): You need to supply a Player or UserId as #1",
 		2
 	);
 	assert(
@@ -187,9 +191,10 @@ Controller.SetState = Controller.SetStep;
 --    } AchievementsList
 Controller.List = function(...)
 	local Player = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in List): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in List): You need to supply a Player or UserId as #1",
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:GetAchievements{
@@ -206,9 +211,10 @@ Controller.GetAchievements = Controller.List;
 
 Controller.ListAll = function(...)
 	local Player = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in ListAll): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in ListAll): You need to supply a Player or UserId as #1",
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:GetAllAchievements{
@@ -238,9 +244,10 @@ Controller.GetAllAchievements = Controller.ListAll;
 --    } AchievementInfo
 Controller.Info = function(...)
   local Player, AchievementName = extract(...);
+  if IsInstance(Player) and Player:IsA('Player') then Player = Player.UserId end;
 	assert(
-		IsInstance(Player) and Player:IsA('Player'),
-		"[Error][Valkyrie Achievements] (in Info): You need to supply a Player as #1",
+		type(Player) == 'number',
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a Player or UserId as #1",
 		2
 	);
 	assert(
