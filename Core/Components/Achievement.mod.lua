@@ -53,7 +53,7 @@ Controller.Increment = function(...)
 		if r.Awarded then
 			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(Player, AchievementName));
 		else
-			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(Player, AchievementName));
+			IntentService:Broadcast("Achievement.Updated", Player, Controller.Info(Player, AchievementName));
 		end;
 		return r;
 	end;
@@ -87,7 +87,7 @@ Controller.Reveal = function(...)
     if r.AlreadyRevealed then
       warn(AchievementName.." was already revealed to "..Player.Name);
     else
-		  IntentService:Broadcast("Achievement.Reveal", Player, Controller.Info(Player, AchievementName));
+		  IntentService:Broadcast("Achievement.Revealed", Player, Controller.Info(Player, AchievementName));
     end
 		return r;
 	end;
@@ -164,7 +164,7 @@ Controller.SetStep = function(...)
 		if r.Awarded then
 			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(Player, AchievementName));
 		else
-			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(Player, AchievementName));
+			IntentService:Broadcast("Achievement.Updated", Player, Controller.Info(Player, AchievementName));
 		end;
 		return r;
 	end;
