@@ -299,26 +299,6 @@ Controller.GetPlainInfo = Controller.PlainInfo;
 Controller.AchievementPlainInfo = Controller.PlainInfo;
 Controller.GetAchievementPlainInfo = Controller.PlainInfo;
 
-Controller.Stats = function(...)
-  local AchievementName = extract(...);
-	assert(
-		type(AchievementName) == 'string',
-		"[Error][Valkyrie Achievements] (in Stats): You need to supply a string as #1",
-		2
-	);
-	local r,e = RemoteCommunication.Achievement:GetAchievementStats{
-		Name = AchievementName;
-	};
-	if not r then
-		return nil, e
-	else
-		return r;
-	end;
-end;
-Controller.GetStats = Controller.Stats;
-Controller.AchievementStats = Controller.Stats;
-Controller.GetAchievementStats = Controller.Stats;
-
 local _controller = newproxy(true);
 local mt = getmetatable(_controller);
 mt.__index = Controller;
