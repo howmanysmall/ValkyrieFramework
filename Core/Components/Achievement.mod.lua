@@ -260,9 +260,8 @@ Controller.PlainInfo = function(...)
 		"[Error][Valkyrie Achievements] (in PlainInfo): You need to supply a string as #1",
 		2
 	);
-	local r,e = RemoteCommunication.Achievement:GetAchievementInfo{
+	local r,e = RemoteCommunication.Achievement:GetPlainAchievementInfo{
 		Name = AchievementName;
-    Player = Player;
 	};
 	if not r then
 		return nil, e
@@ -272,7 +271,27 @@ Controller.PlainInfo = function(...)
 end;
 Controller.GetPlainInfo = Controller.PlainInfo;
 Controller.AchievementPlainInfo = Controller.PlainInfo;
-Controller.GetAchievementPlainInfo = Controller.GetAchievementPlainInfo;
+Controller.GetAchievementPlainInfo = Controller.PlainInfo;
+
+Controller.Stats = function(...)
+  local AchievementName = extract(...);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in PlainInfo): You need to supply a string as #1",
+		2
+	);
+	local r,e = RemoteCommunication.Achievement:GetAchievementStats{
+		Name = AchievementName;
+	};
+	if not r then
+		return nil, e
+	else
+		return r;
+	end;
+end;
+Controller.GetStats = Controller.Stats;
+Controller.AchievementStats = Controller.Stats;
+Controller.GetAchievementStats = Controller.Stats;
 
 local _controller = newproxy(true);
 local mt = getmetatable(_controller);
