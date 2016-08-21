@@ -43,7 +43,7 @@ Controller.Increment = function(...)
 	);
 	Increment = math.floor(Increment+.5);
 	local r,e = RemoteCommunication.Achievement:Increment{
-		Player = Player;
+		Player = Player.UserId;
 		Achievement = AchievementName;
 		Value = Increment;
 	};
