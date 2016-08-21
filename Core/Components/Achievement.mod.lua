@@ -78,7 +78,7 @@ Controller.Reveal = function(...)
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:Reveal{
-		Player = Player;
+		Player = Player.UserId;
 		Achievement = AchievementName;
 	};
 	if not r then
@@ -107,7 +107,7 @@ Controller.Award = function(...)
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:Award{
-		Player = Player;
+		Player = Player.UserId;
 		Achievement = AchievementName;
 	};
 	if not r then
@@ -150,7 +150,7 @@ Controller.SetStep = function(...)
 	NewStep = math.floor(NewStep+.5);
 	-- If NewStep is less than the current step, keep the current.
 	local r,e = RemoteCommunication.Achievement:SetStep{
-		Player = Player;
+		Player = Player.UserId;
 		Achievement = AchievementName;
 		Value = NewStep;
 	};
@@ -188,7 +188,7 @@ Controller.List = function(...)
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:GetAchievements{
-		Player = Player;
+		Player = Player.UserId;
 	};
 	if not r then
 		return nil, e
