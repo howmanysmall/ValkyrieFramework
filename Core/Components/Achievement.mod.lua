@@ -88,6 +88,7 @@ Controller.Reveal = function(...)
       warn(AchievementName.." was already revealed to "..Player.Name);
     else
 		  IntentService:Broadcast("Achievement.Revealed", Player, Controller.Info(Player, AchievementName));
+      IntentService:Broadcast("Achievement.Updated", Player, Controller.Info(Player, AchievementName));
     end
 		return r;
 	end;
