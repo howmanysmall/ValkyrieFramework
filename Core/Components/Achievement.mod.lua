@@ -204,6 +204,25 @@ end;
 Controller.ListAchievements = Controller.List;
 Controller.GetAchievements = Controller.List;
 
+Controller.ListAll = function(...)
+	local Player = extract(...);
+	assert(
+		IsInstance(Player) and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in ListAll): You need to supply a Player as #1",
+		2
+	);
+	local r,e = RemoteCommunication.Achievement:GetAllAchievements{
+		Player = Player.UserId;
+	};
+	if not r then
+		return nil, e
+	else
+		return r
+	end;
+end;
+Controller.ListAllAchievements = Controller.ListAll;
+Controller.GetAllAchievements = Controller.ListAll;
+
 -- |: Info
 -- |~ GetInfo, AchievementInfo, GetAchievementInfo
 -- |< string AchievementName
@@ -277,7 +296,7 @@ Controller.Stats = function(...)
   local AchievementName = extract(...);
 	assert(
 		type(AchievementName) == 'string',
-		"[Error][Valkyrie Achievements] (in PlainInfo): You need to supply a string as #1",
+		"[Error][Valkyrie Achievements] (in Stats): You need to supply a string as #1",
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:GetAchievementStats{
