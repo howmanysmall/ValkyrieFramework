@@ -51,9 +51,9 @@ Controller.Increment = function(...)
 		return nil, e
 	else
 		if r.Awarded then
-			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(Player, AchievementName));
 		else
-			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(Player, AchievementName));
 		end;
 		return r;
 	end;
@@ -84,7 +84,7 @@ Controller.Reveal = function(...)
 	if not r then
 		return nil, e
 	else
-		IntentService:Broadcast("Achievement.Reveal", Player, Controller.Info(AchievementName)); -- In case some games want to implement something
+		IntentService:Broadcast("Achievement.Reveal", Player, Controller.Info(Player, AchievementName)); -- In case some games want to implement something
 		return r;
 	end;
 end;
@@ -116,7 +116,7 @@ Controller.Award = function(...)
 		if r.AlreadyAwarded then
 			warn(AchievementName.." was already awarded to "..Player.Name);
 		else
-			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(Player, AchievementName));
 		end;
 		return r;
 	end;
@@ -158,9 +158,9 @@ Controller.SetStep = function(...)
 		return r,e
 	else
 		if r.Awarded then
-			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Awarded", Player, Controller.Info(Player, AchievementName));
 		else
-			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(AchievementName));
+			IntentService:Broadcast("Achievement.Update", Player, Controller.Info(Player, AchievementName));
 		end;
 		return r;
 	end;
@@ -203,21 +203,30 @@ Controller.GetAchievements = Controller.List;
 -- |~ GetInfo, AchievementInfo, GetAchievementInfo
 -- |< string AchievementName
 -- |> table {
---      Name = string AchievementTrueName,
+--      Name = string AchievementDisplayName,
 --      MaxSteps = int MaxSteps
 --      Description = string Description,
 --      Image = int AssetId,
---      Reward = int PointsReward
+--      Reward = int PointsReward,
+--      CurrentStep = int CurrentStep,
+--      Hidden = bool Hidden,
+--      Awarded = bool Awarded
 --    } AchievementInfo
 Controller.Info = function(...)
-	local AchievementName = extract(...);
+  local Player, AchievementName = extract(...);
+	assert(
+		IsInstance(Player) and Player:IsA('Player'),
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a Player as #1",
+		2
+	);
 	assert(
 		type(AchievementName) == 'string',
-		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #1",
+		"[Error][Valkyrie Achievements] (in Info): You need to supply a string as #2",
 		2
 	);
 	local r,e = RemoteCommunication.Achievement:GetAchievementInfo{
 		Name = AchievementName;
+    Player = Player;
 	};
 	if not r then
 		return nil, e
@@ -227,7 +236,38 @@ Controller.Info = function(...)
 end;
 Controller.GetInfo = Controller.Info;
 Controller.AchievementInfo = Controller.Info;
-Controller.GetAchievementInfo = Controller.GetAchievementInfo;
+Controller.GetAchievementInfo = Controller.Info;
+
+-- |: PlainInfo
+-- |~ GetPlainInfo, AchievementPlainInfo, GetAchievementPlainInfo
+-- |< string AchievementName
+-- |> table {
+--      Name = string AchievementTrueName,
+--      MaxSteps = int MaxSteps
+--      Description = string Description,
+--      Image = int AssetId,
+--      Reward = int PointsReward
+--    } AchievementInfo
+Controller.PlainInfo = function(...)
+  local AchievementName = extract(...);
+	assert(
+		type(AchievementName) == 'string',
+		"[Error][Valkyrie Achievements] (in PlainInfo): You need to supply a string as #1",
+		2
+	);
+	local r,e = RemoteCommunication.Achievement:GetAchievementInfo{
+		Name = AchievementName;
+    Player = Player;
+	};
+	if not r then
+		return nil, e
+	else
+		return r;
+	end;
+end;
+Controller.GetPlainInfo = Controller.PlainInfo;
+Controller.AchievementPlainInfo = Controller.PlainInfo;
+Controller.GetAchievementPlainInfo = Controller.GetAchievementPlainInfo;
 
 local _controller = newproxy(true);
 local mt = getmetatable(_controller);
