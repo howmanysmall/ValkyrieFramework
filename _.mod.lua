@@ -181,9 +181,6 @@ vmt.__call = function(_, GID, CoKey)
 	for _,v in ipairs(repSpace.Core.Components:GetChildren()) do
 		v:Clone().Parent = vc.Core.Components
 	end
-	for _,v in ipairs(repSpace.Libraries:GetChildren()) do
-		v:Clone().Parent = vc.Libraries;
-	end
 	vc.Parent = game.StarterPlayer.StarterPlayerScripts;
 
 	vmt.__call = function() return cxitio end;
