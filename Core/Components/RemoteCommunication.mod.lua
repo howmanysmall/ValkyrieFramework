@@ -13,6 +13,7 @@ local assert		= assert;
 local format		= string.format;
 local getmetatable	= getmetatable;
 local newproxy		= newproxy;
+local error         = error;
 local HS			= game:GetService("HttpService");
 do
 	proxy			= newproxy(true);
