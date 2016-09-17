@@ -19,7 +19,7 @@ do
 	local mt		= getmetatable(proxy);
 	mt.__index		= setmetatable({
         GiveDependencies         = function(...)
-            GID, URL, Key, encoder, decoder, error = ...;
+            GID, URL, Key, encoder, decoder = ...;
         end
     }, {__index = function(t, rem_module)
 		local func_proxy;
