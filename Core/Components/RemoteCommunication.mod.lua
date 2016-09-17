@@ -8,7 +8,6 @@ local URL;
 local Key;
 
 local proxy;
-local error;
 local assert		= assert;
 local format		= string.format;
 local getmetatable	= getmetatable;
