@@ -61,10 +61,11 @@ cxitio =
     assert type(Player) == 'number',
       "[Error][Valkyrie Bans] (in RemoveBan): Argument #1 must be a Player or UserId",
       2
-    r,e = RemoteCommunication.Bans\CreateGameBan
+    r,e = RemoteCommunication.Bans\RemoveGameBan
+      Player: Player
     return nil, e unless r
     with r
-      IntentService.Broadcast "GameBanRemoved", Player, Reason
+      IntentService.Broadcast "GameBanRemoved", Player
 
 ni = newproxy true
 for k,v in pairs cxitio
