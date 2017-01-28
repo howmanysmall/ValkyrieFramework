@@ -1,6 +1,3 @@
--- Yes thank you for taking the time to look at the clientside stuff
--- I hope you're proud of yourself.
-
 local function pack(...) return {n=select('#',...),...} end;
 
 local cxitio = {};
@@ -23,31 +20,18 @@ local coreSettings = require(script.Core:WaitForChild("Settings")).Core;
 local Components = {};
 cxitio.GetComponent = function(...)
 	local c = extract(...)
-	assert(c, "You need to supply a component to get", 2);
-	assert(type(c) == 'string' , "You did not supply a valid component type: Must be a string", 2);
-	assert(script.Core.Components:FindFirstChild(c) or Components[c], c.." is not a valid component!", 2);
-	return script.Core.Components:FindFirstChild(c) and require(script.Core.Components[c]) or Components[c]
+	return _G.Freya.GetComponent("Valkyrie."..c)
 end
 cxitio.GetService = cxitio.GetComponent;
 
 cxitio.SetComponent = function(...)
 	local l,c = extract(...);
-	assert(c, "You must supply a component to set", 2);
-	assert(l, "You must supply a name to set the component as", 2);
-	Components[l] = Components[l] or c;
+	_G.Freya.SetComponent("Valkyrie."..l, c)
 end
 cxitio.SetService = cxitio.SetComponent;
 
 cxitio.GetSettings = function(...)
-	local component = extract(...);
-	if component then
-		if component == "Core" then
-			return coreSettings
-		else
-			return require(script.Core.Settings).Components[component];
-		end;
-	end
-	return require(script.Core.Settings).Custom;
+	return _G.Freya.Settings[...]
 end;
 
 local overlay = script.Parent.ValkyrieOverlay;
