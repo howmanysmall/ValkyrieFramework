@@ -28,7 +28,6 @@ local rawget, rawset = rawget, rawset;
 local ipairs = ipairs;
 local cwrap = coroutine.wrap;
 local repSpace = script.Shared;
-local coreSettings = require(script.Core.Settings).Core;
 local http = game:GetService("HttpService");
 local run = game:GetService("RunService");
 local ValkAuth = Instance.new("BindableEvent");
@@ -37,21 +36,6 @@ getfenv(1).script = nil;
 
 local echo = function(...) return ... end;
 local pack = function(...) return {n=select('#',...),...} end;
-
-do
-	local suc = pcall(setmetatable, _G, {
-	__index = _GCore;
-	__newindex = function(t,k,v)
-		if not _GCore[k] then
-		rawset(t,k,v);
-		end
-	end;
-	__metatable = "Please do not try and modify _G after Valkyrie has modded it";
-	});
-	if not suc then
-	warn("Valkyrie was unable to mod _G, so some things may not work");
-	end
-end
 
 local cxitio = {};
 local function extract(...)
@@ -67,39 +51,20 @@ local UId = game["CreatorId"]
 local GId = "";
 local URL = "https://valkyrie.crescentcode.net";
 
--- Script or its children must never be exposed directly,
--- as a result, they must be proxied.
-
-local Components = {};
 cxitio.GetComponent = function(...)
 	local c = extract(...);
-	assert(c, "You need to supply a component to get", 2);
-	assert(type(c) == 'string' , "You did not supply a valid component type: Arg#2 must be a string", 2);
-	assert(script.Core.Components:FindFirstChild(c) or repSpace.Core.Components:FindFirstChild(c) or Components[c], c.." is not a valid component!", 2);
-	return script.Core.Components:FindFirstChild(c) and require(script.Core.Components[c]) or (repSpace.Core.Components:FindFirstChild(c) and require(repSpace.Core.Components[c]) or Components[c]);
+	return _G.Freya:GetComponent("Valkyrie."..c)
 end
 cxitio.GetService = cxitio.GetComponent;
 
 cxitio.SetComponent = function(...)
 	local c,l = extract(...);
-	assert(c, "You must supply a component to set", 2);
-	assert(l, "You must supply a name to set the component as", 2);
-	Components[l] = Components[l] or c;
+  _G.Freya:SetComponent("Valkyrie."..l, c);
 end
 cxitio.SetService = cxitio.SetComponent;
 
-cxitio.GetSettings = function(...)
-	local component = extract(...);
-	if component then
-		if component == "Core" then
-			return coreSettings;
-		elseif component == true then
-			return require(script.Core.Settings).User;
-		else
-			return require(script.Core.Settings).Components[component];
-		end;
-	end
-	return require(script.Core.Settings).Custom;
+cxitio.GetSettings = function(s)
+  return _G.Freya.Settings[s];
 end;
 
 cxitio.GetGID = function()
@@ -110,22 +75,11 @@ cxitio.GetURL = function()
 	return URL;
 end
 
-if game.ServerStorage:FindFirstChild("Freya") then
-  cxitio.FreyaCompat = true;
-  local FreyaGet = require(game.ServerStorage.Freya.Main).GetComponent
-  local oldGet = cxitio.GetComponent;
-  cxitio.GetComponent = function(...)
-    local c = extract(...)
-    if type(c) == 'string' then
-      if c:sub(1,6) == 'Freya.' then
-        return FreyaGet(c:sub(7,-1));
-      end;
-    end;
-    return oldGet(...)
-  end;
-  cxitio.GetService = cxitio.GetComponent;
-else
-  cxitio.FreyaCompat = false;
+for k,v in pairs(script.Core.Components:GetChildren()) do
+  cxitio.SetComponent(v.Name, require(v));
+end;
+for k,v in pairs(repSpace.Core.Components:GetChildren()) do
+  cxitio.SetComponent(v.Name, require(v));
 end;
 
 local vmt,ocxi do
@@ -139,11 +93,7 @@ local vmt,ocxi do
 	mt.__tostring = function() return string.format("Valkyrie Core: %q (%d)",GId,UId); end;
 end
 
-_GCore._ValkyrieCores = cxitio;
-_G._ValkyrieCores = cxitio;
-_GCore._Valkyrie = cxitio;
 _G._Valkyrie = cxitio;
-_GCore.Valkyrie = cxitio;
 _G.Valkyrie = cxitio;
 
 local remoteComm = ocxi.GetComponent "RemoteCommunication";
@@ -186,47 +136,14 @@ vmt.__call = function(_, GID, CoKey)
 	vmt.__call = function() return cxitio end;
 	vmt.__index = ocxi;
 
-	local ValkyrieSSS = Instance.new("Folder");
-	ValkyrieSSS.Name = "Valkyrie";
-	for k,v in next, script.Server:GetChildren() do
-		if v.Name ~= 'Template' then
-			v.Parent = ValkyrieSSS;
-		end;
-	end;
-	ValkyrieSSS.Parent = game.ServerScriptService;
-
-	local playerHandler = function(p)
-		local np = script.Server.Template:Clone();
-		np.Player.Value = p;
-		np.Name = p.Name;
-		np.Parent = ValkyrieSSS;
-	end;
-	game.Players.PlayerAdded:connect(playerHandler)
-
 	for k,p in next, game.Players:GetPlayers() do
-		playerHandler(p);
 		script.Core.altLoader:Clone().Parent = p.PlayerGui;
 	end
 
-	game.Players.PlayerRemoving:connect(function(p)
-		script.Server.ActivePlayers[p.Name]:Destroy()
-	end)
-
-	do
-		local gpn = Instance.new("RemoteFunction");
-		gpn.Name = "GetPN";
-		gpn.OnServerInvoke = function()
-			return GID
-		end
-		gpn.Parent = game.ReplicatedStorage;
-	end
-
 	if not run:IsStudio() then
-		-- Load up the Valkyrie Player tracker.
+    --// Valkyrie Player Tracker
 		require(342249737)(tostring(GID),tostring(CoKey));
 	end;
-
-	require(script.Shared.Core.Components.IntentService)
 	print("Successfully authenticated Valkyrie for place",GID);
 
 	ValkAuth:Fire();
